@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0d1a3a"/>
+      <stop offset="100%" stop-color="#050510"/>
+    </radialGradient>
+    <radialGradient id="orb" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#0a1a40" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#050510"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="192" height="192" rx="38" fill="url(#bg)"/>
+  <!-- Orbit rings -->
+  <ellipse cx="96" cy="96" rx="72" ry="28" fill="none" stroke="#4fc3f7" stroke-width="1.2" stroke-opacity="0.25" transform="rotate(-25 96 96)"/>
+  <ellipse cx="96" cy="96" rx="58" ry="58" fill="none" stroke="#ff9800" stroke-width="0.8" stroke-opacity="0.15"/>
+  <!-- Core orb -->
+  <circle cx="96" cy="96" r="34" fill="url(#orb)" stroke="#4fc3f7" stroke-width="1.5" stroke-opacity="0.6" filter="url(#glow)"/>
+  <!-- Letter O in Orbitron font style -->
+  <text x="96" y="103" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#4fc3f7" text-anchor="middle" opacity="0.95" letter-spacing="2">O</text>
+  <!-- Orbit dot -->
+  <circle cx="162" cy="88" r="4" fill="#4fc3f7" opacity="0.8" filter="url(#glow)"/>
+  <circle cx="44" cy="130" r="3" fill="#ff9800" opacity="0.7" filter="url(#glow)"/>
+  <!-- Stars -->
+  <circle cx="30" cy="40" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="155" cy="55" r="1" fill="white" opacity="0.4"/>
+  <circle cx="170" cy="140" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="22" cy="160" r="1" fill="white" opacity="0.3"/>
+  <circle cx="140" cy="165" r="1.5" fill="white" opacity="0.5"/>
+</svg>

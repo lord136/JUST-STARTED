@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Raghav AI">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Raghav AI — AI that runs on your device. Created by Prem Peswani.">
+<link rel="apple-touch-icon" href="icon-512.svg">
+<title>Raghav AI</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--text:#fff;--muted:rgba(255,255,255,.45);--glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--hborder:rgba(255,255,255,.2);--cardhov:rgba(255,255,255,.06);--btnbg:#fff;--btntxt:#000}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .25s ease,color .25s ease}
+canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+/* NAV */
+.nav{position:fixed;top:16px;right:20px;z-index:200}
+.nav-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px)}
+.nav-btn:hover{background:rgba(255,255,255,.08);transform:scale(1.05)}
+.nav-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:250px;background:linear-gradient(transparent,#000);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:28px;opacity:0;animation:fadeUp .8s ease .2s forwards}
+.hero-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(3.6rem,11vw,8rem);font-weight:700;letter-spacing:-.06em;line-height:.92;min-height:1.12em}
+.hero-title .ch{display:inline-block;opacity:0;transform:translateY(30px);background:linear-gradient(160deg,#fff 18%,rgba(255,255,255,.42));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title .ch.gap{width:.32em;min-width:.32em;background:none}
+.hero-sub{font-size:clamp(.95rem,2.2vw,1.25rem);color:rgba(255,255,255,.45);max-width:540px;line-height:1.68;margin-top:34px;font-weight:300;opacity:0;animation:fadeUp 1s ease 2s forwards}
+.hero-founder{margin-top:36px;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);opacity:0;animation:founderIn 2s cubic-bezier(.16,1,.3,1) 2.5s forwards}
+.hero-founder strong{color:#fff;font-weight:600}
+.hero-cta{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .8s ease 3s forwards}
+.btn-p{padding:13px 30px;border-radius:999px;background:#fff;color:#000;font-weight:600;font-size:.9rem;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-block}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,255,255,.1)}
+.btn-g{padding:13px 30px;border-radius:999px;background:transparent;color:rgba(255,255,255,.45);font-weight:500;font-size:.9rem;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-g:hover{border-color:rgba(255,255,255,.2);color:#fff}
+.scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);opacity:0;animation:fadeUp .8s ease 3.5s forwards}
+.scroll-hint svg{width:22px;height:22px;stroke:rgba(255,255,255,.45);animation:bob 2s ease-in-out infinite}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes founderIn{from{opacity:0;letter-spacing:10px}to{opacity:1;letter-spacing:3px}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* FEATURES */
+.sec{position:relative;z-index:1;padding:100px 24px 120px;max-width:1100px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:64px}
+.sec-eye{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:14px}
+.sec-h{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;letter-spacing:-1.5px;line-height:1.05;background:linear-gradient(160deg,#fff,rgba(255,255,255,.45));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.fcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:24px;min-height:220px;transition:border-color .36s,transform .48s cubic-bezier(.16,1,.3,1),box-shadow .36s,background .36s;position:relative;overflow:hidden}
+.fcard:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.05)}
+.fglow{position:absolute;width:200px;height:200px;border-radius:50%;opacity:0;transition:opacity .6s;pointer-events:none;filter:blur(60px);top:-60px;right:-60px}
+.fcard:hover .fglow{opacity:.15}
+.fico{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:18px;transition:transform .3s}
+.fcard:hover .fico{transform:scale(1.08) rotate(-3deg)}
+.fcard h3{font-size:1.05rem;font-weight:600;margin-bottom:8px;letter-spacing:-.3px}
+.fcard p{font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.65}
+
+/* CHAT SECTION */
+.chat-sec{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 20px 120px}
+.chat-eye{text-align:center;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:24px}
+
+.chat-frame{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:26px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.chat-frame::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:68%;height:150px;background:radial-gradient(circle,rgba(96,165,250,.13),transparent 70%);pointer-events:none}
+.chat-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015))}
+.orb-av{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 0deg,#2563eb,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;transition:box-shadow .3s}
+.orb-av.think{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.4)}50%{box-shadow:0 0 0 10px rgba(124,58,237,0)}}
+.chat-nm{font-weight:600;font-size:.9rem;letter-spacing:-.3px}
+.chat-st{font-size:.6rem;color:rgba(255,255,255,.45);margin-top:2px}
+.chat-meta{display:flex;flex-direction:column;gap:4px}
+.chat-pill{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:4px 10px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.1);font-size:.62rem;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.76)}
+
+.chat-log{height:380px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;scrollbar-width:none;scroll-behavior:smooth;overscroll-behavior:contain}
+.chat-log::-webkit-scrollbar{display:none}
+.msg{display:flex;flex-direction:column;gap:4px;transition:transform .18s ease,opacity .18s ease}
+.msg.u{align-items:flex-end}
+.msg.a{align-items:flex-start}
+.msg-body{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.bbl{max-width:82%;padding:13px 17px;border-radius:20px;font-size:.93rem;line-height:1.55;animation:popIn .38s cubic-bezier(.16,1,.3,1) both;word-break:break-word;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.msg.u .bbl{background:#2563eb;color:#fff;border-bottom-right-radius:5px}
+.msg.a .bbl{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.08);border-top-left-radius:5px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.msg.a:hover .bbl{transform:translateY(-1px);background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.12)}
+.stamp{font-size:.58rem;color:rgba(255,255,255,.45);padding:0 4px;opacity:0;animation:fadeIn .5s ease .5s forwards}
+.msg-copy{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(4px);transition:opacity .18s ease,transform .18s ease,background .18s ease,color .18s ease,border-color .18s ease;flex-shrink:0}
+.msg-copy:hover{background:rgba(255,255,255,.1);color:#fff}
+.msg.u .msg-copy{background:rgba(37,99,235,.18);border-color:rgba(147,197,253,.28);color:rgba(255,255,255,.88)}
+.msg.u .msg-copy:hover{background:rgba(59,130,246,.3);border-color:rgba(191,219,254,.48)}
+.msg:hover .msg-copy,.msg-copy.show{opacity:1;transform:none}
+.msg-copy svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.msg-copy.copied{background:#fff;color:#000}
+.msg-tag{display:inline-flex;align-items:center;width:max-content;margin-bottom:6px;padding:4px 10px;border-radius:999px;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.22);font-size:.62rem;letter-spacing:.9px;text-transform:uppercase;color:rgba(191,219,254,.92)}
+.follow-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;max-width:82%}
+.follow-chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.78);font-size:.72rem;line-height:1;cursor:pointer;font-family:inherit;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.follow-chip:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.16)}
+.cursor-blink{display:inline-block;width:2px;height:.85em;background:rgba(255,255,255,.45);border-radius:1px;vertical-align:middle;margin-left:3px;animation:blink .7s step-end infinite}
+.dots-wrap{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:20px;border-top-left-radius:5px;padding:14px 18px;animation:popIn .3s ease;display:inline-block}
+.dots{display:flex;gap:4px}
+.dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);animation:dotUp 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotUp{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* PERPLEXITY SEARCH BAR */
+.px-bar{display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,.08);padding:12px 14px 10px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.03));transition:background .22s ease,box-shadow .22s ease}
+.px-bar:focus-within{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.05));box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.px-input{width:100%;background:transparent;border:none;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;min-height:44px;padding:4px 4px}
+.px-input::placeholder{color:rgba(255,255,255,.25)}
+.suggest-row{display:flex;flex-wrap:wrap;gap:10px;padding:2px 2px 12px}
+.suggest-row[hidden]{display:none}
+.suggest-chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);font-size:.74rem;line-height:1;border:none;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease;font-family:inherit}
+.suggest-chip:hover{background:rgba(255,255,255,.1);color:#fff}
+.px-controls{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.px-left,.px-right{display:flex;align-items:center;gap:6px}
+.px-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 10px;border-radius:15px;background:transparent;border:none;color:rgba(255,255,255,.5);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
+.px-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.px-btn svg{width:14px;height:14px;fill:currentColor}
+.px-badge{background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.15)}
+.px-badge:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+.px-badge.active-agent{background:rgba(37,99,235,.18);border:1px solid rgba(96,165,250,.45);color:#dbeafe;box-shadow:0 10px 28px rgba(37,99,235,.16),inset 0 0 0 1px rgba(191,219,254,.08)}
+.px-badge.active-agent:hover{background:rgba(37,99,235,.28);border-color:rgba(147,197,253,.65);color:#fff}
+.px-send{width:30px;height:30px;border-radius:50%;background:#333;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,transform .1s}
+.px-bar:focus-within .px-send{background:#fff;color:#000}
+.px-send:active{transform:scale(.9)}
+.px-send svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+.attachment-strip{padding:0 14px 14px;border-top:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.attachment-strip[hidden]{display:none}
+.attachment-card{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.attachment-preview{width:56px;height:56px;border-radius:14px;object-fit:cover;background:rgba(255,255,255,.08);flex-shrink:0}
+.attachment-body{min-width:0;flex:1}
+.attachment-name{font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attachment-note{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:4px;line-height:1.4}
+.attachment-remove{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;cursor:pointer;flex-shrink:0}
+.hidden-file{display:none}
+
+/* FOOTER */
+.foot{position:relative;z-index:1;text-align:center;padding:32px 24px 60px;border-top:1px solid rgba(255,255,255,.08)}
+.foot p{font-size:.72rem;color:rgba(255,255,255,.25);letter-spacing:.5px}
+
+/* INSTALL BANNERS */
+.ib{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);z-index:998;opacity:0;transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .6s;width:calc(100% - 40px);max-width:400px;background:rgba(20,20,22,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 24px 48px rgba(0,0,0,.4)}
+.ib.show{transform:translateX(-50%) translateY(0);opacity:1}
+.ib-ico{width:44px;height:44px;border-radius:12px;background:conic-gradient(from 0deg,#2563eb,#7c3aed,#2563eb);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;font-weight:700}
+.ib-txt{flex:1}
+.ib-txt strong{font-size:.9rem;display:block}
+.ib-txt span{font-size:.75rem;color:rgba(255,255,255,.45)}
+.ib-btn{padding:10px 20px;border-radius:999px;background:#fff;color:#000;border:none;font-weight:600;font-size:.8rem;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* SCROLL REVEAL */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .78s cubic-bezier(.16,1,.3,1),transform .78s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:none}
+
+/* POPUPS */
+.pop-menu{position:absolute;bottom:48px;left:0;background:#1e1e20;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:6px;min-width:200px;z-index:500;display:none;flex-direction:column;gap:2px;box-shadow:0 16px 40px rgba(0,0,0,.6);animation:popIn .22s cubic-bezier(.16,1,.3,1)}
+.pop-menu.open{display:flex}
+.pop-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:transparent;border:none;color:#e0e0e0;font-size:.88rem;font-weight:400;cursor:pointer;text-align:left;font-family:inherit;transition:background .15s}
+.pop-item:hover{background:rgba(255,255,255,.07)}
+.pop-item.active{color:#fff;font-weight:600}
+.pop-item.locked{opacity:.72}
+.pop-item.model-choice{align-items:flex-start;gap:12px}
+.pop-body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.pop-title{font-size:.88rem;font-weight:600;color:#fff}
+.pop-meta{font-size:.72rem;line-height:1.4;color:rgba(255,255,255,.45)}
+.pop-sep{height:1px;background:rgba(255,255,255,.07);margin:4px 0}
+.pop-sub{padding:4px 14px 8px;font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase}
+.pop-note{padding:0 14px 10px;font-size:.72rem;color:rgba(255,255,255,.42);line-height:1.45}
+.model-wrap{position:relative}
+.model-trigger{padding:0 2px 0 10px;color:rgba(255,255,255,.7)}
+.model-trigger svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.model-menu{position:absolute;bottom:42px;right:0;display:none;flex-direction:column;gap:2px;min-width:280px;padding:8px;background:#1e1e20;border:1px solid rgba(255,255,255,.1);border-radius:18px;box-shadow:0 16px 40px rgba(0,0,0,.6);z-index:500;animation:popIn .22s cubic-bezier(.16,1,.3,1)}
+.model-menu.open{display:flex}
+
+/* PERMISSION SHEET (iOS style) */
+.perm-sheet{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.56);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .2s ease}
+.perm-box{width:min(100%,390px);background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(15,15,18,.94));border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:18px 18px 18px;animation:popIn .28s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);position:relative;overflow:hidden}
+.perm-box::before{content:'';position:absolute;inset:-80px auto auto -60px;width:180px;height:180px;background:radial-gradient(circle,rgba(59,130,246,.18),transparent 70%);pointer-events:none}
+.perm-hero{height:112px;border-radius:22px;margin:-2px -2px 16px;background:
+radial-gradient(circle at 22% 16%,rgba(255,255,255,.95),transparent 20%),
+radial-gradient(circle at 80% 18%,rgba(196,181,253,.55),transparent 22%),
+radial-gradient(circle at 62% 52%,rgba(129,140,248,.48),transparent 28%),
+linear-gradient(140deg,#1d4ed8 6%,#4338ca 38%,#7c3aed 72%,#d8b4fe 100%);
+border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.perm-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(9,9,11,.18))}
+.perm-hero-wordmark{position:absolute;left:18px;bottom:16px;font-family:'Space Grotesk','Inter',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:-.02em;color:#fff;z-index:1}
+.perm-kicker{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.24);color:#dbeafe;font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase;margin:0 auto 14px;position:relative;left:50%;transform:translateX(-50%)}
+.perm-box h3{font-size:1.03rem;font-weight:700;margin-bottom:8px;text-align:center;letter-spacing:-.3px;position:relative}
+.perm-box p{font-size:.82rem;color:rgba(255,255,255,.58);text-align:center;line-height:1.52;margin-bottom:14px;position:relative}
+.perm-points{display:grid;gap:8px;margin-bottom:12px;position:relative}
+.perm-point{padding:10px 11px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.perm-point strong{display:block;font-size:.8rem;font-weight:600;letter-spacing:-.2px}
+.perm-point span{display:block;margin-top:4px;font-size:.73rem;line-height:1.42;color:rgba(255,255,255,.5)}
+.perm-mini{font-size:.72rem;color:rgba(255,255,255,.42);text-align:center;line-height:1.42;margin-bottom:14px;position:relative}
+.perm-actions{display:flex;flex-direction:column;gap:10px;position:relative}
+.perm-yes{padding:14px;border-radius:14px;background:linear-gradient(180deg,#3b82f6,#2563eb);color:#fff;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:transform .1s,box-shadow .2s}
+.perm-yes:hover{box-shadow:0 18px 36px rgba(37,99,235,.28)}
+.perm-yes:active{transform:scale(.97)}
+.perm-no{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.6);font-weight:500;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:pointer}
+
+/* GUIDE FLASHCARD */
+.guide-sheet{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .2s ease}
+.guide-box{width:min(100%,440px);background:linear-gradient(180deg,rgba(23,23,28,.96),rgba(13,13,17,.94));border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:24px 22px 22px;box-shadow:0 30px 90px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.03);animation:popIn .28s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.guide-box::before{content:'';position:absolute;top:-70px;right:-40px;width:190px;height:190px;background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);pointer-events:none}
+.guide-kicker{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.72);font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase}
+.guide-box h3{margin-top:16px;font-size:1.15rem;letter-spacing:-.35px;line-height:1.15}
+.guide-box p{margin-top:10px;font-size:.86rem;line-height:1.58;color:rgba(255,255,255,.58)}
+.guide-grid{display:grid;gap:10px;margin-top:16px}
+.guide-item{padding:12px 13px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.guide-item strong{display:block;font-size:.84rem;font-weight:600;letter-spacing:-.2px}
+.guide-item span{display:block;margin-top:4px;font-size:.76rem;line-height:1.45;color:rgba(255,255,255,.5)}
+.guide-actions{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.guide-primary,.guide-secondary{border-radius:14px;font-size:.92rem;cursor:pointer}
+.guide-primary{padding:14px;border:none;background:linear-gradient(180deg,#ffffff,#e7ecf8);color:#000;font-weight:600}
+.guide-secondary{padding:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:rgba(255,255,255,.65);font-weight:500}
+
+@media (pointer:coarse){
+  .msg-copy{opacity:.78;transform:none}
+}
+
+@media (max-width: 780px){
+  .sec{padding:88px 20px 104px}
+  .sec-head{margin-bottom:42px}
+  .fgrid{grid-template-columns:1fr;gap:12px}
+  .fcard{padding:20px 18px;min-height:0;border-radius:20px}
+  .fico{width:42px;height:42px;margin-bottom:14px}
+  .fcard h3{font-size:1rem}
+  .fcard p{font-size:.82rem;line-height:1.58}
+}
+
+body[data-theme="light"]{--bg:#eef3ff;--text:#08111f}
+body[data-theme="light"] canvas#bg{opacity:.22}
+body[data-theme="light"] .hero::after{background:linear-gradient(transparent,var(--bg))}
+body[data-theme="light"] .hero-title .ch,body[data-theme="light"] .sec-h{background:linear-gradient(160deg,#08111f 18%,rgba(8,17,31,.46));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+body[data-theme="light"] .hero-badge,body[data-theme="light"] .nav-btn,body[data-theme="light"] .fcard,body[data-theme="light"] .chat-frame,body[data-theme="light"] .msg.a .bbl,body[data-theme="light"] .px-bar,body[data-theme="light"] .model-menu,body[data-theme="light"] .perm-box,body[data-theme="light"] .guide-box,body[data-theme="light"] .ib{background:rgba(255,255,255,.74);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .perm-hero{border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .chat-hdr{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.65));border-bottom-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .hero-sub,body[data-theme="light"] .hero-founder,body[data-theme="light"] .sec-eye,body[data-theme="light"] .chat-eye,body[data-theme="light"] .chat-st,body[data-theme="light"] .stamp,body[data-theme="light"] .pop-meta,body[data-theme="light"] .perm-box p,body[data-theme="light"] .guide-box p,body[data-theme="light"] .guide-item span,body[data-theme="light"] .perm-point span,body[data-theme="light"] .foot p,body[data-theme="light"] .fcard p,body[data-theme="light"] .ib-txt span,body[data-theme="light"] .perm-mini{color:rgba(8,17,31,.6)}
+body[data-theme="light"] .chat-pill,body[data-theme="light"] .hero-badge,body[data-theme="light"] .px-badge,body[data-theme="light"] .guide-kicker,body[data-theme="light"] .perm-kicker{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:rgba(8,17,31,.72)}
+body[data-theme="light"] .chat-nm,body[data-theme="light"] .fcard h3,body[data-theme="light"] .pop-title,body[data-theme="light"] .perm-box h3,body[data-theme="light"] .guide-box h3,body[data-theme="light"] .guide-item strong,body[data-theme="light"] .perm-point strong{color:#08111f}
+body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
+body[data-theme="light"] .btn-g:hover,body[data-theme="light"] .px-btn:hover,body[data-theme="light"] .model-trigger:hover{color:#08111f;border-color:rgba(15,23,42,.18)}
+body[data-theme="light"] .hero-founder strong{color:#08111f}
+body[data-theme="light"] .btn-p{background:#08111f;color:#fff;box-shadow:0 18px 36px rgba(8,17,31,.12)}
+body[data-theme="light"] .btn-p:hover{box-shadow:0 22px 40px rgba(8,17,31,.16)}
+body[data-theme="light"] .btn-g{background:rgba(8,17,31,.03);border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .px-input{color:#08111f}
+body[data-theme="light"] .px-input::placeholder{color:rgba(8,17,31,.28)}
+body[data-theme="light"] .px-send{background:#d9e0eb;color:#08111f}
+body[data-theme="light"] .px-bar:focus-within .px-send{background:#08111f;color:#fff}
+body[data-theme="light"] .msg.a .bbl{color:#08111f;background:rgba(255,255,255,.92)}
+body[data-theme="light"] .msg-copy{background:rgba(15,23,42,.04);color:rgba(8,17,31,.62);border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .msg-tag{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.14);color:#1d4ed8}
+body[data-theme="light"] .follow-chip{background:rgba(8,17,31,.05);color:rgba(8,17,31,.72);border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .follow-chip:hover{background:rgba(8,17,31,.1);color:#08111f;border-color:rgba(15,23,42,.14)}
+body[data-theme="light"] .dots-wrap{background:rgba(15,23,42,.05);border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .dots span{background:rgba(8,17,31,.42)}
+body[data-theme="light"] .pop-item{color:rgba(8,17,31,.78)}
+body[data-theme="light"] .pop-item:hover{background:rgba(8,17,31,.06)}
+body[data-theme="light"] .model-menu{background:rgba(255,255,255,.92)}
+body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
+body[data-theme="light"] .suggest-chip{background:rgba(8,17,31,.05);color:rgba(8,17,31,.7);border:1px solid rgba(15,23,42,.08)}
+body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#08111f}
+
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<nav class="nav">
+  <button class="nav-btn" id="themeBtn" aria-label="Toggle theme">
+    <svg id="themeIco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">⚡ Zero Cloud · Zero Cost · Always Private</div>
+  <h1 class="hero-title" id="heroTitle"></h1>
+  <p class="hero-sub">Your phone is the most powerful AI on the planet. No subscriptions. No servers. Just Raghav AI, thinking entirely on your device.</p>
+  <div class="hero-founder">Created by <strong>Prem Peswani</strong></div>
+  <div class="hero-cta">
+    <a href="#chat" class="btn-p">Talk to Raghav AI</a>
+    <a href="#features" class="btn-g">See What It Does</a>
+  </div>
+  <div class="scroll-hint"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></div>
+</section>
+
+<!-- FEATURES -->
+<div class="sec" id="features">
+  <div class="sec-head">
+    <p class="sec-eye rv">Agentic Capabilities</p>
+    <h2 class="sec-h rv">Not just answers.<br>Actions.</h2>
+  </div>
+  <div class="fgrid">
+    <div class="fcard rv"><div class="fglow" style="background:#16a34a"></div><div class="fico">🔍</div><h3>Search Anything</h3><p>Ask Raghav AI to find anything on the web. It understands context and gives you exactly what matters.</p></div>
+    <div class="fcard rv"><div class="fglow" style="background:#ea580c"></div><div class="fico">🔒</div><h3>Completely Private</h3><p>Every word you type stays on your phone. Nothing is sent, stored, or shared. Zero data collection.</p></div>
+    <div class="fcard rv"><div class="fglow" style="background:#7c3aed"></div><div class="fico">📱</div><h3>Lives on Your Phone</h3><p>Add Raghav AI to your home screen. Open it like any app. No browser. No loading. Instant intelligence.</p></div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="chat-sec" id="chat">
+  <p class="chat-eye rv">Try It Right Now</p>
+  <div class="chat-frame rv">
+    <div class="chat-hdr">
+      <div class="orb-av" id="orbAv">O</div>
+      <div>
+        <div class="chat-nm">Raghav AI</div>
+        <div class="chat-meta">
+          <div class="chat-st" id="chatStatus">Ready on your phone</div>
+          <div class="chat-pill" id="runtimePill">Auto</div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-log" id="chatLog"></div>
+    <!-- PERPLEXITY-STYLE INPUT BAR -->
+    <div class="px-bar" id="pxBar">
+      <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1"></textarea>
+      <div class="suggest-row" id="suggestRow" hidden></div>
+      <div class="px-controls">
+        <div class="px-left">
+          <!-- MOBILE + BUTTON -->
+          <button class="px-btn px-badge" id="mobileBtn">
+            <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
+          </button>
+        </div>
+        <div class="px-right">
+          <div class="model-wrap">
+            <button class="px-btn model-trigger" id="modelBtn">
+              <span id="modelBtnLabel">Raghav Beta</span>
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="model-menu" id="modelMenu">
+              <button class="pop-item model-choice" data-model="Raghav Beta">
+                <span>◎</span>
+                <span class="pop-body">
+                  <span class="pop-title">Raghav Beta</span>
+                  <span class="pop-meta">Flagship everyday model. Fast, respectful, and built for every day, every situation, on the phone.</span>
+                </span>
+              </button>
+              <button class="pop-item model-choice locked" data-model="Raghav Baan">
+                <span>🔒</span>
+                <span class="pop-body">
+                  <span class="pop-title">Raghav Baan</span>
+                  <span class="pop-meta">Premium membership for the full experimental experience. One pass unlocks both the mobile agent and the flagship model lane.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <!-- MIC BUTTON -->
+          <button class="px-btn" id="micBtn" title="Voice input">
+            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+          </button>
+          <button class="px-send" id="sendBtn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERMISSION SHEET -->
+<div class="perm-sheet" id="permSheet">
+  <div class="perm-box">
+    <div class="perm-hero">
+      <div class="perm-hero-wordmark">Raghav AI</div>
+    </div>
+    <div class="perm-kicker" id="permKicker">Experimental</div>
+    <h3 id="permTitle">Experience our experimental features for the price of a pastry 🍰</h3>
+    <p id="permBody">Early access is just Rs 39. Quick actions, less app hopping, and one-line mobile moves prepared for you.</p>
+    <div class="perm-points" id="permPoints">
+      <div class="perm-point">
+        <strong>One line, already prepared</strong>
+        <span>Say “Message my mom I will be late” and Raghav AI lines it up instantly.</span>
+      </div>
+    </div>
+    <div class="perm-mini" id="permMini">Rs 39</div>
+    <div class="perm-actions">
+      <button class="perm-yes" id="permYes">Unlock for Rs 39</button>
+      <button class="perm-no" id="permNo">Not Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="guide-sheet" id="guideSheet">
+  <div class="guide-box">
+    <div class="guide-kicker" id="guideKicker">Raghav AI Guide</div>
+    <h3 id="guideTitle">Ask once. Move faster.</h3>
+    <p id="guideBody">Raghav AI can answer, route, or prepare actions depending on what you ask.</p>
+    <div class="guide-grid" id="guideGrid"></div>
+    <div class="guide-actions">
+      <button class="guide-primary" id="guidePrimary">Got it</button>
+      <button class="guide-secondary" id="guideSecondary">Not now</button>
+    </div>
+  </div>
+</div>
+
+<footer class="foot"><p>Raghav AI · Created by Prem Peswani · Free forever</p></footer>
+
+<!-- Install Banners -->
+<div class="ib" id="androidBar">
+  <div class="ib-ico">O</div>
+  <div class="ib-txt"><strong>Add Raghav AI to your phone</strong><span>Works like a real app. No download needed.</span></div>
+  <button class="ib-btn" id="androidBtn">Add</button>
+</div>
+<div class="ib" id="iosBar">
+  <div class="ib-ico">O</div>
+  <div class="ib-txt"><strong>Install on iPhone</strong><span>Tap <b>Share</b> ↗ then <b>Add to Home Screen</b></span></div>
+</div>
+
+<!-- THREE.JS (isolated) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+try {
+  (function(){
+    var cv = document.getElementById('bg');
+    var isMobileBg = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(innerWidth, innerHeight) < 1025);
+    var scene = new THREE.Scene();
+    var cam = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 1, 2000);
+    var rend = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true});
+    rend.setSize(innerWidth, innerHeight);
+    rend.setPixelRatio(Math.min(devicePixelRatio, 2));
+    var sg = new THREE.BufferGeometry();
+    var N = isMobileBg ? 2000 : 6000, sp = new Float32Array(N*3);
+    for(var i=0;i<N*3;i++) sp[i]=(Math.random()-0.5)*1200;
+    sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+    var sm = new THREE.PointsMaterial({size:1.2,color:0xffffff,transparent:true,opacity:0.7});
+    var stars = new THREE.Points(sg, sm); scene.add(stars);
+    var ng = new THREE.BufferGeometry(), np = new Float32Array(300*3);
+    for(var j=0;j<300*3;j++) np[j]=(Math.random()-0.5)*400;
+    ng.setAttribute('position', new THREE.BufferAttribute(np, 3));
+    scene.add(new THREE.Points(ng, new THREE.PointsMaterial({size:55,color:0x3366ff,transparent:true,opacity:0.04,blending:THREE.AdditiveBlending})));
+    var wg = new THREE.BufferGeometry(), wp = new Float32Array(200*3);
+    for(var k=0;k<200*3;k++) wp[k]=(Math.random()-0.5)*350;
+    wg.setAttribute('position', new THREE.BufferAttribute(wp, 3));
+    scene.add(new THREE.Points(wg, new THREE.PointsMaterial({size:70,color:0x8833ff,transparent:true,opacity:0.03,blending:THREE.AdditiveBlending})));
+    cam.position.z = 12;
+    var scrollY = 0;
+    var rafId = 0;
+    var running = !document.hidden;
+    window.addEventListener('scroll', function(){ scrollY = window.scrollY; });
+    function loop(){
+      if (!running) return;
+      rafId = requestAnimationFrame(loop);
+      stars.rotation.y += .00008;
+      stars.rotation.x += .00004;
+      cam.position.y = -scrollY * .003;
+      rend.render(scene, cam);
+    }
+    function setRunning(nextState) {
+      if (running === nextState) return;
+      running = nextState;
+      if (!running && rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+        return;
+      }
+      if (running && !rafId) loop();
+    }
+    loop();
+    document.addEventListener('visibilitychange', function() {
+      setRunning(!document.hidden);
+    });
+    window.addEventListener('resize', function(){ cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix(); rend.setSize(innerWidth, innerHeight); });
+  })();
+} catch(e) { console.warn('Three.js skipped:', e.message); }
+</script>
+
+<!-- CONFETTI -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- MAIN APP -->
+<script>
+(function(){
+  'use strict';
+
+  /* ── TYPEWRITER ── */
+  var WORD = 'Raghav AI';
+  var titleEl = document.getElementById('heroTitle');
+  var ci = 0;
+  titleEl.setAttribute('aria-label', WORD);
+  setTimeout(function(){
+    var iv = setInterval(function(){
+      if(ci >= WORD.length){ clearInterval(iv); return; }
+      var nextChar = WORD[ci];
+      var sp = document.createElement('span');
+      sp.className = nextChar === ' ' ? 'ch gap' : 'ch';
+      if (nextChar === ' ') {
+        sp.innerHTML = '&nbsp;';
+      } else {
+        sp.textContent = nextChar;
+      }
+      sp.style.animation = 'fadeUp .35s cubic-bezier(.16,1,.3,1) forwards';
+      titleEl.appendChild(sp);
+      try { navigator.vibrate(4); } catch(e){}
+      ci++;
+    }, 110);
+  }, 400);
+
+  /* ── SCROLL REVEAL ── */
+  var rvEls = document.querySelectorAll('.rv');
+  // Stagger delays for feature cards
+  var delay = 0;
+  rvEls.forEach(function(el) {
+    el.style.transitionDelay = delay + 'ms';
+    delay += 55;
+  });
+
+  function revealAll() {
+    rvEls.forEach(function(el) { el.classList.add('vis'); });
+  }
+
+  if(window.IntersectionObserver) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if(e.isIntersecting) {
+          e.target.classList.add('vis');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+    rvEls.forEach(function(el) { obs.observe(el); });
+  } else {
+    revealAll();
+  }
+  // Safety fallback: force-reveal everything after 2.5s in case observer misses
+  setTimeout(revealAll, 2500);
+
+  /* ── TEXTAREA AUTO-RESIZE ── */
+  var chatIn = document.getElementById('chatIn');
+  var suggestRow = document.getElementById('suggestRow');
+  var themeBtn = document.getElementById('themeBtn');
+  var themeIco = document.getElementById('themeIco');
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+  var SUN_ICON = '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  var MOON_ICON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>';
+  var suggestionBuckets = {
+    strategy: [
+      'strategy to become more confident',
+      'how to think more clearly',
+      'steps to become disciplined',
+      'how to stop overthinking',
+      'strategy to improve focus',
+      'how to build self respect'
+    ],
+    daily: [
+      'how to improve daily',
+      'daily steps to stay focused',
+      'small habits to improve every day',
+      'how to build a better routine',
+      'how to become better each day',
+      'daily plan to stay consistent'
+    ],
+    definition: [
+      'meaning of GPU',
+      'what is programming',
+      'definition of empathy',
+      'meaning of discipline',
+      'what is Python',
+      'what is critical thinking'
+    ]
+  };
+  var suggestionCatalog = [].concat(
+    suggestionBuckets.strategy,
+    suggestionBuckets.daily,
+    suggestionBuckets.definition
+  );
+  var suggestionDisplayCount = 3;
+  var localKnowledgeSeeds = [
+    { term: 'python', meaning: 'Python is a programming language known for simple syntax and wide use in automation, web work, data, and AI.', why: 'It matters because it is one of the easiest powerful languages to learn and use.', example: 'A simple example is using Python to start a local server or automate repetitive tasks.' },
+    { term: 'javascript', meaning: 'JavaScript is the language that powers interactivity on websites and many modern web apps.', why: 'It matters because it runs in browsers and helps turn static pages into working products.', example: 'A simple example is clicking a button and seeing the page respond instantly.' },
+    { term: 'html', meaning: 'HTML is the structure of a web page. It defines headings, buttons, forms, images, and content blocks.', why: 'It matters because every webpage needs a structure before it can be styled or made interactive.', example: 'A heading, paragraph, and button on a page are all HTML elements.' },
+    { term: 'css', meaning: 'CSS controls how a webpage looks, including colors, spacing, layout, and animations.', why: 'It matters because it gives the product its visual identity and user experience.', example: 'Changing a button color, font, or card layout is done with CSS.' },
+    { term: 'api', meaning: 'An API is a bridge that lets one app or service talk to another in a structured way.', why: 'It matters because APIs connect products to data, payments, maps, search, and many other features.', example: 'A weather app using a weather service to fetch temperature data is using an API.' },
+    { term: 'gpu', meaning: 'A GPU is a graphics processing unit, a chip designed to handle visuals and many calculations in parallel.', why: 'It matters because GPUs can speed up graphics, gaming, AI, and other heavy parallel tasks.', example: 'Training or running image and AI workloads is often much faster on a GPU.' },
+    { term: 'cpu', meaning: 'A CPU is the main processor that handles instructions, logic, and general-purpose computing tasks.', why: 'It matters because it is the core decision-making chip of a computer or phone.', example: 'Opening apps, switching tabs, and running code all depend on the CPU.' },
+    { term: 'ram', meaning: 'RAM is short-term memory that holds data your device is actively using right now.', why: 'It matters because low RAM can make apps slow, crash, or reload more often.', example: 'Keeping several apps open at once uses RAM.' },
+    { term: 'algorithm', meaning: 'An algorithm is a step-by-step method for solving a problem or completing a task.', why: 'It matters because good algorithms make software faster, smarter, and more reliable.', example: 'Sorting a list of names in order uses an algorithm.' },
+    { term: 'database', meaning: 'A database is an organized system for storing, managing, and retrieving information.', why: 'It matters because apps need a stable place to keep users, messages, products, and other data.', example: 'An app storing usernames and passwords uses a database.' },
+    { term: 'server', meaning: 'A server is a system that provides data, files, or services to other devices.', why: 'It matters because many apps rely on servers to deliver content and handle requests.', example: 'A website loading information from the internet is talking to a server.' },
+    { term: 'cloud', meaning: 'Cloud means using remote internet-based computing or storage instead of only your own device.', why: 'It matters because it lets apps scale, sync, and run from many places.', example: 'Saving files online so they open on another device is a cloud use case.' },
+    { term: 'internet', meaning: 'The internet is the global network that connects devices so they can share information and services.', why: 'It matters because it is the base layer for websites, apps, communication, and online services.', example: 'Opening a website or sending a message online depends on the internet.' },
+    { term: 'browser', meaning: 'A browser is the app used to open and interact with websites on the internet.', why: 'It matters because browsers are where many modern apps live and run.', example: 'Chrome, Safari, and Firefox are browsers.' },
+    { term: 'operating system', meaning: 'An operating system is the core software that manages your device, apps, files, and hardware.', why: 'It matters because every phone and computer depends on it to function.', example: 'Android, iOS, Windows, and macOS are operating systems.' },
+    { term: 'machine learning', meaning: 'Machine learning is a way of building systems that learn patterns from data instead of following only fixed rules.', why: 'It matters because it powers prediction, personalization, recognition, and many modern AI features.', example: 'Spam filters and recommendation systems often use machine learning.' },
+    { term: 'artificial intelligence', meaning: 'Artificial intelligence is the broad field of making systems perform tasks that usually require human-like intelligence.', why: 'It matters because it can help with language, vision, search, planning, and decision support.', example: 'A chatbot answering questions is one form of AI.' },
+    { term: 'neural network', meaning: 'A neural network is a model inspired by the brain that learns patterns from data through layers of computation.', why: 'It matters because many modern AI systems are based on neural networks.', example: 'Image recognition and language models often use neural networks.' },
+    { term: 'prompt', meaning: 'A prompt is the instruction or input you give to an AI system.', why: 'It matters because better prompts often lead to clearer, more useful results.', example: 'Asking an AI to explain something step by step is a prompt.' },
+    { term: 'function', meaning: 'A function is a reusable block of code that performs one specific job.', why: 'It matters because functions help keep code organized, cleaner, and easier to reuse.', example: 'A function can format a date or send a message.' },
+    { term: 'variable', meaning: 'A variable is a named place where a program stores a value.', why: 'It matters because software needs to keep track of information while it runs.', example: 'A user name or score can be stored in a variable.' },
+    { term: 'loop', meaning: 'A loop is a way to repeat a block of code until a condition changes or a list ends.', why: 'It matters because repetition is common in data processing and automation.', example: 'Showing every product in a list usually uses a loop.' },
+    { term: 'array', meaning: 'An array is a collection of items stored in an ordered list.', why: 'It matters because many programs need to store and work through groups of values.', example: 'A list of song titles can be stored in an array.' },
+    { term: 'object', meaning: 'An object is a structure that groups related values under named keys.', why: 'It matters because it helps organize real-world information in code.', example: 'A user object can contain name, age, and email.' },
+    { term: 'debugging', meaning: 'Debugging means finding and fixing problems in code or system behavior.', why: 'It matters because every real product needs error-finding and correction to stay stable.', example: 'Tracking why a button does nothing is debugging.' },
+    { term: 'encryption', meaning: 'Encryption is the process of turning readable data into protected coded data.', why: 'It matters because it helps protect privacy and sensitive information.', example: 'Secure messaging apps use encryption to protect conversations.' },
+    { term: 'blockchain', meaning: 'Blockchain is a shared record system where entries are linked and hard to alter later.', why: 'It matters because it can be used for transparent records and digital asset systems.', example: 'Some cryptocurrencies run on blockchain systems.' },
+    { term: 'startup', meaning: 'A startup is a young business built to solve a problem and grow quickly.', why: 'It matters because startups test new ideas and often move fast in product development.', example: 'A new AI app trying to find product-market fit is a startup.' },
+    { term: 'marketing', meaning: 'Marketing is the work of understanding people and presenting a product so it reaches the right audience.', why: 'It matters because even strong products need attention, positioning, and demand.', example: 'Running ads or building a content strategy is part of marketing.' },
+    { term: 'branding', meaning: 'Branding is the identity and perception people attach to a product, company, or person.', why: 'It matters because it shapes trust, memory, and emotional connection.', example: 'A name, color system, tone, and promise together build a brand.' },
+    { term: 'discipline', meaning: 'Discipline is the ability to keep doing what matters even when motivation is low.', why: 'It matters because long-term results usually come from consistency, not mood.', example: 'Studying daily even when you do not feel like it is discipline.' },
+    { term: 'empathy', meaning: 'Empathy is the ability to understand and feel what another person may be experiencing.', why: 'It matters because it improves communication, trust, and relationships.', example: 'Listening carefully before judging someone is empathy in action.' },
+    { term: 'confidence', meaning: 'Confidence is trust in your ability to act, speak, learn, or handle a situation.', why: 'It matters because it affects decisions, communication, and how boldly you move.', example: 'Speaking clearly in front of others shows confidence.' },
+    { term: 'self respect', meaning: 'Self respect is the way you value yourself and protect your dignity, limits, and standards.', why: 'It matters because it shapes boundaries, choices, and the way others treat you.', example: 'Saying no to what harms your peace is an act of self respect.' },
+    { term: 'critical thinking', meaning: 'Critical thinking is the habit of examining information carefully before accepting or using it.', why: 'It matters because it helps you avoid weak assumptions and make better decisions.', example: 'Checking evidence before believing a claim is critical thinking.' },
+    { term: 'democracy', meaning: 'Democracy is a system in which people have the power to choose leaders and influence decisions, usually through voting.', why: 'It matters because it gives people a role in public decision-making.', example: 'Citizens voting in an election is part of democracy.' },
+    { term: 'productivity', meaning: 'Productivity is using time, attention, and energy well to make meaningful progress.', why: 'It matters because being busy is not the same as getting important work done.', example: 'Finishing one important task can be more productive than doing ten random ones.' },
+    { term: 'focus', meaning: 'Focus is the ability to give steady attention to one thing without being pulled away too easily.', why: 'It matters because deep attention usually leads to better work and faster learning.', example: 'Working on one task without checking your phone is focus.' },
+    { term: 'routine', meaning: 'A routine is a set of actions you repeat regularly in a similar pattern.', why: 'It matters because routines reduce friction and make good behavior easier to repeat.', example: 'Waking up, exercising, and planning the day in order is a routine.' },
+    { term: 'habit', meaning: 'A habit is a behavior that becomes automatic through repetition.', why: 'It matters because habits quietly shape outcomes over time.', example: 'Reading for ten minutes every night can become a habit.' },
+    { term: 'stress', meaning: 'Stress is the body and mind reacting to pressure, demand, uncertainty, or overload.', why: 'It matters because unmanaged stress can affect sleep, mood, attention, and health.', example: 'Feeling tense before an exam is a form of stress.' },
+    { term: 'anxiety', meaning: 'Anxiety is a state of worry, unease, or fear about what may happen.', why: 'It matters because it can distort attention and make ordinary problems feel bigger.', example: 'Constantly expecting something to go wrong can be anxiety.' },
+    { term: 'mindfulness', meaning: 'Mindfulness is paying calm attention to the present moment without getting lost in judgment.', why: 'It matters because it helps reduce mental noise and improve awareness.', example: 'Focusing on your breathing for one minute is a simple mindfulness practice.' },
+    { term: 'metabolism', meaning: 'Metabolism is the set of processes your body uses to turn food into energy and maintain life.', why: 'It matters because it affects how your body uses energy and supports basic function.', example: 'Breathing, digestion, and repair are part of metabolism.' },
+    { term: 'photosynthesis', meaning: 'Photosynthesis is how plants use sunlight, water, and carbon dioxide to make food and release oxygen.', why: 'It matters because it supports plant life and contributes oxygen to the atmosphere.', example: 'Green plants making energy from sunlight is photosynthesis.' },
+    { term: 'gravity', meaning: 'Gravity is the force that pulls objects toward each other.', why: 'It matters because it keeps planets in orbit and keeps us on the ground.', example: 'A dropped object falling down is gravity at work.' },
+    { term: 'energy', meaning: 'Energy is the ability to do work or cause change.', why: 'It matters because every physical system depends on energy moving or transforming.', example: 'Electricity, heat, and motion are all forms of energy in action.' },
+    { term: 'electricity', meaning: 'Electricity is the flow or presence of electric charge used to power devices and systems.', why: 'It matters because modern homes, tools, and digital devices depend on it.', example: 'Charging a phone uses electricity.' },
+    { term: 'atom', meaning: 'An atom is the basic building block of ordinary matter.', why: 'It matters because everything physical around us is built from atoms.', example: 'Air, water, metal, and your body are all made of atoms.' },
+    { term: 'climate change', meaning: 'Climate change is the long-term shift in Earth’s climate patterns, especially warming linked to human activity.', why: 'It matters because it affects weather, ecosystems, food systems, and human life.', example: 'Rising temperatures and stronger heat waves are examples of climate change impacts.' },
+    { term: 'http', meaning: 'HTTP is the standard method browsers and servers use to request and send web content.', why: 'It matters because it is one of the basic protocols behind the web.', example: 'Loading a webpage in a browser uses HTTP or HTTPS.' },
+    { term: 'https', meaning: 'HTTPS is the secure version of HTTP that protects data in transit using encryption.', why: 'It matters because it helps protect logins, payments, and private browsing data.', example: 'A lock icon in the browser usually means HTTPS is being used.' },
+    { term: 'json', meaning: 'JSON is a lightweight text format used to store and exchange structured data.', why: 'It matters because APIs and apps often send data in JSON format.', example: 'A response with user name and email in key-value form is often JSON.' },
+    { term: 'react', meaning: 'React is a library for building user interfaces from reusable components.', why: 'It matters because many modern web apps use it to build dynamic frontends.', example: 'A reusable product card on a shopping site can be a React component.' },
+    { term: 'node js', meaning: 'Node.js is a runtime that lets JavaScript run outside the browser, often on servers and tools.', why: 'It matters because it helps developers build full-stack apps using one main language.', example: 'Running a local development server with JavaScript often uses Node.js.' },
+    { term: 'typescript', meaning: 'TypeScript is JavaScript with added type checking to make code safer and easier to maintain.', why: 'It matters because it reduces bugs and improves large project clarity.', example: 'A function expecting a number can be checked clearly with TypeScript.' },
+    { term: 'prompt engineering', meaning: 'Prompt engineering is the practice of designing prompts that guide AI toward better outputs.', why: 'It matters because better instructions can make small models feel much more useful.', example: 'Asking for a short definition followed by steps is a prompt engineering choice.' },
+    { term: 'search engine', meaning: 'A search engine is a system that finds and ranks information from the web based on queries.', why: 'It matters because it helps people reach useful information quickly.', example: 'Google is a search engine.' }
+  ];
+  var localStrategySeeds = [
+    { key: 'how to improve daily', answer: 'Pick one small action you can repeat every day, track it, and keep the bar low enough that you do not skip it. Improvement comes faster from consistency than intensity.' },
+    { key: 'daily steps to stay focused', answer: 'Start with the one task that matters most, remove one distraction, and work in short focused blocks. Focus improves when the environment is cleaner and the goal is clear.' },
+    { key: 'small habits to improve every day', answer: 'Choose habits that are tiny, obvious, and easy to repeat, like reading one page, walking ten minutes, or planning tomorrow at night. Small habits compound faster than big promises.' },
+    { key: 'how to build a better routine', answer: 'Anchor your routine to fixed points like waking up, meals, or sleep. Start with only two or three repeatable actions and make them stable before adding more.' },
+    { key: 'how to become better each day', answer: 'Review one lesson, improve one habit, and correct one mistake each day. Daily reflection plus one small action creates real growth.' },
+    { key: 'daily plan to stay consistent', answer: 'Keep your plan simple: one priority task, one health action, and one recovery action. Consistency grows when your day is clear and not overloaded.' },
+    { key: 'strategy to become more confident', answer: 'Confidence grows from preparation, repeated exposure, and small wins. Do slightly hard things often, and let proof replace self-doubt.' },
+    { key: 'how to think more clearly', answer: 'Slow the problem down, write it out, and separate facts from emotion. Clear thinking usually comes from reducing noise, not adding more thoughts.' },
+    { key: 'steps to become disciplined', answer: 'Decide one rule, make it visible, and follow it even on low-motivation days. Discipline becomes stronger when the action is simple and repeated.' },
+    { key: 'how to stop overthinking', answer: 'Limit decision time, name the real fear, and move one step forward instead of waiting for total certainty. Overthinking gets weaker when action starts.' },
+    { key: 'strategy to improve focus', answer: 'Use a clear time block, remove one distraction, and define what done looks like before starting. Focus improves when the next move is obvious.' },
+    { key: 'how to build self respect', answer: 'Keep promises to yourself, stop accepting what weakens your peace, and act in line with your standards. Self respect grows when your actions match your values.' },
+    { key: 'how to learn faster', answer: 'Break the topic into small parts, recall from memory, and explain it in simple words. Learning becomes faster when you test understanding instead of only rereading.' },
+    { key: 'how to be consistent', answer: 'Lower the size of the habit, choose a fixed time, and make missing twice unacceptable. Consistency is easier when the task is small enough to survive bad days.' },
+    { key: 'how to plan my day', answer: 'Choose one main task, two smaller tasks, and one recovery block. A good daily plan protects attention instead of filling every minute.' },
+    { key: 'how to start coding', answer: 'Begin with one language, one small project, and daily repetition. Learn by building tiny things instead of waiting to understand everything first.' },
+    { key: 'how to study better', answer: 'Study in shorter focused blocks, test yourself often, and review the hardest parts first. Better study comes from active recall and consistency.' },
+    { key: 'how to speak confidently', answer: 'Slow your pace, finish your sentences, and focus on clarity more than perfection. Confidence in speaking grows from repetition and calm delivery.' },
+    { key: 'how to avoid procrastination', answer: 'Shrink the task, start for five minutes, and remove the easiest distraction first. Procrastination usually breaks once motion begins.' },
+    { key: 'how to calm anxiety', answer: 'Ground yourself with slower breathing, narrow attention to the next small action, and reduce uncertainty where you can. Anxiety becomes easier to handle when the moment feels smaller.' }
+  ];
+
+  function shuffleList(items) {
+    var copy = items.slice();
+    for (var i = copy.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = copy[i];
+      copy[i] = copy[j];
+      copy[j] = temp;
+    }
+    return copy;
+  }
+
+  function getInitialTheme() {
+    var savedTheme = localStorage.getItem('orbiton_theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+    if (systemThemeQuery) return systemThemeQuery.matches ? 'light' : 'dark';
+    return 'dark';
+  }
+
+  function applyTheme(theme, persist) {
+    var nextTheme = theme === 'light' ? 'light' : 'dark';
+    document.body.dataset.theme = nextTheme;
+    document.documentElement.style.colorScheme = nextTheme;
+    if (themeMeta) themeMeta.setAttribute('content', nextTheme === 'light' ? '#eef3ff' : '#000000');
+    if (themeIco) themeIco.innerHTML = nextTheme === 'light' ? MOON_ICON : SUN_ICON;
+    if (themeBtn) themeBtn.setAttribute('aria-label', nextTheme === 'light' ? 'Switch to night mode' : 'Switch to daylight mode');
+    if (persist !== false) localStorage.setItem('orbiton_theme', nextTheme);
+  }
+
+  function normalizeUserText(text) {
+    var normalized = (text || '').trim();
+    if (!normalized) return '';
+    var replacements = [
+      [/\bh+w+l+o+\b/gi, 'hello'],
+      [/\bhelo+\b/gi, 'hello'],
+      [/\bmesage\b/gi, 'message'],
+      [/\bmessege\b/gi, 'message'],
+      [/\bwhastapp\b/gi, 'whatsapp'],
+      [/\bwhatsaap+\b/gi, 'whatsapp'],
+      [/\bgoogel\b/gi, 'google'],
+      [/\bgogle\b/gi, 'google'],
+      [/\bamzon\b/gi, 'amazon'],
+      [/\bmytra\b/gi, 'myntra'],
+      [/\bmynrta\b/gi, 'myntra'],
+      [/\bbiriyani\b/gi, 'biryani'],
+      [/\brecpie\b/gi, 'recipe'],
+      [/\bprogamming\b/gi, 'programming'],
+      [/\bporgramming\b/gi, 'programming'],
+      [/\bdefination\b/gi, 'definition'],
+      [/\bhistry\b/gi, 'history'],
+      [/\bbecame\b/gi, 'become'],
+      [/\bpower ful\b/gi, 'powerful'],
+      [/\bpoweful\b/gi, 'powerful'],
+      [/\bimrove\b/gi, 'improve']
+    ];
+    replacements.forEach(function(entry) {
+      normalized = normalized.replace(entry[0], entry[1]);
+    });
+    return normalized.replace(/\s+/g, ' ').trim();
+  }
+
+  function resizeComposer() {
+    chatIn.style.height = 'auto';
+    chatIn.style.height = Math.min(chatIn.scrollHeight, 120) + 'px';
+  }
+
+  function getSuggestionScore(query, item) {
+    var cleanedQuery = normalizeIntentText(normalizeUserText(query));
+    var cleanedItem = normalizeIntentText(item);
+    if (!cleanedQuery) return 0;
+    if (cleanedItem.indexOf(cleanedQuery) === 0) return 200 - cleanedItem.length;
+    if (cleanedItem.indexOf(cleanedQuery) !== -1) return 120 - cleanedItem.length;
+    var queryWords = cleanedQuery.split(' ');
+    var score = 0;
+    queryWords.forEach(function(word) {
+      if (!word) return;
+      if (cleanedItem.indexOf(word) !== -1) score += Math.max(14, word.length * 10);
+      else if (cleanedItem.split(' ').some(function(piece) { return piece.indexOf(word) === 0 || word.indexOf(piece) === 0; })) score += 8;
+    });
+    return score;
+  }
+
+  function hideSuggestions() {
+    if (!suggestRow) return;
+    suggestRow.hidden = true;
+    suggestRow.innerHTML = '';
+  }
+
+  function renderSuggestionItems(items) {
+    if (!suggestRow) return;
+    suggestRow.hidden = false;
+    suggestRow.innerHTML = '';
+    items.forEach(function(item) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'suggest-chip';
+      chip.textContent = item;
+      bindSuggestionChip(chip, item);
+      suggestRow.appendChild(chip);
+    });
+  }
+
+  function pickRandomSuggestion(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function getRandomSuggestionSet() {
+    return shuffleList([
+      pickRandomSuggestion(suggestionBuckets.strategy),
+      pickRandomSuggestion(suggestionBuckets.daily),
+      pickRandomSuggestion(suggestionBuckets.definition)
+    ]);
+  }
+
+  function showRandomSuggestions() {
+    renderSuggestionItems(getRandomSuggestionSet());
+  }
+
+  function applySuggestion(item) {
+    chatIn.value = item;
+    resizeComposer();
+    hideSuggestions();
+    requestAnimationFrame(function() {
+      handleSend();
+    });
+  }
+
+  function bindSuggestionChip(chip, item) {
+    function chooseSuggestion(e) {
+      e.preventDefault();
+      applySuggestion(item);
+    }
+    chip.addEventListener('mousedown', chooseSuggestion);
+    chip.addEventListener('touchstart', chooseSuggestion, { passive: false });
+  }
+
+  function updateSuggestions() {
+    if (!suggestRow) return;
+    if (document.activeElement !== chatIn) {
+      hideSuggestions();
+      return;
+    }
+
+    var raw = chatIn.value.trim();
+    var suggestions = [];
+    var corrected = normalizeUserText(raw);
+
+    if (!raw) {
+      suggestions = getRandomSuggestionSet();
+      renderSuggestionItems(suggestions);
+      return;
+    }
+
+    if (raw && corrected && corrected.toLowerCase() !== raw.toLowerCase()) {
+      suggestions.push(corrected);
+    }
+
+    var ranked = suggestionCatalog
+      .map(function(item) {
+        return { value: item, score: raw ? getSuggestionScore(raw, item) : 1 };
+      })
+      .filter(function(item) { return !raw || item.score > 0; })
+      .sort(function(a, b) { return b.score - a.score; })
+      .map(function(item) { return item.value; });
+
+    ranked.forEach(function(item) {
+      if (suggestions.indexOf(item) === -1) suggestions.push(item);
+    });
+
+    shuffleList(suggestionCatalog).forEach(function(item) {
+      if (suggestions.length >= suggestionDisplayCount) return;
+      if (suggestions.indexOf(item) === -1) suggestions.push(item);
+    });
+
+    suggestions = suggestions.slice(0, suggestionDisplayCount);
+    if (!suggestions.length) {
+      hideSuggestions();
+      return;
+    }
+
+    renderSuggestionItems(suggestions);
+  }
+
+  applyTheme(getInitialTheme(), false);
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      var nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+      applyTheme(nextTheme, true);
+    });
+  }
+  if (systemThemeQuery && typeof systemThemeQuery.addEventListener === 'function') {
+    systemThemeQuery.addEventListener('change', function(e) {
+      if (!localStorage.getItem('orbiton_theme')) {
+        applyTheme(e.matches ? 'light' : 'dark', false);
+      }
+    });
+  }
+
+  chatIn.addEventListener('input', function(){
+    resizeComposer();
+    updateSuggestions();
+  });
+
+  /* ── CHAT ENGINE ── */
+  var chatLog = document.getElementById('chatLog');
+  var sendBtn = document.getElementById('sendBtn');
+  var orbAv = document.getElementById('orbAv');
+  var modelBtnLabel = document.getElementById('modelBtnLabel');
+  var localGenerator = null;
+  var localGeneratorPromise = null;
+  var localGeneratorModelId = null;
+  var localGeneratorLoadingModelId = null;
+  var transformersModulePromise = null;
+  var backgroundModelPreloadPromises = {};
+  var startupWarmupStarted = false;
+  var localChatHistory = [];
+  var workingState = null;
+  var workingTimer = null;
+  var textLoadProgress = {};
+  var firstLocalReplyDone = false;
+  var MODEL_FALLBACK_MS = 20000;
+  var defaultAnswerModel = 'Raghav Beta';
+  var REMOTE_REASONING_URL = window.RAGHAV_REMOTE_URL || 'https://baan-ulrf.onrender.com';
+  var remoteWarmStarted = false;
+  var modelConfigs = {
+    'Raghav Beta': {
+      status: 'Flagship replies for everyday help',
+      textModelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
+      prompt: 'You are Raghav Beta, Raghav AI\'s flagship everyday assistant. Speak with deep respect, calm confidence, humility, and warmth. Keep answers genuine, grounded, and easy to trust. Help with everyday questions, reasoning, definitions, decisions, and practical next steps. Prefer short, clear replies for simple asks, but explain properly when the user truly needs help. Never act dramatic, arrogant, robotic, or fictional.'
+    }
+  };
+
+  function getTime(){
+    var d=new Date(),h=d.getHours(),m=d.getMinutes();
+    var ap=h>=12?'PM':'AM'; h=h%12||12;
+    return h+':'+(m<10?'0':'')+m+' '+ap;
+  }
+  function haptic(ms){ try{navigator.vibrate(ms)}catch(e){} }
+  var isMobileDevice = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
+  var isLowMemoryMobile = isMobileDevice && typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 2;
+
+  function getRemoteReasoningBase() {
+    return String(window.RAGHAV_REMOTE_URL || REMOTE_REASONING_URL || '').trim().replace(/\/+$/, '');
+  }
+
+  function shouldUseRemoteReasoning() {
+    return isMobileDevice && !!getRemoteReasoningBase();
+  }
+
+  async function warmRemoteReasoning(force) {
+    var base = getRemoteReasoningBase();
+    if (!base) return false;
+    if (remoteWarmStarted && !force) return true;
+    remoteWarmStarted = true;
+    try {
+      await fetch(base + '/api/warm', {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        keepalive: true
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function getRemoteReasoningResponse(text) {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('REMOTE_REASONING_NOT_CONFIGURED');
+    await warmRemoteReasoning();
+    var response = await fetch(base + '/api/reason', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        lane: 'reasoning',
+        platform: isMobileDevice ? 'mobile' : 'desktop'
+      })
+    });
+    var data = null;
+    try {
+      data = await response.json();
+    } catch (e) {}
+    if (!response.ok) {
+      var remoteError = new Error(data && data.error ? data.error : 'REMOTE_REASONING_FAILED');
+      remoteError.status = response.status;
+      throw remoteError;
+    }
+    if (!data || !data.answer) throw new Error('REMOTE_REASONING_EMPTY');
+    return String(data.answer || '').trim();
+  }
+
+  function mobileOpen(url) {
+    if (!url) return null;
+    var popup = null;
+    try {
+      popup = window.open(url, '_blank', 'noopener');
+    } catch (e) {}
+    if (!popup) {
+      try { window.location.href = url; } catch (e) {}
+    }
+    return popup;
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function scrollChatToLatest(forceInstant) {
+    var behavior = forceInstant || prefersReducedMotion() ? 'auto' : 'smooth';
+    requestAnimationFrame(function() {
+      try {
+        chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: behavior });
+      } catch (e) {
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+    });
+  }
+
+  function makeCopyButton(text) {
+    var copyBtn = document.createElement('button');
+    copyBtn.className = 'msg-copy';
+    copyBtn.type = 'button';
+    copyBtn.setAttribute('aria-label', 'Copy message');
+    copyBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M7 15H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"></path></svg>';
+    copyBtn.addEventListener('click', function(){ copyMessageText(text, copyBtn); });
+    return copyBtn;
+  }
+
+  function makeRouteTag(label) {
+    if (!label) return null;
+    var tag = document.createElement('div');
+    tag.className = 'msg-tag';
+    tag.textContent = label;
+    return tag;
+  }
+
+  function submitFollowupPrompt(prompt) {
+    if (!prompt) return;
+    chatIn.value = prompt;
+    resizeComposer();
+    handleSend();
+  }
+
+  function getFollowupPrompts(lane, sourceText) {
+    var term = extractDefinitionTerm(sourceText || '') || (sourceText || '').trim();
+    var normalized = normalizeIntentText(sourceText || '');
+    if (lane === 'Definition' && term) {
+      return [
+        'Explain this simply',
+        'Give a real example',
+        'Search deeper on Google'
+      ];
+    }
+    if (lane === 'Reference') {
+      return [
+        'Summarize this simply',
+        'Tell me key points',
+        'Open source page'
+      ];
+    }
+    if (lane === 'Reasoning') {
+      if (/overthinking|stress|anxious|confused/.test(normalized)) {
+        return [
+          'Give me steps',
+          'Make it simpler',
+          'Open calming video'
+        ];
+      }
+      if (/confidence|discipline|focus|routine|habit|better|improve/.test(normalized)) {
+        return [
+          'Give me steps',
+          'Make a daily plan',
+          'Search examples'
+        ];
+      }
+      return [
+        'Give me steps',
+        'Make it simpler',
+        'Search this on Google'
+      ];
+    }
+    if (lane === 'Weather') {
+      return [
+        'Weather in Delhi',
+        'Weather in Mumbai',
+        'Open full forecast'
+      ];
+    }
+    return [];
+  }
+
+  function appendFollowupChips(row, lane, sourceText) {
+    var prompts = getFollowupPrompts(lane, sourceText);
+    if (!prompts.length) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'follow-row';
+    prompts.forEach(function(prompt) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'follow-chip';
+      chip.textContent = prompt;
+      chip.addEventListener('click', function() {
+        if (prompt === 'Search deeper on Google' || prompt === 'Search this on Google' || prompt === 'Search examples') {
+          triggerGoogleSearch(sourceText);
+          return;
+        }
+        if (prompt === 'Open calming video') {
+          mobileOpen('https://www.youtube.com/results?search_query=' + encodeURIComponent((sourceText || '') + ' calming advice'));
+          return;
+        }
+        if (prompt === 'Open source page') {
+          triggerReferencePage(sourceText);
+          return;
+        }
+        if (prompt === 'Open full forecast') {
+          triggerGoogleSearch('weather ' + sourceText);
+          return;
+        }
+        if (prompt === 'Explain this simply') {
+          submitFollowupPrompt('Explain ' + (extractDefinitionTerm(sourceText || '') || sourceText || '') + ' in simple words');
+          return;
+        }
+        if (prompt === 'Give a real example') {
+          submitFollowupPrompt('Give me a real example of ' + (extractDefinitionTerm(sourceText || '') || sourceText || 'this'));
+          return;
+        }
+        if (prompt === 'Summarize this simply') {
+          submitFollowupPrompt('Summarize ' + sourceText + ' simply');
+          return;
+        }
+        if (prompt === 'Tell me key points') {
+          submitFollowupPrompt('Tell me the key points of ' + sourceText);
+          return;
+        }
+        if (prompt === 'Give me steps') {
+          submitFollowupPrompt('Give me step by step advice for this: ' + sourceText);
+          return;
+        }
+        if (prompt === 'Make it simpler') {
+          submitFollowupPrompt('Make this simpler for me: ' + sourceText);
+          return;
+        }
+        if (prompt === 'Make a daily plan') {
+          submitFollowupPrompt('Make a daily plan for this: ' + sourceText);
+          return;
+        }
+        submitFollowupPrompt(prompt);
+      });
+      wrap.appendChild(chip);
+    });
+    row.appendChild(wrap);
+  }
+
+  function addUserMsg(text){
+    var row=document.createElement('div'); row.className='msg u';
+    var body=document.createElement('div'); body.className='msg-body';
+    var b=document.createElement('div'); b.className='bbl'; b.textContent=text;
+    var copyBtn=makeCopyButton(text);
+    var t=document.createElement('div'); t.className='stamp'; t.textContent=getTime();
+    body.appendChild(b);
+    body.appendChild(copyBtn);
+    row.appendChild(body); row.appendChild(t); chatLog.appendChild(row); scrollChatToLatest();
+  }
+
+  function copyMessageText(text, btn) {
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        btn.classList.add('copied');
+        btn.classList.add('show');
+        btn.setAttribute('aria-label', 'Copied');
+        setTimeout(function(){
+          btn.classList.remove('copied');
+          btn.classList.remove('show');
+          btn.setAttribute('aria-label', 'Copy message');
+        }, 1400);
+      }).catch(function(){});
+    }
+  }
+
+  function showDots(lane){
+    orbAv.classList.add('think');
+    var row=document.createElement('div'); row.className='msg a'; row.id='typingRow';
+    var tag = makeRouteTag(lane || 'Thinking');
+    if (tag) row.appendChild(tag);
+    var wrap = document.createElement('div');
+    wrap.className = 'dots-wrap';
+    wrap.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+    row.appendChild(wrap);
+    chatLog.appendChild(row); scrollChatToLatest();
+  }
+  function hideDots(){
+    orbAv.classList.remove('think');
+    var el=document.getElementById('typingRow'); if(el) el.remove();
+  }
+
+  function streamReply(text, lane, sourceText){
+    return new Promise(function(resolve){
+      var row=document.createElement('div'); row.className='msg a';
+      var tag = makeRouteTag(lane);
+      var body=document.createElement('div'); body.className='msg-body';
+      var b=document.createElement('div'); b.className='bbl';
+      var copyBtn=makeCopyButton(text);
+      var ts=document.createElement('div'); ts.className='stamp'; ts.textContent=getTime();
+      if (tag) row.appendChild(tag);
+      body.appendChild(b);
+      body.appendChild(copyBtn);
+      row.appendChild(body); row.appendChild(ts); chatLog.appendChild(row);
+      scrollChatToLatest();
+      var words=text.split(' '), wi=0;
+      function next(){
+        if(wi>=words.length){ b.innerHTML=text; appendFollowupChips(row, lane, sourceText); scrollChatToLatest(); haptic([8,30,8]); resolve(); return; }
+        b.innerHTML=words.slice(0,wi+1).join(' ')+'<span class="cursor-blink"></span>';
+        scrollChatToLatest(true); wi++;
+        setTimeout(next, 25+Math.random()*25);
+      }
+      next();
+    });
+  }
+
+  function resetLoadProgress() {
+    textLoadProgress = {};
+  }
+
+  function updateLoadProgress(info) {
+    if (!info || !info.file) return;
+    var store = textLoadProgress;
+    if (info.status === 'progress' && typeof info.progress === 'number') {
+      store[info.file] = Math.max(0, Math.min(100, info.progress));
+    } else if (info.status === 'done') {
+      store[info.file] = 100;
+    }
+    updateWorkingMessage();
+  }
+
+  function getLoadPercent() {
+    var store = textLoadProgress;
+    var keys = Object.keys(store);
+    if (!keys.length) return null;
+    var total = 0;
+    keys.forEach(function(key) { total += store[key]; });
+    return Math.round(total / keys.length);
+  }
+
+  function getOpeningStory() {
+    return "Raghav AI is being made to save time, feel personal, and keep everyday help free. Its goal is simple: fewer taps, less delay, better privacy, and no data leakage from the moments that matter to you. It is built for everyday use, not coding, and designed to serve both online and offline once your phone is ready. For real questions, learning, and problems, Raghav AI answers right here. For things that are faster somewhere else, it can take you straight there with your words already prepared, like shopping on Amazon or Flipkart, fashion on Myntra, or recipes on YouTube. Nothing in this chat is being kept after the moment. While you read this, your private assistant is getting ready quietly in the background. Ask anything when you're ready.";
+  }
+
+  function getModelId(modelName) {
+    var config = modelConfigs[modelName] || modelConfigs[defaultAnswerModel];
+    return config.textModelId;
+  }
+
+  function buildWorkingMessage() {
+    if (!workingState) return '';
+
+    if (shouldUseRemoteReasoning()) {
+      return "Raghav Beta is connecting on the live server now so your answer can stay right here.";
+    }
+
+    var progress = getLoadPercent();
+    var textWarmupInFlight = !!(localGeneratorPromise || backgroundModelPreloadPromises[getEffectiveModel()] || backgroundModelPreloadPromises[defaultAnswerModel]);
+
+    if (!localGenerator && !textWarmupInFlight) {
+      return "Raghav AI is preparing a private reply for you. Nothing from this moment is being kept, and the first answer can take a little longer while everything settles into place.";
+    }
+
+    if (!localGenerator && textWarmupInFlight) {
+      var loadingMeta = [];
+      if (progress !== null && progress < 100) loadingMeta.push('Download ' + progress + '%');
+      if (progress !== null && progress >= 80 && progress < 100) {
+        return "Raghav Beta is almost ready on this phone. Finishing the last part of your private reasoning setup." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
+      }
+      return "Thanks for waiting. Raghav AI is preparing a private experience on your phone so your answers stay free and personal." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
+    }
+
+    return "Thinking through that now.";
+  }
+
+  function updateWorkingMessage() {
+    var bubble = document.querySelector('#workingRow .bbl');
+    if (bubble) bubble.textContent = buildWorkingMessage();
+  }
+
+  function showWorkingMessage(options) {
+    orbAv.classList.add('think');
+    workingState = {
+      startedAt: Date.now(),
+      fallbackMs: options && options.fallbackMs ? options.fallbackMs : 0,
+      isFirstReply: !!(options && options.isFirstReply)
+    };
+    var row = document.createElement('div');
+    row.className = 'msg a';
+    row.id = 'workingRow';
+    var tag = makeRouteTag('Raghav Beta');
+    if (tag) row.appendChild(tag);
+    var bubble = document.createElement('div');
+    bubble.className = 'bbl';
+    row.appendChild(bubble);
+    chatLog.appendChild(row);
+    scrollChatToLatest();
+    updateWorkingMessage();
+    if (workingTimer) clearInterval(workingTimer);
+    workingTimer = setInterval(updateWorkingMessage, 250);
+  }
+
+  async function showStaticWorkingThenReply(text, lane, sourceText) {
+    showDots('Raghav Beta');
+    await new Promise(function(resolve) { setTimeout(resolve, 480); });
+    hideDots();
+    await streamReply(text, lane, sourceText);
+  }
+
+  function hideWorkingMessage() {
+    orbAv.classList.remove('think');
+    workingState = null;
+    if (workingTimer) {
+      clearInterval(workingTimer);
+      workingTimer = null;
+    }
+    var row = document.getElementById('workingRow');
+    if (row) row.remove();
+  }
+
+  function shouldUseLocalModel(text) {
+    return isReasoningQuery(text);
+  }
+
+  function isReasoningQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    if (!cleaned) return false;
+    if (isDefinitionQuery(text) || looksLikeHistoryOrLiterature(text) || looksLikeBookOrAuthorQuery(text) || extractWeatherLocation(text) || isCommandLikeInput(text)) return false;
+    if (classifyDirectRoute(text)) return false;
+    for (var i = 0; i < intents.length; i++) {
+      if (text.match(intents[i].p)) return false;
+    }
+    if (text.toLowerCase().indexOf('open ') === 0) return false;
+    if (cleaned.split(' ').length < 3) return false;
+    return /\b(strategy|improve|better|daily|habit|routine|confidence|discipline|focus|overthinking|plan|compare|choose|decision|decide|help me|what should i do|should i|steps|step by step|deal with|handle|solve|fix|situation|stressed|anxious|confused|advice|learn|explain simply|simple words|example|real example|matter in real life|summarize|summary|key points|important|what should i do first|make this simpler|become|powerful|reasons? to|give reasons?|how can i become|how to become)\b/.test(cleaned);
+  }
+
+  function classifyReplyLane(text) {
+    if (classifyDirectRoute(text)) return 'Action';
+    if (extractWeatherLocation(text)) return 'Weather';
+    if (isDefinitionQuery(text)) return 'Definition';
+    if (looksLikeHistoryOrLiterature(text) || looksLikeBookOrAuthorQuery(text)) return 'Reference';
+    if (isReasoningQuery(text)) return 'Reasoning';
+    return 'Answer';
+  }
+
+  function getEffectiveModel() {
+    return activeModel || defaultAnswerModel;
+  }
+
+  function getModelSettings(text) {
+    var cleaned = normalizeIntentText(text);
+    var wantsDepth = cleaned.split(' ').length >= 8 || /\b(explain|definition|define|history|historical|literature|poem|novel|author|why|how|compare|story|difficult|complex|step by step|meaning)\b/.test(cleaned);
+
+    if (getEffectiveModel() === 'Raghav Beta') {
+      return wantsDepth
+        ? { max_new_tokens: 58, temperature: 0.24, top_p: 0.82, do_sample: true }
+        : { max_new_tokens: 30, temperature: 0.2, top_p: 0.78, do_sample: true };
+    }
+
+    return wantsDepth
+      ? { max_new_tokens: 96, temperature: 0.29, top_p: 0.87, do_sample: true }
+      : { max_new_tokens: 62, temperature: 0.25, top_p: 0.83, do_sample: true };
+  }
+
+  function maybeAddPatienceLine(reply, startedAt) {
+    if (!reply) return reply;
+    if (!startedAt) return reply;
+    if (Date.now() - startedAt < 3200) return reply;
+    if (/^(thanks for waiting|appreciate your patience)\b/i.test(reply)) return reply;
+    return 'Thanks for waiting. ' + reply;
+  }
+
+  function normalizeIntentText(text) {
+    return (text || '').toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function classifyDirectRoute(text) {
+    var cleaned = normalizeIntentText(text);
+    if (!cleaned) return null;
+
+    var fashionTerms = /\b(jeans|blue jeans|shirt|t shirt|tshirt|kurta|hoodie|dress|saree|sari|shoes|sneakers|watch|bag|jacket|fashion|clothes|clothing)\b/;
+    var techTerms = /\b(mobile|phone|iphone|android|laptop|computer|pc|monitor|tablet|earbuds|headphones|keyboard|mouse|printer|tv)\b/;
+    var shoppingWords = /\b(buy|shop|price|offer|offers|deal|deals|best|cheap|under|sale)\b/;
+    var recipeTerms = /\b(recipe|how to make|make\b|cook|cooking|biryani|pasta|cake|tea|coffee|paneer|chicken|rice)\b/;
+
+    if (recipeTerms.test(cleaned) && /\b(recipe|how to make|make|cook|cooking)\b/.test(cleaned)) {
+      return {
+        type: 'youtube',
+        url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(text),
+        reply: "I’m opening YouTube with that already typed so you can get straight to the recipe."
+      };
+    }
+
+    if ((techTerms.test(cleaned) && shoppingWords.test(cleaned)) || /\b(best computers?|best laptops?|best mobiles?|best phones?)\b/.test(cleaned)) {
+      return {
+        type: 'flipkart',
+        url: 'https://www.flipkart.com/search?q=' + encodeURIComponent(text),
+        reply: "I’m opening Flipkart with that already typed so you can get to the offers faster."
+      };
+    }
+
+    if (fashionTerms.test(cleaned) && /\bmyntra\b/.test(cleaned)) {
+      return {
+        type: 'myntra',
+        url: 'https://www.myntra.com/' + encodeURIComponent(text.replace(/\bmyntra\b/i, '').trim() || text).replace(/%20/g, '-'),
+        reply: "I’m opening Myntra with that already typed so you can get to the right styles faster."
+      };
+    }
+
+    if (fashionTerms.test(cleaned) && /\bamazon\b/.test(cleaned)) {
+      return {
+        type: 'amazon',
+        url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text.replace(/\bamazon\b/i, '').replace(/\bfrom\b/i, '').trim() || text),
+        reply: "I’m opening Amazon with that already typed so you can jump straight to the results."
+      };
+    }
+
+    if (fashionTerms.test(cleaned)) {
+      return {
+        type: 'amazon',
+        url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text),
+        reply: "I’m opening Amazon with that already typed so you can jump straight to the results."
+      };
+    }
+
+    if ((techTerms.test(cleaned) || /\bamazon\b/.test(cleaned)) && shoppingWords.test(cleaned)) {
+      return {
+        type: 'amazon',
+        url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text.replace(/\bamazon\b/i, '').trim() || text),
+        reply: "I’m opening Amazon with that already typed so you can move faster."
+      };
+    }
+
+    return null;
+  }
+
+  function shouldStayInChat(text) {
+    var cleaned = normalizeIntentText(text);
+    if (!cleaned) return false;
+    if (classifyDirectRoute(text)) return false;
+    if (looksLikeHistoryOrLiterature(text)) return false;
+    if (cleaned.split(' ').length >= 10) return true;
+    return /\b(how|why|explain|problem|issue|fix|error|learn|teach|story|write|plan|advice|help|difference|compare|solve|code|debug|stress|stressed|upset|angry|anxious|confused)\b/.test(cleaned);
+  }
+
+  function looksLikeHistoryOrLiterature(text) {
+    var cleaned = normalizeIntentText(text);
+    return /\b(history|historical|empire|ancient|revolution|war|dynasty|king|queen|civilization|literature|poem|poet|novel|author|writer|book|play|character|myth|legend|who was|when was|when did|where was|biography|born|died|author of)\b/.test(cleaned);
+  }
+
+  function isDefinitionQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    return /\b(what is|who is|define|definition of|meaning of|what does .* mean|what was)\b/.test(cleaned);
+  }
+
+  function isCommandLikeInput(text) {
+    var raw = (text || '').trim();
+    if (!raw) return false;
+    if (/^(python|node|npm|npx|pip|git|curl|wget|uv|pnpm|yarn|docker|powershell|cmd)\b/i.test(raw)) return true;
+    if (/^[a-z0-9_.-]+(?:\s+[a-z0-9_.:\/\\-]+)+$/i.test(raw) && /[-/\\.:]/.test(raw)) return true;
+    return false;
+  }
+
+  function explainKnownCommand(text) {
+    var raw = (text || '').trim();
+    var httpServerMatch = raw.match(/^python\s+-m\s+http\.server(?:\s+(\d+))?$/i);
+    if (httpServerMatch) {
+      var port = httpServerMatch[1] || '8000';
+      return 'That command starts a simple local web server from the current folder. After running it, open `http://localhost:' + port + '` in your browser.';
+    }
+    return null;
+  }
+
+  function isDeepHistoryQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    return looksLikeHistoryOrLiterature(text) && (cleaned.split(' ').length >= 9 || /\b(explain|why|how|timeline|causes|impact|history of|deep|details|in detail)\b/.test(cleaned));
+  }
+
+  function looksLikeBookOrAuthorQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    return /\b(book|novel|poem|poet|author|writer|literature|story|play|book by|author of)\b/.test(cleaned);
+  }
+
+  function looksLikeNewsQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    return /\b(news|latest|headlines|breaking|current events|what is going on|what's going on|around the world|on earth|today in the world)\b/.test(cleaned);
+  }
+
+  function extractDefinitionTerm(text) {
+    var raw = (text || '').trim().replace(/[?]+$/,'');
+    var patterns = [
+      /^(?:what is|who is|what was)\s+(.+)$/i,
+      /^(?:define|definition of|meaning of)\s+(.+)$/i,
+      /^(?:what does)\s+(.+?)\s+(?:mean)$/i
+    ];
+
+    for (var i = 0; i < patterns.length; i++) {
+      var match = raw.match(patterns[i]);
+      if (!match || !match[1]) continue;
+      var term = match[1].trim().replace(/^(a|an|the)\s+/i, '');
+      if (!term) continue;
+      if (term.split(/\s+/).length > 4) return null;
+      return term;
+    }
+
+    return null;
+  }
+
+  var localDefinitionMap = {
+    gpu: 'A GPU is a graphics processing unit, a chip designed to handle visuals and many calculations in parallel.',
+    cpu: 'A CPU is the main processor of a device. It handles instructions, logic, and general computing tasks.',
+    ram: 'RAM is short-term working memory. It stores the data your device is actively using right now.',
+    api: 'An API is a way for one software system to talk to another and exchange data or actions.',
+    programming: 'Programming means writing instructions that tell a computer what to do.',
+    algorithm: 'An algorithm is a step-by-step method for solving a problem or completing a task.',
+    database: 'A database is an organized system for storing, managing, and retrieving information.',
+    variable: 'A variable is a named place where a program stores a value for later use.',
+    function: 'A function is a reusable block of code that performs one specific job.',
+    server: 'A server is a system that provides data, services, or files to other devices.',
+    internet: 'The internet is a global network that connects computers and devices so they can share information.',
+    cloud: 'Cloud means using remote internet-based servers and services instead of only your own device.'
+  };
+
+  function getLocalDefinitionAnswer(text) {
+    var term = extractDefinitionTerm(text);
+    if (!term) return null;
+    var normalizedTerm = normalizeIntentText(term);
+    return localDefinitionMap[normalizedTerm] || null;
+  }
+
+  function buildLocalKnowledgeMap() {
+    var map = {};
+
+    function setEntry(prompt, answer) {
+      if (!prompt || !answer) return;
+      map[normalizeIntentText(prompt)] = answer;
+    }
+
+    localKnowledgeSeeds.forEach(function(entry) {
+      var term = entry.term;
+      var meaning = entry.meaning;
+      var why = entry.why;
+      var example = entry.example;
+      [
+        'what is ' + term,
+        'what is the meaning of ' + term,
+        'meaning of ' + term,
+        'define ' + term,
+        'definition of ' + term,
+        'explain ' + term,
+        'explain ' + term + ' simply',
+        'explain ' + term + ' in simple words',
+        'tell me about ' + term,
+        term + ' for beginners',
+        'understanding ' + term,
+        term + ' simple meaning',
+        'what does ' + term + ' mean',
+        'basics of ' + term
+      ].forEach(function(prompt) {
+        setEntry(prompt, meaning);
+      });
+
+      [
+        'why does ' + term + ' matter',
+        'why is ' + term + ' important',
+        'importance of ' + term,
+        'why ' + term + ' matters'
+      ].forEach(function(prompt) {
+        setEntry(prompt, why);
+      });
+
+      [
+        'example of ' + term,
+        'real example of ' + term,
+        'give an example of ' + term,
+        'simple example of ' + term
+      ].forEach(function(prompt) {
+        setEntry(prompt, example);
+      });
+    });
+
+    localStrategySeeds.forEach(function(entry) {
+      [
+        entry.key,
+        'explain ' + entry.key,
+        'help me with ' + entry.key,
+        'steps for ' + entry.key,
+        'guide for ' + entry.key
+      ].forEach(function(prompt) {
+        setEntry(prompt, entry.answer);
+      });
+    });
+
+    return map;
+  }
+
+  var localKnowledgeMap = buildLocalKnowledgeMap();
+
+  function getLocalKnowledgeAnswer(text) {
+    var cleaned = normalizeIntentText(text);
+    if (!cleaned) return null;
+    return localKnowledgeMap[cleaned] || null;
+  }
+
+  async function getDictionaryAnswer(text) {
+    var localDefinition = getLocalDefinitionAnswer(text);
+    if (localDefinition) return localDefinition;
+    if (window.location.protocol === 'file:') return null;
+    var term = extractDefinitionTerm(text);
+    if (!term) return null;
+
+    try {
+      var response = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(term), {
+        headers: { accept: 'application/json' }
+      });
+      if (!response.ok) return null;
+      var data = await response.json();
+      var entry = Array.isArray(data) ? data[0] : null;
+      var meaning = entry && entry.meanings && entry.meanings[0];
+      var definition = meaning && meaning.definitions && meaning.definitions[0] && meaning.definitions[0].definition;
+      if (!definition) return null;
+      var label = entry.word || term;
+      return sanitizeModelReply(label + ' means ' + definition);
+    } catch(e) {
+      return null;
+    }
+  }
+
+  async function getOpenLibraryAnswer(text) {
+    if (window.location.protocol === 'file:') return null;
+    if (!looksLikeBookOrAuthorQuery(text)) return null;
+
+    try {
+      var response = await fetch('https://openlibrary.org/search.json?limit=1&q=' + encodeURIComponent(text), {
+        headers: { accept: 'application/json' }
+      });
+      if (!response.ok) return null;
+      var data = await response.json();
+      var doc = data && data.docs && data.docs[0];
+      if (!doc) return null;
+      var title = doc.title || 'This work';
+      var author = doc.author_name && doc.author_name[0];
+      var year = doc.first_publish_year;
+      var fragments = [title];
+      if (author) fragments.push('by ' + author);
+      if (year) fragments.push('first published in ' + year);
+      return sanitizeModelReply(fragments.join(', ') + '.');
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function extractWeatherLocation(text) {
+    var raw = (text || '').trim();
+    var match = raw.match(/\b(?:weather|forecast)(?:\s+(?:in|for|at))\s+(.+)$/i);
+    if (!match || !match[1]) return null;
+    return match[1].trim().replace(/[?]+$/,'');
+  }
+
+  async function getWeatherAnswer(text) {
+    if (window.location.protocol === 'file:') return null;
+    var location = extractWeatherLocation(text);
+    if (!location) return null;
+
+    try {
+      var geoResponse = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=' + encodeURIComponent(location), {
+        headers: { accept: 'application/json' }
+      });
+      if (!geoResponse.ok) return null;
+      var geoData = await geoResponse.json();
+      var place = geoData && geoData.results && geoData.results[0];
+      if (!place) return null;
+
+      var forecastResponse = await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=' + encodeURIComponent(place.latitude) +
+        '&longitude=' + encodeURIComponent(place.longitude) +
+        '&current=temperature_2m,apparent_temperature&timezone=auto',
+        { headers: { accept: 'application/json' } }
+      );
+      if (!forecastResponse.ok) return null;
+      var forecastData = await forecastResponse.json();
+      var current = forecastData && forecastData.current;
+      if (!current || current.temperature_2m === undefined) return null;
+
+      var feelsLike = current.apparent_temperature !== undefined ? ', feels like ' + Math.round(current.apparent_temperature) + '°C' : '';
+      return sanitizeModelReply('Right now in ' + (place.name || location) + ' it is about ' + Math.round(current.temperature_2m) + '°C' + feelsLike + '.');
+    } catch(e) {
+      return null;
+    }
+  }
+
+  async function getSectorAnswer(text) {
+    var localKnowledgeResult = getLocalKnowledgeAnswer(text);
+    if (localKnowledgeResult) return localKnowledgeResult;
+
+    var weatherResult = await getWeatherAnswer(text);
+    if (weatherResult) return weatherResult;
+
+    var dictionaryResult = await getDictionaryAnswer(text);
+    if (dictionaryResult) return dictionaryResult;
+
+    if (isDefinitionQuery(text)) {
+      var definitionReference = await getHistoricalReferenceAnswer(extractDefinitionTerm(text) || text);
+      if (definitionReference) return shortenReferenceText(definitionReference.extract);
+    }
+
+    var libraryResult = await getOpenLibraryAnswer(text);
+    if (libraryResult) return libraryResult;
+
+    if (looksLikeHistoryOrLiterature(text)) {
+      var referenceResult = await getHistoricalReferenceAnswer(text);
+      if (referenceResult) {
+        if (isDeepHistoryQuery(text)) {
+          triggerReferencePage(text, referenceResult.title);
+          return "I’m opening a trusted reference page for you now so you can go straight to the details.";
+        }
+        return shortenReferenceText(referenceResult.extract);
+      }
+    }
+
+    return null;
+  }
+
+  function shortenReferenceText(text) {
+    var cleaned = sanitizeModelReply(text || '');
+    if (!cleaned) return '';
+    var parts = cleaned.match(/[^.!?]+[.!?]?/g) || [cleaned];
+    return parts.slice(0, 3).join(' ').trim();
+  }
+
+  function buildPromptForText(basePrompt, text) {
+    if (isDefinitionQuery(text)) {
+      return basePrompt + ' The user is asking for a definition. Answer with a clean definition in 1 to 3 sentences and stay directly on topic.';
+    }
+    if (isCommandLikeInput(text)) {
+      return basePrompt + ' The user pasted a command. Explain what it does in plain language in 1 to 3 sentences. Do not invent results or pretend it already ran.';
+    }
+    return basePrompt;
+  }
+
+  function getHistoryForPrompt(text) {
+    if (isDefinitionQuery(text) || isCommandLikeInput(text)) return [];
+    return activeModel ? localChatHistory.slice(-6) : localChatHistory.slice(-2);
+  }
+
+  function isLowQualityAutoReply(userText, reply) {
+    var cleanedReply = normalizeIntentText(reply);
+    if (!cleanedReply) return true;
+    if (cleanedReply.length < 12) return true;
+    if (/\b(space faring|space station|crew|university of california|since 2015|all around goodie|i ve been running on this server)\b/i.test(reply)) return true;
+    if (isDefinitionQuery(userText) && /\bi\b|\bmy\b|\bi'm\b/i.test(reply)) return true;
+    if (isCommandLikeInput(userText) && !/\b(command|starts|runs|server|python|folder|browser|localhost|port|explain)\b/i.test(cleanedReply)) return true;
+    if (/^[\"'“]/.test(reply.trim()) || /[\(\[]\s*$/.test(reply.trim())) return true;
+    return false;
+  }
+
+  async function getHistoricalReferenceAnswer(text) {
+    if (window.location.protocol === 'file:') return null;
+
+    async function fetchSummary(title) {
+      if (!title) return null;
+      var response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title), {
+        headers: { accept: 'application/json' }
+      });
+      if (!response.ok) return null;
+      var data = await response.json();
+      if (!data || !data.extract || data.type === 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found') return null;
+      return {
+        title: data.title || title,
+        extract: sanitizeModelReply(data.extract)
+      };
+    }
+
+    try {
+      var direct = await fetchSummary(text.replace(/[?]+$/,'').trim());
+      if (direct) return direct;
+    } catch(e) {}
+
+    try {
+      var searchResponse = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srlimit=1&format=json&srsearch=' + encodeURIComponent(text));
+      if (!searchResponse.ok) return null;
+      var searchData = await searchResponse.json();
+      var topHit = searchData && searchData.query && searchData.query.search && searchData.query.search[0];
+      if (!topHit || !topHit.title) return null;
+      return await fetchSummary(topHit.title);
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function triggerReferencePage(text, title) {
+    var target = title
+      ? 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/\s+/g, '_'))
+      : 'https://en.wikipedia.org/wiki/Special:Search?search=' + encodeURIComponent(text);
+    mobileOpen(target);
+  }
+
+  function triggerGoogleSearch(text) {
+    mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(text));
+  }
+
+  function sanitizeModelReply(text) {
+    return (text || '')
+      .replace(/^assistant\s*[:\-]\s*/i, '')
+        .replace(/^(orbiton|raghav(?: ai)?)\s*[:\-]\s*/i, '')
+      .replace(/^answer\s*[:\-]\s*/i, '')
+      .replace(/\b(\w+)(\s+\1\b)+/gi, '$1')
+      .replace(/([.!?])\1+/g, '$1')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
+  function getTransformersModule() {
+    if (transformersModulePromise) return transformersModulePromise;
+    transformersModulePromise = import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1').then(function(tf) {
+      tf.env.allowLocalModels = false;
+      tf.env.allowRemoteModels = true;
+      tf.env.useBrowserCache = !isMobileDevice;
+      tf.env.useWasmCache = !isMobileDevice;
+      if (isMobileDevice) {
+        tf.env.fetch = function(url, init) {
+          var nextInit = Object.assign({}, init || {}, { cache: 'no-store' });
+          return fetch(url, nextInit);
+        };
+      }
+      return tf;
+    });
+    return transformersModulePromise;
+  }
+
+  function getTextPipelineOptions(onProgress) {
+    var opts = isMobileDevice
+      ? { device: 'wasm', dtype: 'q4' }
+      : (navigator.gpu ? { device: 'webgpu', dtype: 'q4' } : { device: 'wasm', dtype: 'q4' });
+    if (onProgress) opts.progress_callback = onProgress;
+    return opts;
+  }
+
+  async function preloadTextModel(modelName, options) {
+    if (window.location.protocol === 'file:') return null;
+    var selectedModelId = getModelId(modelName);
+    if (localGenerator && localGeneratorModelId === selectedModelId) return localGenerator;
+    if (backgroundModelPreloadPromises[selectedModelId]) return backgroundModelPreloadPromises[selectedModelId];
+
+    var selectedConfig = modelConfigs[modelName] || modelConfigs[defaultAnswerModel];
+    var shouldTrackProgress = !!(options && options.trackProgress);
+    var shouldRetain = !!(options && options.retain);
+    if (shouldTrackProgress) resetLoadProgress();
+
+    backgroundModelPreloadPromises[selectedModelId] = getTransformersModule().then(async function(tf) {
+      var pipe = await tf.pipeline(
+        'text-generation',
+        selectedConfig.textModelId,
+        getTextPipelineOptions(shouldTrackProgress ? function(info) { updateLoadProgress(info); } : null)
+      );
+
+      if (shouldRetain) {
+        if (localGenerator && localGenerator !== pipe && typeof localGenerator.dispose === 'function') {
+          try { await localGenerator.dispose(); } catch(e) {}
+        }
+        localGenerator = pipe;
+        localGeneratorModelId = selectedModelId;
+        return pipe;
+      }
+
+      if (typeof pipe.dispose === 'function') {
+        try { await pipe.dispose(); } catch(e) {}
+      }
+      return true;
+    }).catch(function(err) {
+      delete backgroundModelPreloadPromises[selectedModelId];
+      throw err;
+    }).then(function(result) {
+      delete backgroundModelPreloadPromises[selectedModelId];
+      return result;
+    });
+
+    return backgroundModelPreloadPromises[selectedModelId];
+  }
+
+  async function ensureLocalGenerator(modelName) {
+    var requestedModel = modelName || getEffectiveModel();
+    var requestedModelId = getModelId(requestedModel);
+    if (localGenerator && localGeneratorModelId === requestedModelId) return localGenerator;
+    if (localGeneratorPromise && localGeneratorLoadingModelId === requestedModelId) return localGeneratorPromise;
+    if (window.location.protocol === 'file:') {
+      var localServerError = new Error('LOCAL_SERVER_REQUIRED');
+      localServerError.code = 'LOCAL_SERVER_REQUIRED';
+      throw localServerError;
+    }
+
+    if (backgroundModelPreloadPromises[requestedModelId]) {
+      await backgroundModelPreloadPromises[requestedModelId];
+      if (localGenerator && localGeneratorModelId === requestedModelId) return localGenerator;
+    }
+
+    if (localGenerator && localGeneratorModelId !== requestedModelId) {
+      if (typeof localGenerator.dispose === 'function') {
+        try { await localGenerator.dispose(); } catch(e) {}
+      }
+      localGenerator = null;
+      localGeneratorModelId = null;
+    }
+
+    var selectedConfig = modelConfigs[requestedModel] || modelConfigs[defaultAnswerModel];
+    resetLoadProgress();
+    localGeneratorLoadingModelId = requestedModelId;
+
+    localGeneratorPromise = getTransformersModule().then(async function(tf) {
+      localGenerator = await tf.pipeline(
+        'text-generation',
+        selectedConfig.textModelId,
+        getTextPipelineOptions(function(info) { updateLoadProgress(info); })
+      );
+      localGeneratorModelId = requestedModelId;
+
+      return localGenerator;
+    }).catch(function(err) {
+      localGeneratorPromise = null;
+      localGeneratorLoadingModelId = null;
+      throw err;
+    }).then(function(generator) {
+      localGeneratorPromise = null;
+      localGeneratorLoadingModelId = null;
+      return generator;
+    });
+
+    return localGeneratorPromise;
+  }
+
+  async function getLocalModelResponse(text) {
+    var startedAt = Date.now();
+    if (localGenerator && localGeneratorModelId !== getModelId(getEffectiveModel())) {
+      if (typeof localGenerator.dispose === 'function') {
+        try { await localGenerator.dispose(); } catch(e) {}
+      }
+      localGenerator = null;
+      localGeneratorPromise = null;
+      localGeneratorModelId = null;
+    }
+
+    var generator = await ensureLocalGenerator();
+    var settings = getModelSettings(text);
+    var selectedConfig = modelConfigs[getEffectiveModel()] || modelConfigs[defaultAnswerModel];
+    var historyWindow = getHistoryForPrompt(text);
+    var messages = [
+      {
+        role: 'system',
+        content: buildPromptForText(selectedConfig.prompt, text)
+      }
+    ].concat(historyWindow, [
+      { role: 'user', content: text }
+    ]);
+
+    var result = await generator(messages, {
+      max_new_tokens: settings.max_new_tokens,
+      temperature: settings.temperature,
+      top_p: settings.top_p,
+      do_sample: settings.do_sample,
+      repetition_penalty: 1.15,
+      no_repeat_ngram_size: 3
+    });
+
+    var raw = result && result[0] ? result[0].generated_text : '';
+    var reply = '';
+
+    if (Array.isArray(raw)) {
+      var lastMessage = raw[raw.length - 1];
+      reply = sanitizeModelReply(lastMessage && lastMessage.content ? lastMessage.content : '');
+    } else {
+      reply = sanitizeModelReply(String(raw || ''));
+    }
+
+    if (isLowQualityAutoReply(text, reply)) {
+      var rescueMessages = [
+        {
+          role: 'system',
+          content: 'You are Raghav AI. Answer only the user\'s actual question. Never invent a backstory, roleplay, server history, or fictional setting. For definitions, give a clean direct definition in 1 to 3 sentences. For pasted commands, explain what they do plainly and briefly.'
+        },
+        { role: 'user', content: text }
+      ];
+      var rescueResult = await generator(rescueMessages, {
+        max_new_tokens: Math.max(settings.max_new_tokens, 68),
+        temperature: 0.18,
+        top_p: 0.82,
+        do_sample: true,
+        repetition_penalty: 1.15,
+        no_repeat_ngram_size: 3
+      });
+      var rescueRaw = rescueResult && rescueResult[0] ? rescueResult[0].generated_text : '';
+      if (Array.isArray(rescueRaw)) {
+        var rescueLastMessage = rescueRaw[rescueRaw.length - 1];
+        reply = sanitizeModelReply(rescueLastMessage && rescueLastMessage.content ? rescueLastMessage.content : '');
+      } else {
+        reply = sanitizeModelReply(String(rescueRaw || ''));
+      }
+    }
+
+    if (!reply) reply = "I'm here. Ask me anything or tell me what you want to do.";
+
+    localChatHistory.push({ role: 'user', content: text });
+    localChatHistory.push({ role: 'assistant', content: reply });
+    if (localChatHistory.length > 8) localChatHistory = localChatHistory.slice(-8);
+    firstLocalReplyDone = true;
+
+    return maybeAddPatienceLine(reply, startedAt);
+  }
+
+  async function getModelOrSearchResponse(text) {
+    if (shouldUseRemoteReasoning()) {
+      try {
+        return await getRemoteReasoningResponse(text);
+      } catch (remoteError) {
+        var remoteSectorResult = await getSectorAnswer(text);
+        if (remoteSectorResult) {
+          return maybeAddPatienceLine(remoteSectorResult, Date.now() - 3201);
+        }
+        return "Raghav Beta is waking up on the live server right now. Keep this page open for a moment and ask again here.";
+      }
+    }
+
+    try {
+      return await getLocalModelResponse(text);
+    } catch (e) {
+      if (e && e.code === 'LOCAL_SERVER_REQUIRED') {
+        return "Raghav AI needs to be opened through a local server to run on-device replies properly. Once it's opened through localhost, I'll answer right here.";
+      }
+      var sectorResult = await getSectorAnswer(text);
+      if (sectorResult) {
+        return maybeAddPatienceLine(sectorResult, Date.now() - 3201);
+      }
+      if (isReasoningQuery(text) || !firstLocalReplyDone || !localGenerator) {
+        return "Raghav Beta is still getting ready on this phone. Keep it open for a moment and ask again here. I won’t throw you out to the web for this.";
+      }
+      if (looksLikeNewsQuery(text)) {
+        mobileOpen('https://news.google.com/search?q=' + encodeURIComponent(text));
+        return "I’m opening a news view for you now so you can go straight to what’s happening.";
+      }
+      return "I don’t have a clean local path for that yet. Ask it as a definition, strategy, daily improvement question, or direct action and I’ll keep it tighter.";
+    }
+  }
+
+  /* ── INTENT ENGINE ── */
+  var intents = [
+    {p:/^(hi+|hello+|hey+|heyy+|helo+|hullo+|hii+|yo+|sup|h+w+l+o+)\b/i, r:function(){ return "I'm Raghav AI. Built to feel personal, private, and fast on your phone. Ask me anything, learn something new, or tell me what you want done."; }},
+    {p:/who (made|built|created|are) you/i, r:function(){ return "I was created by Prem Peswani. Everything stays on your phone."; }},
+    {p:/(message|msg|whatsapp|text)\s+(\w+)\s+(.+)/i, r:function(m){
+      var name=m[2], msg=m[3];
+      mobileOpen('https://wa.me/?text=' + encodeURIComponent(msg));
+      return 'Done. Message to '+name+' ready to send.';
+    }},
+    {p:/(email|mail)\s+(\w+)\s+(?:about\s+|that\s+)?(.*)/i, r:function(m){
+      var who=m[2], body=m[3]||'';
+      mobileOpen('mailto:?subject=&body=' + encodeURIComponent(body));
+      return 'Done. Email to '+who+' drafted.';
+    }},
+    {p:/(call|ring|dial)\s+(\w+)/i, r:function(m){
+      mobileOpen('tel:' + m[2]);
+      return 'Calling '+m[2]+' now.';
+    }},
+    {p:/(remind|reminder|set a reminder)\s*(.*)/i, r:function(m){
+      return 'Done. I\'ll remind you about "'+m[2]+'".';
+    }},
+    {p:/(search|google|look up|find)\s+(.*)/i, r:function(m){
+      mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(m[2]));
+      return 'Looking that up for you now.';
+    }},
+    {p:/(open|launch|go to)\s+(youtube|maps|gmail|instagram|twitter|x|spotify|netflix)/i, r:function(m){
+      var urls={youtube:'https://youtube.com',maps:'https://maps.google.com',gmail:'https://mail.google.com',instagram:'https://instagram.com',twitter:'https://twitter.com',x:'https://x.com',spotify:'https://open.spotify.com',netflix:'https://netflix.com'};
+      mobileOpen(urls[m[2].toLowerCase()]||'#');
+      return 'Opening '+m[2]+' for you.';
+    }},
+    {p:/(what can you do|capabilities|help)/i, r:function(){ return 'I can send messages, draft emails, set reminders, make calls, search the web, and open apps. Just tell me.'; }},
+    {p:/(what time|current time)/i, r:function(){ return "It's "+getTime()+'.'; }},
+    {p:/(what.?s today|what day|today.?s date)/i, r:function(){ return 'Today is '+new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'.'; }},
+    {p:/(joke|make me laugh|funny)/i, r:function(){
+      var j=["Why don't scientists trust atoms? Because they make up everything.","A photon checks into a hotel. 'Any luggage?' 'Nope — I'm traveling light.'","I asked my AI to write a love poem. It wrote an ode to battery life."];
+      return j[Math.floor(Math.random()*j.length)];
+    }},
+    {p:/thank/i, r:function(){ return "Anytime."; }},
+    {p:/(good morning|morning)/i, r:function(){ return "Good morning! What's on your mind?"; }},
+    {p:/(good night|night)/i, r:function(){ return "Good night! I'll be here whenever you need me."; }},
+    {p:/(weather|forecast)/i, r:function(){
+      mobileOpen('https://www.google.com/search?q=weather+today');
+      return 'Getting the weather for you now.';
+    }},
+  ];
+
+  async function getResponse(text){
+    var knownCommandReply = explainKnownCommand(text);
+    if (knownCommandReply) return knownCommandReply;
+
+    var sectorReply = await getSectorAnswer(text);
+    if (sectorReply) return sectorReply;
+
+    if (isDefinitionQuery(text)) {
+      return "I couldn’t fetch that definition cleanly yet. Try a shorter term and I’ll keep it in chat for you.";
+    }
+
+    var directRoute = classifyDirectRoute(text);
+    if (directRoute) {
+      mobileOpen(directRoute.url);
+      return directRoute.reply;
+    }
+    if (looksLikeNewsQuery(text)) {
+      mobileOpen('https://news.google.com/search?q=' + encodeURIComponent(text));
+      return "I’m opening a news view for you now so you can go straight to what’s happening.";
+    }
+    for(var i=0;i<intents.length;i++){
+      var m=text.match(intents[i].p);
+      if(m) return intents[i].r(m);
+    }
+    var low=text.toLowerCase();
+    if(low.indexOf('open ')===0){
+      var target=text.substring(5).trim();
+      mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(target));
+      return 'Opening search for '+target+'.';
+    }
+    if (shouldUseRemoteReasoning()) {
+      return await getRemoteReasoningResponse(text);
+    }
+    if (isReasoningQuery(text)) {
+      return await getModelOrSearchResponse(text);
+    }
+    if (text.split(' ').length > 1 || /(how|what|why|who|where|when|can you|explain)\b/i.test(text)) {
+      return "Ask that as a definition, strategy, daily improvement question, or direct action and I’ll keep it inside the right lane for you.";
+    }
+    var fb=["Could you be more specific? I can search, message, or set reminders.",
+      "I'm listening. Try asking me to look something up or message someone.",
+      "I'm ready. What would you like me to do?",
+      "Tell me what you need — I can search, email, call, or message anyone."];
+    return fb[Math.floor(Math.random()*fb.length)];
+  }
+
+  async function handleSend(){
+    var val=chatIn.value.trim();
+    if(!val) return;
+    var userText = val;
+    var processedText = normalizeUserText(userText);
+    var replyLane = classifyReplyLane(processedText);
+    var useLocalModel = shouldUseLocalModel(processedText);
+    var isFirstReply = useLocalModel && !firstLocalReplyDone;
+    chatIn.value=''; chatIn.style.height='auto';
+    hideSuggestions();
+    haptic(15);
+    addUserMsg(userText);
+    if (useLocalModel) {
+      showWorkingMessage({ fallbackMs: isFirstReply ? 0 : MODEL_FALLBACK_MS, isFirstReply: isFirstReply });
+    } else {
+      showDots(replyLane);
+    }
+    try {
+      var resp = await getResponse(processedText);
+      if (useLocalModel) hideWorkingMessage();
+      if (useLocalModel) {
+        await streamReply(resp, replyLane, processedText);
+      } else {
+        hideDots();
+        await showStaticWorkingThenReply(resp, replyLane, processedText);
+      }
+    } finally {
+      hideWorkingMessage();
+      hideDots();
+      orbAv.classList.remove('think');
+      if (!chatIn.value.trim()) {
+        showRandomSuggestions();
+      }
+    }
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  chatIn.addEventListener('keydown', function(e){
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); }
+  });
+
+  // Greeting
+  setTimeout(function(){
+    streamReply(getOpeningStory());
+  }, 1200);
+
+  /* ── POPUP / DROPDOWN LOGIC ── */
+  localStorage.removeItem('orbiton_model');
+  var activeModel = 'Raghav Beta';
+  var messagingAllowed = localStorage.getItem('orbiton_msg') === 'yes';
+  var searchGuideSeen = localStorage.getItem('orbiton_search_guide') === 'yes';
+  var modelGuideSeen = localStorage.getItem('orbiton_model_guide') === 'yes';
+  var mobileBtn = document.getElementById('mobileBtn');
+  var runtimePill = document.getElementById('runtimePill');
+  var chatStatus = document.getElementById('chatStatus');
+  var guideSheet = document.getElementById('guideSheet');
+  var guideKicker = document.getElementById('guideKicker');
+  var guideTitle = document.getElementById('guideTitle');
+  var guideBody = document.getElementById('guideBody');
+  var guideGrid = document.getElementById('guideGrid');
+  var guidePrimary = document.getElementById('guidePrimary');
+  var guideSecondary = document.getElementById('guideSecondary');
+  var permSheet = document.getElementById('permSheet');
+  var permKicker = document.getElementById('permKicker');
+  var permTitle = document.getElementById('permTitle');
+  var permBody = document.getElementById('permBody');
+  var permPoints = document.getElementById('permPoints');
+  var permMini = document.getElementById('permMini');
+  var permYes = document.getElementById('permYes');
+  var permNo = document.getElementById('permNo');
+  var guidePrimaryHandler = null;
+  var guideSecondaryHandler = null;
+  var experimentalSheetMode = 'mobile-plus';
+  var experimentalLockedModel = '';
+
+  function closeAllPopups() {
+    var modelMenu = document.getElementById('modelMenu');
+    if (modelMenu) modelMenu.classList.remove('open');
+  }
+
+  function syncModelButtons() {
+    document.querySelectorAll('#modelMenu [data-model]').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.model === activeModel);
+    });
+  }
+
+  function updateModelUI() {
+    var selectedModel = getEffectiveModel();
+    var config = modelConfigs[selectedModel] || modelConfigs[defaultAnswerModel];
+    modelBtnLabel.textContent = activeModel || 'Model';
+    runtimePill.textContent = activeModel ? activeModel : 'Auto';
+    chatStatus.textContent = config.status;
+    syncModelButtons();
+  }
+
+  function updateMobileAgentUI() {
+    mobileBtn.classList.toggle('active-agent', messagingAllowed);
+    mobileBtn.setAttribute('aria-pressed', messagingAllowed ? 'true' : 'false');
+  }
+
+  function openModelMenu() {
+    closeAllPopups();
+    document.getElementById('modelMenu').classList.add('open');
+  }
+
+  function closeGuideCard() {
+    guideSheet.style.display = 'none';
+    guidePrimaryHandler = null;
+    guideSecondaryHandler = null;
+  }
+
+  function renderExperimentalPoints(points) {
+    permPoints.innerHTML = '';
+    points.forEach(function(point) {
+      var card = document.createElement('div');
+      card.className = 'perm-point';
+      card.innerHTML = '<strong>' + point.title + '</strong><span>' + point.text + '</span>';
+      permPoints.appendChild(card);
+    });
+  }
+
+  function openExperimentalSheet(mode, lockedModel) {
+    experimentalSheetMode = mode;
+    experimentalLockedModel = lockedModel || '';
+    permKicker.textContent = 'Experimental';
+    permTitle.textContent = 'Experience our experimental features for the price of a pastry 🍰';
+    permBody.textContent = lockedModel
+      ? 'One membership unlocks both the mobile agent and the flagship model lane, so you get the full premium experience in one place.'
+      : 'One membership unlocks the mobile agent and the flagship model lane together. Quick actions, less app hopping, and one-line mobile moves prepared for you.';
+    renderExperimentalPoints([
+      lockedModel
+        ? { title: 'One membership, two lanes', text: 'Unlock both the mobile agent and the flagship model together with a single pass.' }
+        : { title: 'One line, already prepared', text: 'Say “Message my mom I will be late” and Raghav AI lines it up instantly.' }
+    ]);
+    permMini.textContent = '';
+    permMini.style.display = 'none';
+    permYes.textContent = lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39';
+    permNo.textContent = 'Not Now';
+
+    permSheet.style.display = 'flex';
+  }
+
+  function renderGuidePoints(points) {
+    guideGrid.innerHTML = '';
+    (points || []).forEach(function(point) {
+      var card = document.createElement('div');
+      card.className = 'guide-item';
+      card.innerHTML = '<strong>' + point.title + '</strong><span>' + point.text + '</span>';
+      guideGrid.appendChild(card);
+    });
+  }
+
+  function showGuideCard(options) {
+    guideKicker.textContent = options.kicker || 'Raghav AI Guide';
+    guideTitle.textContent = options.title || 'Raghav AI';
+    guideBody.textContent = options.body || '';
+    guidePrimary.textContent = options.primaryLabel || 'Got it';
+    guideSecondary.textContent = options.secondaryLabel || 'Not now';
+    renderGuidePoints(options.points || []);
+    guidePrimaryHandler = options.onPrimary || null;
+    guideSecondaryHandler = options.onSecondary || null;
+    guideSheet.style.display = 'flex';
+  }
+
+  guidePrimary.addEventListener('click', function() {
+    var handler = guidePrimaryHandler;
+    closeGuideCard();
+    if (handler) handler();
+  });
+
+  guideSecondary.addEventListener('click', function() {
+    var handler = guideSecondaryHandler;
+    closeGuideCard();
+    if (handler) handler();
+  });
+
+  guideSheet.addEventListener('click', function(e) {
+    if (e.target === this) closeGuideCard();
+  });
+
+  function startBackgroundWarmup() {
+    if (startupWarmupStarted || window.location.protocol === 'file:') return;
+    startupWarmupStarted = true;
+
+    if (isMobileDevice) {
+      warmRemoteReasoning();
+      return;
+    }
+
+    if (isLowMemoryMobile) return;
+
+    var orderedModels = [defaultAnswerModel].concat(
+      Object.keys(modelConfigs).filter(function(name) { return name !== defaultAnswerModel; })
+    );
+
+    orderedModels.reduce(function(chain, modelName, index) {
+      return chain.then(function() {
+        return preloadTextModel(modelName, {
+          retain: index === 0 && !activeModel,
+          trackProgress: index === 0
+        }).catch(function(){});
+      });
+    }, Promise.resolve());
+  }
+
+  async function setActiveModel(modelName) {
+    activeModel = modelName;
+    if (localGenerator && localGeneratorModelId !== getModelId(getEffectiveModel())) {
+      if (typeof localGenerator.dispose === 'function') {
+        try { await localGenerator.dispose(); } catch(e) {}
+      }
+      localGenerator = null;
+      localGeneratorPromise = null;
+      localGeneratorModelId = null;
+      localGeneratorLoadingModelId = null;
+    }
+    updateModelUI();
+    ensureLocalGenerator(modelName).catch(function(){});
+  }
+
+  document.getElementById('modelBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!modelGuideSeen) {
+      modelGuideSeen = true;
+      localStorage.setItem('orbiton_model_guide', 'yes');
+      showGuideCard({
+        kicker: 'Model',
+        title: 'How Raghav Beta answers',
+        body: 'Raghav Beta is the flagship model in the app. It is the open everyday lane for practical help, reasoning, definitions, and the kind of answers people use all day long. Faster source and direct-action lanes still handle simple things first when they can.',
+        points: [
+          { title: 'Everyday flagship', text: 'Built to feel like the main model for all-purpose help, not a narrow demo lane.' },
+          { title: 'Reasoning when needed', text: 'Used for decisions, improvement, steps, explanations, and more thoughtful questions.' },
+          { title: 'Private on phone', text: 'When Raghav Beta works, it stays on the phone-side flow and gives a calmer, more personal reply style.' }
+        ],
+        primaryLabel: 'Open model',
+        secondaryLabel: 'Later',
+        onPrimary: function() { openModelMenu(); }
+      });
+      return;
+    }
+    var m = document.getElementById('modelMenu');
+    var isOpen = m.classList.contains('open');
+    closeAllPopups();
+    if (!isOpen) m.classList.add('open');
+  });
+
+  // Model items inside + menu
+  document.querySelectorAll('#modelMenu [data-model]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (this.classList.contains('locked') || this.dataset.model === 'Raghav Baan') {
+        closeAllPopups();
+        openExperimentalSheet('model-lock', 'Raghav Baan');
+        haptic(10);
+        return;
+      }
+      setActiveModel(this.dataset.model);
+      closeAllPopups();
+      haptic(10);
+    });
+  });
+
+  // Mobile + button -> show permission sheet
+  mobileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeAllPopups();
+    if (messagingAllowed) {
+      messagingAllowed = false;
+      localStorage.removeItem('orbiton_msg');
+      updateMobileAgentUI();
+      streamReply("Mobile + is off now. Turn it back on anytime if you want Raghav AI to prepare message actions for you.");
+      return;
+    }
+    openExperimentalSheet('mobile-plus');
+  });
+
+  // Permission sheet allow/deny
+  permYes.addEventListener('click', function() {
+    permSheet.style.display = 'none';
+    messagingAllowed = true;
+    localStorage.setItem('orbiton_msg', 'yes');
+    updateMobileAgentUI();
+    haptic(15);
+    setTimeout(function(){
+      streamReply("Mobile+ is enabled. Now say \"Message my mom I will be late\" and I'll get it ready in WhatsApp for you.");
+    }, 300);
+  });
+  permNo.addEventListener('click', function() {
+    permSheet.style.display = 'none';
+  });
+  permSheet.addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  // Close popups clicking outside
+  document.addEventListener('click', function() { closeAllPopups(); });
+
+  updateModelUI();
+  updateMobileAgentUI();
+  setTimeout(function(){ startBackgroundWarmup(); }, 1600);
+  window.addEventListener('pageshow', function() {
+    warmRemoteReasoning();
+  });
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') warmRemoteReasoning();
+  });
+
+  chatIn.addEventListener('focus', function() {
+    if (searchGuideSeen) updateSuggestions();
+  });
+  chatIn.addEventListener('blur', function() {
+    setTimeout(function() {
+      if (document.activeElement !== chatIn) hideSuggestions();
+    }, 120);
+  });
+  chatIn.addEventListener('focus', function() {
+    startBackgroundWarmup();
+  }, { once: true });
+  chatIn.addEventListener('focus', function() {
+    if (searchGuideSeen) return;
+    searchGuideSeen = true;
+    localStorage.setItem('orbiton_search_guide', 'yes');
+    this.blur();
+    showGuideCard({
+      kicker: 'How It Works',
+      title: 'Ask naturally. Raghav AI handles the next step.',
+      body: 'Raghav AI is built to save time. Some requests stay in chat, and some jump straight to the place that gets you there faster.',
+      points: [
+        { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already typed on Amazon or Flipkart.' },
+        { title: 'Type “how to make biryani”', text: 'Raghav AI can send you straight to YouTube with the recipe already searched.' },
+        { title: 'Type “message my mom I’ll be late”', text: 'With Mobile + on, Raghav AI prepares the message flow for you right away.' },
+        { title: 'Type a real question or definition', text: 'Raghav AI answers in chat first so you do not waste time opening ten links.' }
+      ],
+      primaryLabel: 'Start typing',
+      secondaryLabel: 'Skip',
+      onPrimary: function() {
+        setTimeout(function(){ chatIn.focus(); }, 80);
+      }
+    });
+  }, { once: true });
+
+  // Mic button -> Web Speech API
+  document.getElementById('micBtn').addEventListener('click', function() {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { streamReply("Voice input isn't available in this browser. Try Chrome on Android."); return; }
+    var rec = new SR();
+    rec.lang = 'en-US'; rec.interimResults = false;
+    var micBtn = document.getElementById('micBtn');
+    micBtn.style.color = '#ff4444';
+    haptic([10,30,10]);
+    rec.start();
+    rec.onresult = function(e) {
+      var transcript = e.results[0][0].transcript;
+      chatIn.value = transcript;
+      chatIn.style.height = 'auto';
+      chatIn.style.height = Math.min(chatIn.scrollHeight, 120) + 'px';
+      micBtn.style.color = '';
+      handleSend();
+    };
+    rec.onerror = function() { micBtn.style.color = ''; };
+    rec.onend = function() { micBtn.style.color = ''; };
+  });
+
+  // Override WhatsApp intent to check messaging permission
+  function parseMessageCommand(text) {
+    var cleaned = text.replace(/^(message|msg|whatsapp|text)\s+/i, '').trim();
+    if (!cleaned) return null;
+
+    var matchMy = cleaned.match(/^(my\s+\w+)\s+(.+)$/i);
+    if (matchMy) {
+      return { name: matchMy[1], msg: matchMy[2] };
+    }
+
+    var matchSimple = cleaned.match(/^([a-z]+(?:\s+[a-z]+)?)\s+(.+)$/i);
+    if (matchSimple) {
+      return { name: matchSimple[1], msg: matchSimple[2] };
+    }
+
+    return null;
+  }
+
+  intents = intents.map(function(intent) {
+    if (intent.p.toString().indexOf('whatsapp') === -1) return intent;
+    return {
+      p: intent.p,
+      r: function(m) {
+        var parsed = parseMessageCommand(m.input || '');
+        if (!parsed) return 'Tell me who to message and what to say.';
+        mobileOpen('https://wa.me/?text=' + encodeURIComponent(parsed.msg));
+        return 'Opening WhatsApp for ' + parsed.name + '.';
+      }
+    };
+  });
+
+  var origIntents = intents;
+  var msgIntent = intents.filter(function(i){ return i.p.toString().indexOf('whatsapp') !== -1; })[0];
+  if (msgIntent) {
+    var origFn = msgIntent.r;
+    msgIntent.r = function(m) {
+      if (!messagingAllowed) {
+        // auto-show permission sheet
+        setTimeout(function(){ openExperimentalSheet('mobile-plus'); }, 400);
+        return "I need messaging permission first. Tap Allow and try again.";
+      }
+      return origFn(m);
+    };
+  }
+
+  /* ── PWA ── */
+  if ('serviceWorker' in navigator) {
+    if (isMobileDevice) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(registration) {
+          registration.unregister();
+        });
+      }).catch(function(){});
+      if (window.caches && caches.keys) {
+        caches.keys().then(function(keys) {
+          return Promise.all(keys.map(function(key) {
+            return caches.delete(key);
+          }));
+        }).catch(function(){});
+      }
+    } else {
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    }
+  }
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  var deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferredPrompt=e;
+    if(!isStandalone) setTimeout(function(){ document.getElementById('androidBar').classList.add('show'); }, 4000);
+  });
+  document.getElementById('androidBtn').addEventListener('click', function(){
+    if(!deferredPrompt) return;
+    document.getElementById('androidBar').classList.remove('show');
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){ deferredPrompt=null; });
+  });
+  if(isIOS && !isStandalone) setTimeout(function(){ document.getElementById('iosBar').classList.add('show'); }, 4000);
+  window.addEventListener('appinstalled', function(){
+    document.getElementById('androidBar').classList.remove('show');
+    startBackgroundWarmup();
+    haptic([20,50,20,50,60]);
+    if(typeof confetti==='function') confetti({particleCount:120,spread:90,origin:{y:.6},colors:['#ffffff','#2563eb','#7c3aed']});
+  });
+})();
+</script>
+</body>
+</html>
