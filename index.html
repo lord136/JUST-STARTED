@@ -911,7 +911,7 @@ try {
   }
 
   function shouldUseRemoteReasoning() {
-    return isMobileDevice && !!getRemoteReasoningBase();
+    return !!getRemoteReasoningBase();
   }
 
   async function warmRemoteReasoning(force) {
@@ -958,6 +958,20 @@ try {
     }
     if (!data || !data.answer) throw new Error('REMOTE_REASONING_EMPTY');
     return String(data.answer || '').trim();
+  }
+
+  function getRemoteFailureMessage(error) {
+    var message = error && error.message ? String(error.message) : '';
+    if (/OPENROUTER_API_KEY/i.test(message)) {
+      return "The live AI server is missing its OpenRouter API key right now. Add OPENROUTER_API_KEY in Render and the replies will start working.";
+    }
+    if (/REMOTE_REASONING_EMPTY/i.test(message)) {
+      return "The live AI server answered empty this time. Try the same question again in a moment.";
+    }
+    if (/REMOTE_REASONING_NOT_CONFIGURED/i.test(message)) {
+      return "The live AI server is not connected yet. Once the server URL is set, replies will come through here.";
+    }
+    return "The live AI server is waking up right now. Keep this page open for a moment and ask again here.";
   }
 
   function mobileOpen(url) {
@@ -1987,11 +2001,12 @@ try {
       try {
         return await getRemoteReasoningResponse(text);
       } catch (remoteError) {
+        var remoteFailureMessage = getRemoteFailureMessage(remoteError);
         var remoteSectorResult = await getSectorAnswer(text);
         if (remoteSectorResult) {
           return maybeAddPatienceLine(remoteSectorResult, Date.now() - 3201);
         }
-        return "Raghav Beta is waking up on the live server right now. Keep this page open for a moment and ask again here.";
+        return remoteFailureMessage;
       }
     }
 
@@ -2093,7 +2108,11 @@ try {
       return 'Opening search for '+target+'.';
     }
     if (shouldUseRemoteReasoning()) {
-      return await getRemoteReasoningResponse(text);
+      try {
+        return await getRemoteReasoningResponse(text);
+      } catch (remoteError) {
+        return getRemoteFailureMessage(remoteError);
+      }
     }
     if (isReasoningQuery(text)) {
       return await getModelOrSearchResponse(text);
@@ -2133,6 +2152,15 @@ try {
       } else {
         hideDots();
         await showStaticWorkingThenReply(resp, replyLane, processedText);
+      }
+    } catch (error) {
+      var failReply = getRemoteFailureMessage(error);
+      if (useLocalModel) {
+        hideWorkingMessage();
+        await streamReply(failReply, 'Answer', processedText);
+      } else {
+        hideDots();
+        await showStaticWorkingThenReply(failReply, 'Answer', processedText);
       }
     } finally {
       hideWorkingMessage();
