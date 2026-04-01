@@ -3152,7 +3152,8 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 let currentFirebaseUser = null;
 let signInWatchdog = null;
-setPersistence(auth, browserLocalPersistence).catch(function() {});
+const preferRedirectAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(function() {});
 
 const authBtn = document.getElementById('authBtn');
 const authBtnLabel = document.getElementById('authBtnLabel');
@@ -3234,6 +3235,25 @@ function clearSignInWatchdog() {
   }
 }
 
+function setAuthConnectingState() {
+  authBtn.classList.add('loading');
+  authBtnLabel.textContent = 'Connecting...';
+  authSheetPrimary.disabled = true;
+  authSheetPrimary.textContent = 'Connecting...';
+}
+
+function setRedirectPending() {
+  try { sessionStorage.setItem('raghav_auth_redirect_pending', 'yes'); } catch (e) {}
+}
+
+function clearRedirectPending() {
+  try { sessionStorage.removeItem('raghav_auth_redirect_pending'); } catch (e) {}
+}
+
+function hasRedirectPending() {
+  try { return sessionStorage.getItem('raghav_auth_redirect_pending') === 'yes'; } catch (e) { return false; }
+}
+
 function explainAuthError(error) {
   const code = error && error.code ? String(error.code) : '';
   const message = error && error.message ? String(error.message) : '';
@@ -3260,27 +3280,33 @@ function explainAuthError(error) {
 
 async function startSignIn() {
   clearSignInWatchdog();
-  authBtn.classList.add('loading');
-  authBtnLabel.textContent = 'Connecting...';
-  authSheetPrimary.disabled = true;
-  authSheetPrimary.textContent = 'Connecting...';
+  setAuthConnectingState();
   signInWatchdog = setTimeout(function() {
     resetAuthPill();
     showAuthFeedback('Google sign-in is taking too long. If the popup did not open, try once more.');
   }, 12000);
   try {
+    await persistenceReady;
+    if (preferRedirectAuth) {
+      setRedirectPending();
+      await signInWithRedirect(auth, provider);
+      return;
+    }
     await signInWithPopup(auth, provider);
   } catch (error) {
     if (error && /auth\/popup-blocked/i.test(String(error.code || ''))) {
       try {
+        setRedirectPending();
         await signInWithRedirect(auth, provider);
         return;
       } catch (redirectError) {
+        clearRedirectPending();
         resetAuthPill();
         showAuthFeedback(explainAuthError(redirectError));
         return;
       }
     }
+    clearRedirectPending();
     resetAuthPill();
     showAuthFeedback(explainAuthError(error));
   }
@@ -3324,7 +3350,14 @@ window.raghavPersistPremiumUnlock = async function(details) {
   await syncUserPremiumFromClaims(currentFirebaseUser, true);
 };
 
-getRedirectResult(auth).catch(function(error) {
+if (hasRedirectPending()) {
+  setAuthConnectingState();
+}
+
+getRedirectResult(auth).then(function() {
+  clearRedirectPending();
+}).catch(function(error) {
+  clearRedirectPending();
   resetAuthPill();
   showAuthFeedback(explainAuthError(error));
 });
@@ -3332,6 +3365,8 @@ getRedirectResult(auth).catch(function(error) {
 onAuthStateChanged(auth, function(user) {
   clearSignInWatchdog();
   if (user) {
+    clearRedirectPending();
+    try { localStorage.setItem('raghav_last_signed_in_uid', user.uid); } catch (e) {}
     currentFirebaseUser = user;
     if (typeof window.raghavSetCurrentUser === 'function') {
       window.raghavSetCurrentUser(user);
@@ -3348,6 +3383,17 @@ onAuthStateChanged(auth, function(user) {
     currentFirebaseUser = null;
     if (typeof window.raghavSetCurrentUser === 'function') {
       window.raghavSetCurrentUser(null);
+    }
+    if (hasRedirectPending()) {
+      setAuthConnectingState();
+      setTimeout(function() {
+        if (!auth.currentUser && hasRedirectPending()) {
+          clearRedirectPending();
+          resetAuthPill();
+          showAuthFeedback('Sign-in did not finish. Try once more and make sure the Google sign-in flow completes.');
+        }
+      }, 7000);
+      return;
     }
     resetAuthPill();
     if (typeof window.raghavApplyPremiumState === 'function') {
