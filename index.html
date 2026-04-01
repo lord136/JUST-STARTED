@@ -451,9 +451,9 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
         <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
       </div>
     </div>
-    <div class="perm-mini" id="permMini">Rs 39</div>
+    <div class="perm-mini" id="permMini">$1</div>
     <div class="perm-actions">
-      <button class="perm-yes" id="permYes">Unlock for Rs 39</button>
+      <button class="perm-yes" id="permYes">Unlock for $1</button>
       <button class="perm-no" id="permNo">Not Now</button>
     </div>
   </div>
@@ -2221,6 +2221,7 @@ try {
   async function handleSend(){
     var val=chatIn.value.trim();
     if(!val) return;
+    var shouldPromptPremiumAfterReply = !premiumPromptShown;
     var userText = val;
     var processedText = normalizeUserText(userText);
     var replyLane = classifyReplyLane(processedText);
@@ -2244,6 +2245,9 @@ try {
         hideDots();
         await showStaticWorkingThenReply(resp, replyLane, processedText);
       }
+      if (shouldPromptPremiumAfterReply) {
+        maybeShowPremiumPromptAfterFirstAnswer();
+      }
     } catch (error) {
       var failReply = getRemoteFailureMessage(error);
       if (useLocalModel) {
@@ -2252,6 +2256,9 @@ try {
       } else {
         hideDots();
         await showStaticWorkingThenReply(failReply, 'Answer', processedText);
+      }
+      if (shouldPromptPremiumAfterReply) {
+        maybeShowPremiumPromptAfterFirstAnswer();
       }
     } finally {
       hideWorkingMessage();
@@ -2301,6 +2308,7 @@ try {
   var guideSecondaryHandler = null;
   var experimentalSheetMode = 'mobile-plus';
   var experimentalLockedModel = '';
+  var premiumPromptShown = false;
 
   function closeAllPopups() {
     var modelMenu = document.getElementById('modelMenu');
@@ -2361,10 +2369,20 @@ try {
     ]);
     permMini.textContent = '';
     permMini.style.display = 'none';
-    permYes.textContent = lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39';
+    permYes.textContent = lockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
     permNo.textContent = 'Not Now';
 
     permSheet.style.display = 'flex';
+  }
+
+  function maybeShowPremiumPromptAfterFirstAnswer() {
+    if (premiumPromptShown) return;
+    premiumPromptShown = true;
+    try { sessionStorage.setItem('raghav_premium_prompt_seen', 'yes'); } catch (e) {}
+    setTimeout(function() {
+      if (permSheet.style.display === 'flex' || guideSheet.style.display === 'flex') return;
+      openExperimentalSheet('post-first-answer', 'Raghav Baan');
+    }, 380);
   }
 
   function renderGuidePoints(points) {
@@ -2703,6 +2721,10 @@ function showAuthSheet() {
   if (dismissed) return;
   authSheet.classList.add('show');
 }
+
+try {
+  premiumPromptShown = sessionStorage.getItem('raghav_premium_prompt_seen') === 'yes';
+} catch (e) {}
 
 function getDisplayName(user) {
   if (!user) return 'Signed in';
