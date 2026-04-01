@@ -1104,6 +1104,24 @@ try {
     return data;
   }
 
+  async function getRemoteAccountStatus(idToken) {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('ACCOUNT_SERVER_NOT_CONFIGURED');
+    var response = await fetch(base + '/api/account/status', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: idToken })
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok) {
+      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'ACCOUNT_STATUS_FAILED');
+    }
+    return data;
+  }
+
   function mobileOpen(url, sourceText) {
     if (!url) return null;
     if (hasRestrictedAdultSignal(sourceText) || hasRestrictedAdultSignal(url)) return null;
@@ -2519,6 +2537,13 @@ try {
     var nextPremium = !!(options && options.premiumUnlocked);
     premiumUnlocked = nextPremium;
     messagingAllowed = !!(options && options.messagingAllowed);
+    if (currentSignedInUser && currentSignedInUser.uid) {
+      if (premiumUnlocked) {
+        localStorage.setItem('raghav_premium_user_' + currentSignedInUser.uid, 'yes');
+      } else {
+        localStorage.removeItem('raghav_premium_user_' + currentSignedInUser.uid);
+      }
+    }
     if (premiumUnlocked) {
       localStorage.setItem('raghav_premium_unlocked', 'yes');
       if (messagingAllowed) localStorage.setItem('orbiton_msg', 'yes');
@@ -2664,7 +2689,7 @@ try {
         theme: { color: '#2563eb' },
         handler: async function (response) {
           try {
-            await verifyPremiumPayment({
+            var verified = await verifyPremiumPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
@@ -2672,6 +2697,12 @@ try {
               firebase_email: currentSignedInUser && currentSignedInUser.email ? currentSignedInUser.email : ''
             });
             await markPremiumUnlocked(response);
+            if (verified && verified.entitlements) {
+              applyPremiumState({
+                premiumUnlocked: !!verified.entitlements.premiumUnlocked,
+                messagingAllowed: !!verified.entitlements.mobilePlusUnlocked
+              });
+            }
           } catch (verifyError) {
             streamReply('Payment came through, but verification did not complete yet. Please try once more in a moment.');
           } finally {
@@ -3262,13 +3293,26 @@ async function syncUserPremiumFromClaims(user, forceRefresh) {
     }
     return { premiumUnlocked: false };
   }
+  let localPremium = false;
+  try {
+    localPremium = localStorage.getItem('raghav_premium_user_' + user.uid) === 'yes';
+  } catch (e) {}
   const result = await getIdTokenResult(user, !!forceRefresh);
   const claims = result && result.claims ? result.claims : {};
-  const premium = claims.premiumUnlocked === true || claims.premiumStatus === 'active';
+  let premium = claims.premiumUnlocked === true || claims.premiumStatus === 'active' || localPremium;
+  let mobilePlusUnlocked = premium;
+  try {
+    const freshToken = await user.getIdToken(!!forceRefresh);
+    const serverStatus = await getRemoteAccountStatus(freshToken);
+    if (serverStatus && serverStatus.entitlements) {
+      premium = !!serverStatus.entitlements.premiumUnlocked || premium;
+      mobilePlusUnlocked = !!serverStatus.entitlements.mobilePlusUnlocked || premium;
+    }
+  } catch (e) {}
   if (typeof window.raghavApplyPremiumState === 'function') {
     window.raghavApplyPremiumState({
       premiumUnlocked: premium,
-      messagingAllowed: premium
+      messagingAllowed: mobilePlusUnlocked
     });
   }
   return claims;
