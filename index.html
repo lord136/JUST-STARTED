@@ -1009,8 +1009,9 @@ try {
     if (!base) return false;
     if (remoteWarmStarted && !force) return true;
     remoteWarmStarted = true;
+    var warmLane = getEffectiveModel() === 'Raghav Baan' ? 'premium' : 'beta';
     try {
-      await fetch(base + '/api/warm', {
+      await fetch(base + '/api/warm?lane=' + encodeURIComponent(warmLane), {
         method: 'GET',
         mode: 'cors',
         cache: 'no-store',
@@ -1037,6 +1038,8 @@ try {
         message: text,
         lane: remoteLane,
         modelName: effectiveModel,
+        planMode: remoteLane === 'premium' && shouldUseDeepPlan(text) ? 'deep' : 'standard',
+        memoryProfile: getPreferenceMemorySummary(),
         platform: isMobileDevice ? 'mobile' : 'desktop',
         mobileAgent: messagingAllowed
       })
@@ -1124,6 +1127,120 @@ try {
       throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'ACCOUNT_STATUS_FAILED');
     }
     return data;
+  }
+
+  function readJsonStorage(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function saveJsonStorage(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {}
+  }
+
+  function createDefaultPreferenceMemory() {
+    return {
+      signals: {
+        stepwise: 0,
+        simple: 0,
+        short: 0,
+        deep: 0,
+        practical: 0
+      },
+      summary: '',
+      updatedAt: 0
+    };
+  }
+
+  function getPreferenceMemory() {
+    if (!localPreferenceMemory) {
+      localPreferenceMemory = readJsonStorage('raghav_pref_memory_v1', createDefaultPreferenceMemory());
+    }
+    return localPreferenceMemory;
+  }
+
+  function compactPreferenceMemory() {
+    var memory = getPreferenceMemory();
+    var signals = memory.signals || {};
+    var ranked = Object.keys(signals).map(function(key) {
+      return { key: key, value: Number(signals[key] || 0) };
+    }).filter(function(entry) {
+      return entry.value > 0;
+    }).sort(function(a, b) {
+      return b.value - a.value;
+    });
+    var labels = {
+      stepwise: 'step-by-step help',
+      simple: 'simple explanations',
+      short: 'short answers',
+      deep: 'deeper explanations',
+      practical: 'practical next steps'
+    };
+    memory.summary = ranked.slice(0, 2).map(function(entry) {
+      return labels[entry.key] || entry.key;
+    }).join(', ');
+    memory.updatedAt = Date.now();
+    saveJsonStorage('raghav_pref_memory_v1', memory);
+    return memory.summary;
+  }
+
+  function queuePreferenceCompaction() {
+    clearTimeout(window.__raghavMemoryCompactionTimer);
+    window.__raghavMemoryCompactionTimer = setTimeout(function() {
+      compactPreferenceMemory();
+    }, 1600);
+  }
+
+  function observePreferenceSignals(text) {
+    var raw = String(text || '').toLowerCase();
+    if (!raw) return;
+    var memory = getPreferenceMemory();
+    var signals = memory.signals || (memory.signals = {});
+    if (/\b(step by step|steps|roadmap|plan|how to|what should i do)\b/.test(raw)) signals.stepwise = (signals.stepwise || 0) + 1;
+    if (/\b(simple|simply|easy|easily|understand|beginner)\b/.test(raw)) signals.simple = (signals.simple || 0) + 1;
+    if (/\b(short|brief|quick|one line|in short)\b/.test(raw)) signals.short = (signals.short || 0) + 1;
+    if (/\b(detail|detailed|deep|deeply|fully|thorough)\b/.test(raw)) signals.deep = (signals.deep || 0) + 1;
+    if (/\b(practical|action|next step|what now|do next)\b/.test(raw)) signals.practical = (signals.practical || 0) + 1;
+    queuePreferenceCompaction();
+  }
+
+  function getPreferenceMemorySummary() {
+    var memory = getPreferenceMemory();
+    return memory.summary || compactPreferenceMemory() || '';
+  }
+
+  function shouldUseDeepPlan(text) {
+    var raw = String(text || '').toLowerCase();
+    return raw.length > 120 || /\b(compare|decision|decide|strategy|plan|roadmap|analyze|analysis|deeply|step by step|best way|what should i do|help me choose)\b/.test(raw);
+  }
+
+  function runKairosLite(force) {
+    if (!appAccessUnlocked || document.visibilityState === 'hidden' || !shouldUseRemoteReasoning()) return;
+    warmRemoteReasoning(!!force).catch(function(){});
+    if (typeof window.raghavRefreshSignedInAccount === 'function') {
+      window.raghavRefreshSignedInAccount(!!force).catch(function(){});
+    }
+  }
+
+  function startKairosLite() {
+    if (kairosWarmTimer || !appAccessUnlocked || !shouldUseRemoteReasoning()) return;
+    kairosWarmTimer = setInterval(function() {
+      runKairosLite(false);
+    }, KAIROS_WARM_INTERVAL_MS);
+  }
+
+  function stopKairosLite() {
+    if (!kairosWarmTimer) return;
+    clearInterval(kairosWarmTimer);
+    kairosWarmTimer = null;
   }
 
   function mobileOpen(url, sourceText) {
@@ -2381,6 +2498,7 @@ try {
     var shouldPromptPremiumAfterReply = !premiumPromptShown;
     var userText = val;
     var processedText = normalizeUserText(userText);
+    observePreferenceSignals(processedText);
     var replyLane = classifyReplyLane(processedText);
     var useLocalModel = shouldUseLocalModel(processedText);
     var isFirstReply = useLocalModel && !firstLocalReplyDone;
@@ -2458,6 +2576,8 @@ try {
   var currentSignedInUser = null;
   var searchGuideSeen = localStorage.getItem('orbiton_search_guide') === 'yes';
   var modelGuideSeen = localStorage.getItem('orbiton_model_guide') === 'yes';
+  var mobileGuideSeen = localStorage.getItem('orbiton_mobile_guide') === 'yes';
+  var baanGuideSeen = localStorage.getItem('orbiton_baan_guide') === 'yes';
   var mobileBtn = document.getElementById('mobileBtn');
   var runtimePill = document.getElementById('runtimePill');
   var chatStatus = document.getElementById('chatStatus');
@@ -2484,6 +2604,9 @@ try {
   var experimentalSheetMode = 'mobile-plus';
   var experimentalLockedModel = '';
   var premiumPromptShown = false;
+  var kairosWarmTimer = null;
+  var KAIROS_WARM_INTERVAL_MS = 90000;
+  var localPreferenceMemory = null;
 
   function closeAllPopups() {
     var modelMenu = document.getElementById('modelMenu');
@@ -2512,7 +2635,8 @@ try {
 
   function updatePremiumAccessUI() {
     if (!raghavBaanBtn || !raghavBaanMeta || !raghavBaanIcon) return;
-    if (premiumUnlocked) {
+    var unlocked = premiumUnlocked || hasStoredPremiumAccess();
+    if (unlocked) {
       raghavBaanBtn.classList.remove('locked');
       raghavBaanIcon.textContent = '✦';
       raghavBaanMeta.textContent = 'Premium is tied to your account. Mobile+ and the flagship premium lane are ready.';
@@ -2542,7 +2666,11 @@ try {
     if (sendBtn) sendBtn.disabled = !appAccessUnlocked;
     if (appAccessUnlocked) {
       startBackgroundWarmup();
+      startKairosLite();
+      runKairosLite(false);
       maybeShowOpeningStory();
+    } else {
+      stopKairosLite();
     }
   }
 
@@ -2601,6 +2729,7 @@ try {
   function openExperimentalSheet(mode, lockedModel) {
     experimentalSheetMode = mode;
     experimentalLockedModel = lockedModel || '';
+    var alreadyUnlocked = premiumUnlocked || hasStoredPremiumAccess();
     permKicker.textContent = 'Experimental';
     permTitle.textContent = 'Experience our experimental features for the price of a pastry 🍰';
     permBody.textContent = '';
@@ -2611,15 +2740,15 @@ try {
     ]);
     permMini.textContent = '';
     permMini.style.display = 'none';
-    permYes.textContent = premiumUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10');
-    permYes.disabled = !!premiumUnlocked;
+    permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10');
+    permYes.disabled = !!alreadyUnlocked;
     permNo.textContent = 'Not Now';
 
     permSheet.style.display = 'flex';
   }
 
   function maybeShowPremiumPromptAfterFirstAnswer() {
-    if (premiumPromptShown || premiumUnlocked) return;
+    if (premiumPromptShown || premiumUnlocked || hasStoredPremiumAccess()) return;
     premiumPromptShown = true;
     try { sessionStorage.setItem('raghav_premium_prompt_seen', 'yes'); } catch (e) {}
     setTimeout(function() {
@@ -2680,7 +2809,12 @@ try {
   }
 
   async function launchPremiumCheckout() {
-    if (premiumUnlocked || premiumUnlockInFlight) return;
+    if (premiumUnlockInFlight) return;
+    if (premiumUnlocked || hasStoredPremiumAccess()) {
+      applyPremiumState({ premiumUnlocked: true, messagingAllowed: messagingAllowed, preserveStoredAccess: true });
+      permSheet.style.display = 'none';
+      return;
+    }
     if (!currentSignedInUser) {
       if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
       return;
@@ -2821,7 +2955,26 @@ try {
         closeAllPopups();
         if (this.dataset.model === 'Raghav Baan' && (premiumUnlocked || hasStoredPremiumAccess())) {
           if (!premiumUnlocked) {
-            applyPremiumState({ premiumUnlocked: true, messagingAllowed: false });
+            applyPremiumState({ premiumUnlocked: true, messagingAllowed: false, preserveStoredAccess: true });
+          }
+          if (!baanGuideSeen) {
+            baanGuideSeen = true;
+            localStorage.setItem('orbiton_baan_guide', 'yes');
+            showGuideCard({
+              kicker: 'Raghav Baan',
+              title: 'Premium flagship lane is ready.',
+              body: 'Raghav Baan is your deeper premium pass. Use it when you want stronger structure, broader reasoning, and clearer stepwise help.',
+              points: [
+                { title: 'Broader answers', text: 'Better for comparing options, deeper explanations, and decision help.' },
+                { title: 'Cleaner structure', text: 'It prefers answer-first, then practical steps when the question needs it.' },
+                { title: 'Same account unlock', text: 'Your premium lane and Mobile+ belong to the same signed-in account.' }
+              ],
+              primaryLabel: 'Use Raghav Baan',
+              secondaryLabel: 'Later',
+              onPrimary: function() { setActiveModel('Raghav Baan'); }
+            });
+            haptic(10);
+            return;
           }
           setActiveModel('Raghav Baan');
           haptic(10);
@@ -2850,26 +3003,32 @@ try {
     }
     if (premiumUnlocked || hasStoredPremiumAccess()) {
       if (!premiumUnlocked) {
-        applyPremiumState({ premiumUnlocked: true, messagingAllowed: false });
+        applyPremiumState({ premiumUnlocked: true, messagingAllowed: false, preserveStoredAccess: true });
       }
       messagingAllowed = true;
       localStorage.setItem('orbiton_msg', 'yes');
       updateMobileAgentUI();
-      showGuideCard({
-        kicker: 'Mobile+',
-        title: 'Mini Agent is ready.',
-        body: 'Say one natural line and Raghav AI prepares the next app for you instead of making you hop around manually.',
-        points: [
-          { title: 'Messages', text: 'Try “Message my mom I will be late” and it prepares WhatsApp for you.' },
-          { title: 'Call, SMS, email', text: 'Try “Call Rahul”, “Text dad I reached”, or “Email my teacher about leave”.' },
-          { title: 'Maps, search, YouTube, shopping', text: 'Try “Navigate to airport”, “search best laptops”, or “YouTube lo-fi beats”.' }
-        ],
-        primaryLabel: 'Use Mobile+',
-        secondaryLabel: 'Later',
-        onPrimary: function() {
-          setTimeout(function(){ chatIn.focus(); }, 70);
-        }
-      });
+      if (!mobileGuideSeen) {
+        mobileGuideSeen = true;
+        localStorage.setItem('orbiton_mobile_guide', 'yes');
+        showGuideCard({
+          kicker: 'Mobile+',
+          title: 'Mini Agent is ready.',
+          body: 'Say one natural line and Raghav AI prepares the next app for you instead of making you hop around manually.',
+          points: [
+            { title: 'Messages', text: 'Try “Message my mom I will be late” and it prepares WhatsApp for you.' },
+            { title: 'Call, SMS, email', text: 'Try “Call Rahul”, “Text dad I reached”, or “Email my teacher about leave”.' },
+            { title: 'Maps, search, YouTube, shopping', text: 'Try “Navigate to airport”, “search best laptops”, or “YouTube lo-fi beats”.' }
+          ],
+          primaryLabel: 'Use Mobile+',
+          secondaryLabel: 'Later',
+          onPrimary: function() {
+            setTimeout(function(){ chatIn.focus(); }, 70);
+          }
+        });
+      } else {
+        streamReply('Mobile+ is on. Say a natural line and I will prepare the next app for you.');
+      }
       return;
     }
     openExperimentalSheet('mobile-plus');
@@ -2899,10 +3058,25 @@ try {
   updatePremiumAccessUI();
   setAppAccess(false);
   window.addEventListener('pageshow', function() {
-    if (appAccessUnlocked) warmRemoteReasoning();
+    if (appAccessUnlocked) runKairosLite(true);
   });
   document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible' && appAccessUnlocked) warmRemoteReasoning();
+    if (document.visibilityState === 'visible' && appAccessUnlocked) {
+      startKairosLite();
+      runKairosLite(true);
+    } else if (document.visibilityState === 'hidden') {
+      compactPreferenceMemory();
+      stopKairosLite();
+    }
+  });
+  window.addEventListener('focus', function() {
+    if (appAccessUnlocked) {
+      startKairosLite();
+      runKairosLite(true);
+    }
+  });
+  window.addEventListener('blur', function() {
+    compactPreferenceMemory();
   });
 
   chatIn.addEventListener('focus', function() {
@@ -2944,6 +3118,14 @@ try {
     return String(value || '').trim().replace(/^[\s:,-]+/, '').replace(/[.]+$/, '').trim();
   }
 
+  function polishAgentText(value) {
+    var text = trimAgentValue(value);
+    if (!text) return '';
+    text = text.charAt(0).toUpperCase() + text.slice(1);
+    if (!/[.!?]$/.test(text)) text += '.';
+    return text;
+  }
+
   function parseMessageCommand(text) {
     var cleaned = text.replace(/^(message|msg|whatsapp|text)\s+/i, '').trim();
     if (!cleaned) return null;
@@ -2980,23 +3162,25 @@ try {
 
     var parsedMessage = parseMessageCommand(raw);
     if (/^(message|msg|whatsapp)\b/i.test(raw) && parsedMessage) {
+      var polishedMessage = polishAgentText(parsedMessage.msg);
       return {
         title: 'WhatsApp message ready',
-        summary: 'To ' + parsedMessage.name + ': "' + parsedMessage.msg + '"',
+        summary: 'To ' + parsedMessage.name + ': "' + polishedMessage + '"',
         primaryLabel: 'Open WhatsApp',
         originalText: raw,
-        execute: function() { mobileOpen('https://wa.me/?text=' + encodeURIComponent(parsedMessage.msg), raw); },
+        execute: function() { mobileOpen('https://wa.me/?text=' + encodeURIComponent(polishedMessage), raw); },
         reply: 'Mini Agent prepared WhatsApp for ' + parsedMessage.name + '. Check it once and hit send.'
       };
     }
 
     if (/^(text|sms)\b/i.test(raw) && parsedMessage) {
+      var polishedSms = polishAgentText(parsedMessage.msg);
       return {
         title: 'SMS ready',
-        summary: 'For ' + parsedMessage.name + ': "' + parsedMessage.msg + '"',
+        summary: 'For ' + parsedMessage.name + ': "' + polishedSms + '"',
         primaryLabel: 'Open SMS',
         originalText: raw,
-        execute: function() { mobileOpen('sms:?&body=' + encodeURIComponent(parsedMessage.msg), raw); },
+        execute: function() { mobileOpen('sms:?&body=' + encodeURIComponent(polishedSms), raw); },
         reply: 'Mini Agent prepared an SMS for ' + parsedMessage.name + '.'
       };
     }
@@ -3004,7 +3188,7 @@ try {
     var emailMatch = raw.match(/^(?:email|mail)\s+(.+?)(?:\s+(?:about|saying|that|says)\s+(.+))?$/i);
     if (emailMatch) {
       var emailWho = trimAgentValue(emailMatch[1]);
-      var emailBody = trimAgentValue(emailMatch[2] || '');
+      var emailBody = polishAgentText(emailMatch[2] || '');
       return {
         title: 'Email draft ready',
         summary: 'For ' + emailWho + (emailBody ? ': "' + emailBody + '"' : '.'),
