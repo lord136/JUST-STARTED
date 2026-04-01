@@ -3152,7 +3152,9 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 let currentFirebaseUser = null;
 let signInWatchdog = null;
-const preferRedirectAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+const isStandaloneAuth = window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+const isMobileAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+const preferRedirectAuth = isStandaloneAuth;
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(function() {});
 
 const authBtn = document.getElementById('authBtn');
@@ -3286,7 +3288,6 @@ async function startSignIn() {
     showAuthFeedback('Google sign-in is taking too long. If the popup did not open, try once more.');
   }, 12000);
   try {
-    await persistenceReady;
     if (preferRedirectAuth) {
       setRedirectPending();
       await signInWithRedirect(auth, provider);
@@ -3294,8 +3295,11 @@ async function startSignIn() {
     }
     await signInWithPopup(auth, provider);
   } catch (error) {
-    if (error && /auth\/popup-blocked/i.test(String(error.code || ''))) {
+    if (error && /auth\/popup-blocked|auth\/cancelled-popup-request/i.test(String(error.code || ''))) {
       try {
+        if (!isMobileAuth && !isStandaloneAuth) {
+          throw error;
+        }
         setRedirectPending();
         await signInWithRedirect(auth, provider);
         return;
