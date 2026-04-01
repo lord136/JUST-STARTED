@@ -487,6 +487,7 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
 
 <!-- THREE.JS (isolated) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 try {
   (function(){
@@ -950,6 +951,7 @@ try {
   var defaultAnswerModel = 'Raghav Beta';
   var REMOTE_REASONING_URL = window.RAGHAV_REMOTE_URL || 'https://not-going-to-give-up.onrender.com';
   var remoteWarmStarted = false;
+  var premiumUnlockInFlight = false;
   var modelConfigs = {
     'Raghav Beta': {
       status: 'Flagship replies for everyday help',
@@ -1033,6 +1035,42 @@ try {
       return "The live AI server is not connected yet. Once the server URL is set, replies will come through here.";
     }
     return "The live AI server is waking up right now. Keep this page open for a moment and ask again here.";
+  }
+
+  async function getPremiumPaymentConfig() {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('PAYMENT_SERVER_NOT_CONFIGURED');
+    var response = await fetch(base + '/api/pay/create-order', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: 'premium_suite' })
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok || !data.order) {
+      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'PAYMENT_ORDER_FAILED');
+    }
+    return data;
+  }
+
+  async function verifyPremiumPayment(payload) {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('PAYMENT_SERVER_NOT_CONFIGURED');
+    var response = await fetch(base + '/api/pay/verify', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok || !data.verified) {
+      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'PAYMENT_VERIFY_FAILED');
+    }
+    return data;
   }
 
   function mobileOpen(url, sourceText) {
@@ -2284,6 +2322,7 @@ try {
   localStorage.removeItem('orbiton_model');
   var activeModel = 'Raghav Beta';
   var messagingAllowed = localStorage.getItem('orbiton_msg') === 'yes';
+  var premiumUnlocked = localStorage.getItem('raghav_premium_unlocked') === 'yes';
   var searchGuideSeen = localStorage.getItem('orbiton_search_guide') === 'yes';
   var modelGuideSeen = localStorage.getItem('orbiton_model_guide') === 'yes';
   var mobileBtn = document.getElementById('mobileBtn');
@@ -2304,6 +2343,9 @@ try {
   var permMini = document.getElementById('permMini');
   var permYes = document.getElementById('permYes');
   var permNo = document.getElementById('permNo');
+  var raghavBaanBtn = document.querySelector('#modelMenu [data-model="Raghav Baan"]');
+  var raghavBaanIcon = raghavBaanBtn ? raghavBaanBtn.querySelector('span') : null;
+  var raghavBaanMeta = raghavBaanBtn ? raghavBaanBtn.querySelector('.pop-meta') : null;
   var guidePrimaryHandler = null;
   var guideSecondaryHandler = null;
   var experimentalSheetMode = 'mobile-plus';
@@ -2333,6 +2375,19 @@ try {
   function updateMobileAgentUI() {
     mobileBtn.classList.toggle('active-agent', messagingAllowed);
     mobileBtn.setAttribute('aria-pressed', messagingAllowed ? 'true' : 'false');
+  }
+
+  function updatePremiumAccessUI() {
+    if (!raghavBaanBtn || !raghavBaanMeta || !raghavBaanIcon) return;
+    if (premiumUnlocked) {
+      raghavBaanBtn.classList.remove('locked');
+      raghavBaanIcon.textContent = '✦';
+      raghavBaanMeta.textContent = 'Premium unlocked on this device. Mobile+ and the premium lane are ready.';
+    } else {
+      raghavBaanBtn.classList.add('locked');
+      raghavBaanIcon.textContent = '🔒';
+      raghavBaanMeta.textContent = 'Premium membership for the full experimental experience. One pass unlocks both the mobile agent and the flagship model lane.';
+    }
   }
 
   function openModelMenu() {
@@ -2369,14 +2424,15 @@ try {
     ]);
     permMini.textContent = '';
     permMini.style.display = 'none';
-    permYes.textContent = lockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+    permYes.textContent = premiumUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1');
+    permYes.disabled = !!premiumUnlocked;
     permNo.textContent = 'Not Now';
 
     permSheet.style.display = 'flex';
   }
 
   function maybeShowPremiumPromptAfterFirstAnswer() {
-    if (premiumPromptShown) return;
+    if (premiumPromptShown || premiumUnlocked) return;
     premiumPromptShown = true;
     try { sessionStorage.setItem('raghav_premium_prompt_seen', 'yes'); } catch (e) {}
     setTimeout(function() {
@@ -2422,6 +2478,71 @@ try {
   guideSheet.addEventListener('click', function(e) {
     if (e.target === this) closeGuideCard();
   });
+
+  function markPremiumUnlocked() {
+    premiumUnlocked = true;
+    messagingAllowed = true;
+    localStorage.setItem('raghav_premium_unlocked', 'yes');
+    localStorage.setItem('orbiton_msg', 'yes');
+    updatePremiumAccessUI();
+    updateMobileAgentUI();
+    permSheet.style.display = 'none';
+    setTimeout(function() {
+      streamReply('Premium is unlocked on this device. Mobile+ and the premium lane are ready for you now.');
+    }, 220);
+  }
+
+  async function launchPremiumCheckout() {
+    if (premiumUnlocked || premiumUnlockInFlight) return;
+    premiumUnlockInFlight = true;
+    permYes.disabled = true;
+    permYes.textContent = 'Connecting...';
+    try {
+      var payment = await getPremiumPaymentConfig();
+      if (!window.Razorpay) {
+        throw new Error('Razorpay checkout is not available yet.');
+      }
+      var options = {
+        key: payment.keyId,
+        amount: String(payment.order.amount || payment.amount),
+        currency: payment.order.currency || payment.currency || 'INR',
+        name: payment.name || 'Raghav AI',
+        description: payment.description || 'Premium unlock',
+        order_id: payment.order.id,
+        theme: { color: '#2563eb' },
+        handler: async function (response) {
+          try {
+            await verifyPremiumPayment(response);
+            markPremiumUnlocked();
+          } catch (verifyError) {
+            streamReply('Payment came through, but verification did not complete yet. Please try once more in a moment.');
+          } finally {
+            premiumUnlockInFlight = false;
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            premiumUnlockInFlight = false;
+            permYes.disabled = false;
+            permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+          }
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.on('payment.failed', function() {
+        premiumUnlockInFlight = false;
+        permYes.disabled = false;
+        permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+        streamReply('Payment did not complete this time. You can try again whenever you want.');
+      });
+      rzp.open();
+    } catch (error) {
+      premiumUnlockInFlight = false;
+      permYes.disabled = false;
+      permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+      streamReply('I could not open payment right now. Check that Razorpay keys are live on the server and try again.');
+    }
+  }
 
   function startBackgroundWarmup() {
     if (startupWarmupStarted || window.location.protocol === 'file:') return;
@@ -2494,6 +2615,21 @@ try {
     btn.addEventListener('click', function() {
       if (this.classList.contains('locked') || this.dataset.model === 'Raghav Baan') {
         closeAllPopups();
+        if (this.dataset.model === 'Raghav Baan' && premiumUnlocked) {
+          showGuideCard({
+            kicker: 'Premium',
+            title: 'Raghav Baan is already unlocked',
+            body: 'This device already has the premium unlock, so your mobile agent and premium lane are ready to use.',
+            points: [
+              { title: 'Mini Agent', text: 'Use Mobile+ to prepare quick actions without paying again here.' },
+              { title: 'Premium Access', text: 'Your premium access stays available on this device.' }
+            ],
+            primaryLabel: 'Got it',
+            secondaryLabel: 'Close'
+          });
+          haptic(10);
+          return;
+        }
         openExperimentalSheet('model-lock', 'Raghav Baan');
         haptic(10);
         return;
@@ -2515,19 +2651,24 @@ try {
       streamReply("Mobile + is off now. Turn it back on anytime if you want Raghav AI to prepare message actions for you.");
       return;
     }
+    if (premiumUnlocked) {
+      messagingAllowed = true;
+      localStorage.setItem('orbiton_msg', 'yes');
+      updateMobileAgentUI();
+      streamReply("Mobile+ is enabled. Now say \"Message my mom I will be late\" and I'll get it ready in WhatsApp for you.");
+      return;
+    }
     openExperimentalSheet('mobile-plus');
   });
 
   // Permission sheet allow/deny
   permYes.addEventListener('click', function() {
-    permSheet.style.display = 'none';
-    messagingAllowed = true;
-    localStorage.setItem('orbiton_msg', 'yes');
-    updateMobileAgentUI();
+    if (premiumUnlocked) {
+      permSheet.style.display = 'none';
+      return;
+    }
     haptic(15);
-    setTimeout(function(){
-      streamReply("Mobile+ is enabled. Now say \"Message my mom I will be late\" and I'll get it ready in WhatsApp for you.");
-    }, 300);
+    launchPremiumCheckout();
   });
   permNo.addEventListener('click', function() {
     permSheet.style.display = 'none';
@@ -2541,6 +2682,7 @@ try {
 
   updateModelUI();
   updateMobileAgentUI();
+  updatePremiumAccessUI();
   setTimeout(function(){ startBackgroundWarmup(); }, 1600);
   window.addEventListener('pageshow', function() {
     warmRemoteReasoning();
