@@ -334,7 +334,7 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
 <canvas id="bg"></canvas>
 
 <div class="auth-corner">
-  <button class="auth-pill" id="authBtn" type="button" aria-label="Sign in" disabled>
+  <button class="auth-pill" id="authBtn" type="button" aria-label="Sign in">
     <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="8" r="4"></circle></svg>
     <span id="authBtnLabel">Sign in</span>
   </button>
@@ -447,7 +447,7 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
       </div>
     </div>
     <div class="perm-actions">
-      <button class="auth-primary" id="authSheetPrimary" disabled>Continue with Google</button>
+      <button class="auth-primary" id="authSheetPrimary">Continue with Google</button>
     </div>
   </div>
 </div>
@@ -2711,10 +2711,11 @@ try {
               firebase_email: currentSignedInUser && currentSignedInUser.email ? currentSignedInUser.email : ''
             });
             await markPremiumUnlocked(response);
-            if (verified && verified.entitlements) {
+            if (verified && verified.entitlements && (verified.entitlements.premiumUnlocked || verified.entitlements.mobilePlusUnlocked || verified.claimsApplied)) {
               applyPremiumState({
-                premiumUnlocked: !!verified.entitlements.premiumUnlocked,
-                messagingAllowed: !!verified.entitlements.mobilePlusUnlocked
+                premiumUnlocked: true,
+                messagingAllowed: true,
+                preserveStoredAccess: true
               });
             }
           } catch (verifyError) {
@@ -3174,14 +3175,12 @@ let currentFirebaseUser = null;
 let signInWatchdog = null;
 const isStandaloneAuth = window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
 const isMobileAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
-const preferRedirectAuth = isStandaloneAuth;
+const preferRedirectAuth = isStandaloneAuth || isMobileAuth;
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(function() {});
 persistenceReady.finally(function() {
-  setTimeout(function() {
-    if (!auth.currentUser && !hasRedirectPending()) {
-      resetAuthPill();
-    }
-  }, 400);
+  if (!auth.currentUser && !hasRedirectPending()) {
+    resetAuthPill();
+  }
 });
 
 const authBtn = document.getElementById('authBtn');
@@ -3403,12 +3402,11 @@ onAuthStateChanged(auth, function(user) {
       window.raghavSetCurrentUser(user);
     }
     lockAuthPill(user);
+    if (typeof window.raghavSetAppAccess === 'function') {
+      window.raghavSetAppAccess(true);
+    }
     syncUserPremiumFromClaims(user, false).catch(function(error) {
       showAuthFeedback(explainAuthError(error));
-    }).finally(function() {
-      if (typeof window.raghavSetAppAccess === 'function') {
-        window.raghavSetAppAccess(true);
-      }
     });
   } else {
     currentFirebaseUser = null;
