@@ -201,8 +201,8 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-kicker{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.24);color:#dbeafe;font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase;margin:0 auto 14px;position:relative;left:50%;transform:translateX(-50%)}
 .perm-box h3{font-size:1.03rem;font-weight:700;margin-bottom:8px;text-align:center;letter-spacing:-.3px;position:relative}
 .perm-box p{font-size:.82rem;color:rgba(255,255,255,.58);text-align:center;line-height:1.52;margin-bottom:14px;position:relative}
-.perm-points{display:grid;gap:8px;margin-bottom:12px;position:relative}
-.perm-point{padding:10px 11px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.perm-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;position:relative}
+.perm-point{padding:12px 12px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.07);min-height:104px}
 .perm-point strong{display:block;font-size:.8rem;font-weight:600;letter-spacing:-.2px}
 .perm-point span{display:block;margin-top:4px;font-size:.73rem;line-height:1.42;color:rgba(255,255,255,.5)}
 .perm-mini{font-size:.72rem;color:rgba(255,255,255,.42);text-align:center;line-height:1.42;margin-bottom:14px;position:relative}
@@ -240,6 +240,8 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
   .fico{width:42px;height:42px;margin-bottom:14px}
   .fcard h3{font-size:1rem}
   .fcard p{font-size:.82rem;line-height:1.58}
+  .perm-points{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .perm-point{min-height:96px}
 }
 
 body[data-theme="light"]{--bg:#eef3ff;--text:#08111f}
@@ -379,11 +381,15 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
     </div>
     <div class="perm-kicker" id="permKicker">Experimental</div>
     <h3 id="permTitle">Experience our experimental features for the price of a pastry 🍰</h3>
-    <p id="permBody">Early access is just Rs 39. Quick actions, less app hopping, and one-line mobile moves prepared for you.</p>
+    <p id="permBody" style="display:none"></p>
     <div class="perm-points" id="permPoints">
       <div class="perm-point">
-        <strong>One line, already prepared</strong>
-        <span>Say “Message my mom I will be late” and Raghav AI lines it up instantly.</span>
+        <strong>Mini Agent</strong>
+        <span>Unlock the quick mobile lane that prepares actions and cuts extra tapping.</span>
+      </div>
+      <div class="perm-point">
+        <strong>Flagship Model</strong>
+        <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
       </div>
     </div>
     <div class="perm-mini" id="permMini">Rs 39</div>
@@ -2288,13 +2294,11 @@ try {
     experimentalLockedModel = lockedModel || '';
     permKicker.textContent = 'Experimental';
     permTitle.textContent = 'Experience our experimental features for the price of a pastry 🍰';
-    permBody.textContent = lockedModel
-      ? 'One membership unlocks both the mobile agent and the flagship model lane, so you get the full premium experience in one place.'
-      : 'One membership unlocks the mobile agent and the flagship model lane together. Quick actions, less app hopping, and one-line mobile moves prepared for you.';
+    permBody.textContent = '';
+    permBody.style.display = 'none';
     renderExperimentalPoints([
-      lockedModel
-        ? { title: 'One membership, two lanes', text: 'Unlock both the mobile agent and the flagship model together with a single pass.' }
-        : { title: 'One line, already prepared', text: 'Say “Message my mom I will be late” and Raghav AI lines it up instantly.' }
+      { title: 'Mini Agent', text: 'Unlock the quick mobile lane that prepares actions and keeps everyday tasks moving faster.' },
+      { title: 'Flagship Model', text: 'Unlock the premium answer lane for broader help, clearer reasoning, and a fuller everyday experience.' }
     ]);
     permMini.textContent = '';
     permMini.style.display = 'none';
