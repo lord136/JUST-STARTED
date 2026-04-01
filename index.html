@@ -1364,6 +1364,16 @@ try {
     return (text || '').toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
+  function isRestrictedAdultQuery(text) {
+    var cleaned = normalizeIntentText(text);
+    if (!cleaned) return false;
+    return /\b(porn|porno|xxx|sex video|sex videos|adult video|adult videos|nude|nudes|naked pics|naked videos|hentai|blowjob|bj|hardcore|onlyfans|camgirl|camgirls|escort|escorts|pornhub)\b/.test(cleaned);
+  }
+
+  function getRestrictedAdultReply() {
+    return "I can’t help with porn or explicit sexual content. If you want, I can still help in a respectful way with relationships, sexual health basics, safety, or something else.";
+  }
+
   function classifyDirectRoute(text) {
     var cleaned = normalizeIntentText(text);
     if (!cleaned) return null;
@@ -1997,6 +2007,9 @@ try {
   }
 
   async function getModelOrSearchResponse(text) {
+    if (isRestrictedAdultQuery(text)) {
+      return getRestrictedAdultReply();
+    }
     if (shouldUseRemoteReasoning()) {
       try {
         return await getRemoteReasoningResponse(text);
@@ -2078,6 +2091,9 @@ try {
   ];
 
   async function getResponse(text){
+    if (isRestrictedAdultQuery(text)) {
+      return getRestrictedAdultReply();
+    }
     var knownCommandReply = explainKnownCommand(text);
     if (knownCommandReply) return knownCommandReply;
 
