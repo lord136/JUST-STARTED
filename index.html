@@ -1076,7 +1076,11 @@ try {
       mode: 'cors',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product: 'premium_suite' })
+      body: JSON.stringify({
+        product: 'premium_suite',
+        firebase_uid: currentSignedInUser && currentSignedInUser.uid ? currentSignedInUser.uid : '',
+        firebase_email: currentSignedInUser && currentSignedInUser.email ? currentSignedInUser.email : ''
+      })
     });
     var data = null;
     try { data = await response.json(); } catch (e) {}
