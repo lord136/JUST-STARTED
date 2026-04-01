@@ -3358,8 +3358,10 @@ provider.setCustomParameters({ prompt: 'select_account' });
 let currentFirebaseUser = null;
 let signInWatchdog = null;
 const isStandaloneAuth = window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+const isIOSAuth = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isMobileAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
-const preferRedirectAuth = isStandaloneAuth || isMobileAuth;
+const isStandaloneWidgetAuth = isStandaloneAuth && isIOSAuth;
+const preferRedirectAuth = false;
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(function() {});
 persistenceReady.finally(function() {
   if (!auth.currentUser && !hasRedirectPending()) {
@@ -3476,7 +3478,9 @@ function explainAuthError(error) {
     return 'Google sign-in is not enabled in Firebase Authentication yet.';
   }
   if (/auth\/popup-blocked/i.test(code)) {
-    return 'The sign-in popup was blocked, so I switched to a direct sign-in flow. Try once more.';
+    return isStandaloneWidgetAuth
+      ? 'The iPhone widget could not open the Google sign-in window. Tap Continue again and let the browser window open, or open the site once in Safari and sign in there first.'
+      : 'The sign-in popup was blocked, so I could not open Google sign-in properly this time.';
   }
   if (/auth\/popup-closed-by-user/i.test(code)) {
     return 'The sign-in popup was closed before the login finished.';
@@ -3507,6 +3511,9 @@ async function startSignIn() {
   } catch (error) {
     if (error && /auth\/popup-blocked|auth\/cancelled-popup-request/i.test(String(error.code || ''))) {
       try {
+        if (isStandaloneWidgetAuth) {
+          throw error;
+        }
         if (!isMobileAuth && !isStandaloneAuth) {
           throw error;
         }
