@@ -30,6 +30,14 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .nav-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px)}
 .nav-btn:hover{background:rgba(255,255,255,.08);transform:scale(1.05)}
 .nav-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.auth-corner{position:fixed;top:16px;left:20px;z-index:200}
+.auth-pill{min-height:38px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px);font-family:inherit;font-size:.82rem;font-weight:600;letter-spacing:-.2px}
+.auth-pill:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+.auth-pill:disabled{cursor:default;transform:none;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.92)}
+.auth-pill:disabled:hover{transform:none}
+.auth-pill svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.auth-pill.loading{pointer-events:none;opacity:.82}
+.auth-pill.locked{padding-right:16px}
 
 /* HERO */
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px}
@@ -255,6 +263,9 @@ body[data-theme="light"] .hero-sub,body[data-theme="light"] .hero-founder,body[d
 body[data-theme="light"] .chat-pill,body[data-theme="light"] .hero-badge,body[data-theme="light"] .px-badge,body[data-theme="light"] .guide-kicker,body[data-theme="light"] .perm-kicker{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:rgba(8,17,31,.72)}
 body[data-theme="light"] .chat-nm,body[data-theme="light"] .fcard h3,body[data-theme="light"] .pop-title,body[data-theme="light"] .perm-box h3,body[data-theme="light"] .guide-box h3,body[data-theme="light"] .guide-item strong,body[data-theme="light"] .perm-point strong{color:#08111f}
 body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
+body[data-theme="light"] .auth-pill{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .auth-pill:hover{background:#fff}
+body[data-theme="light"] .auth-pill:disabled{background:rgba(255,255,255,.88);border-color:rgba(15,23,42,.12);color:#08111f}
 body[data-theme="light"] .btn-g:hover,body[data-theme="light"] .px-btn:hover,body[data-theme="light"] .model-trigger:hover{color:#08111f;border-color:rgba(15,23,42,.18)}
 body[data-theme="light"] .hero-founder strong{color:#08111f}
 body[data-theme="light"] .btn-p{background:#08111f;color:#fff;box-shadow:0 18px 36px rgba(8,17,31,.12)}
@@ -284,6 +295,13 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
 <body>
 
 <canvas id="bg"></canvas>
+
+<div class="auth-corner">
+  <button class="auth-pill" id="authBtn" type="button" aria-label="Sign in">
+    <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="8" r="4"></circle></svg>
+    <span id="authBtnLabel">Sign in</span>
+  </button>
+</div>
 
 <nav class="nav">
   <button class="nav-btn" id="themeBtn" aria-label="Toggle theme">
@@ -2591,6 +2609,96 @@ try {
     if(typeof confetti==='function') confetti({particleCount:120,spread:90,origin:{y:.6},colors:['#ffffff','#2563eb','#7c3aed']});
   });
 })();
+</script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAnalytics, isSupported as analyticsSupported } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  setPersistence,
+  signInWithPopup,
+  signInWithRedirect,
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAAZ3sEJsMhvgTj4FOroyjgd4AIpnWm_nA',
+  authDomain: 'divy-1339d.firebaseapp.com',
+  projectId: 'divy-1339d',
+  storageBucket: 'divy-1339d.firebasestorage.app',
+  messagingSenderId: '1013492970798',
+  appId: '1:1013492970798:web:c24f32a481ec000019b6bf',
+  measurementId: 'G-5N0GL6WD5V'
+};
+
+const app = initializeApp(firebaseConfig);
+analyticsSupported().then(function(supported) {
+  if (supported) getAnalytics(app);
+}).catch(function() {});
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
+
+const authBtn = document.getElementById('authBtn');
+const authBtnLabel = document.getElementById('authBtnLabel');
+const isMobileAuth = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
+
+function getDisplayName(user) {
+  if (!user) return 'Signed in';
+  if (user.displayName) {
+    return user.displayName.split(' ')[0];
+  }
+  if (user.email) {
+    return user.email.split('@')[0];
+  }
+  return 'Signed in';
+}
+
+function lockAuthPill(user) {
+  authBtn.disabled = true;
+  authBtn.classList.remove('loading');
+  authBtn.classList.add('locked');
+  authBtn.setAttribute('aria-label', 'Signed in');
+  authBtnLabel.textContent = getDisplayName(user);
+}
+
+function resetAuthPill() {
+  authBtn.disabled = false;
+  authBtn.classList.remove('loading', 'locked');
+  authBtn.setAttribute('aria-label', 'Sign in');
+  authBtnLabel.textContent = 'Sign in';
+}
+
+async function startSignIn() {
+  authBtn.classList.add('loading');
+  authBtnLabel.textContent = 'Connecting...';
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+    if (isMobileAuth) {
+      await signInWithRedirect(auth, provider);
+      return;
+    }
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    resetAuthPill();
+  }
+}
+
+onAuthStateChanged(auth, function(user) {
+  if (user) {
+    lockAuthPill(user);
+  } else {
+    resetAuthPill();
+  }
+});
+
+authBtn.addEventListener('click', function() {
+  if (authBtn.disabled) return;
+  startSignIn();
+});
 </script>
 </body>
 </html>
