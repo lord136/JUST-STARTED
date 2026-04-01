@@ -364,10 +364,6 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
               </button>
             </div>
           </div>
-          <!-- MIC BUTTON -->
-          <button class="px-btn" id="micBtn" title="Voice input">
-            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-          </button>
           <button class="px-send" id="sendBtn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         </div>
       </div>
@@ -974,8 +970,9 @@ try {
     return "The live AI server is waking up right now. Keep this page open for a moment and ask again here.";
   }
 
-  function mobileOpen(url) {
+  function mobileOpen(url, sourceText) {
     if (!url) return null;
+    if (hasRestrictedAdultSignal(sourceText) || hasRestrictedAdultSignal(url)) return null;
     var popup = null;
     try {
       popup = window.open(url, '_blank', 'noopener');
@@ -1372,6 +1369,14 @@ try {
 
   function getRestrictedAdultReply() {
     return "I can’t help with porn or explicit sexual content. If you want, I can still help in a respectful way with relationships, sexual health basics, safety, or something else.";
+  }
+
+  function hasRestrictedAdultSignal(text) {
+    var raw = String(text || '');
+    if (!raw) return false;
+    var decoded = raw;
+    try { decoded = decodeURIComponent(raw); } catch (e) {}
+    return isRestrictedAdultQuery(decoded) || isRestrictedAdultQuery(raw);
   }
 
   function classifyDirectRoute(text) {
@@ -1789,14 +1794,16 @@ try {
   }
 
   function triggerReferencePage(text, title) {
+    if (hasRestrictedAdultSignal(text) || hasRestrictedAdultSignal(title)) return;
     var target = title
       ? 'https://en.wikipedia.org/wiki/' + encodeURIComponent(title.replace(/\s+/g, '_'))
       : 'https://en.wikipedia.org/wiki/Special:Search?search=' + encodeURIComponent(text);
-    mobileOpen(target);
+    mobileOpen(target, text || title);
   }
 
   function triggerGoogleSearch(text) {
-    mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(text));
+    if (hasRestrictedAdultSignal(text)) return;
+    mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(text), text);
   }
 
   function sanitizeModelReply(text) {
@@ -2120,7 +2127,10 @@ try {
     var low=text.toLowerCase();
     if(low.indexOf('open ')===0){
       var target=text.substring(5).trim();
-      mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(target));
+      if (isRestrictedAdultQuery(target)) {
+        return getRestrictedAdultReply();
+      }
+      mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(target), target);
       return 'Opening search for '+target+'.';
     }
     if (shouldUseRemoteReasoning()) {
@@ -2491,28 +2501,6 @@ try {
       }
     });
   }, { once: true });
-
-  // Mic button -> Web Speech API
-  document.getElementById('micBtn').addEventListener('click', function() {
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { streamReply("Voice input isn't available in this browser. Try Chrome on Android."); return; }
-    var rec = new SR();
-    rec.lang = 'en-US'; rec.interimResults = false;
-    var micBtn = document.getElementById('micBtn');
-    micBtn.style.color = '#ff4444';
-    haptic([10,30,10]);
-    rec.start();
-    rec.onresult = function(e) {
-      var transcript = e.results[0][0].transcript;
-      chatIn.value = transcript;
-      chatIn.style.height = 'auto';
-      chatIn.style.height = Math.min(chatIn.scrollHeight, 120) + 'px';
-      micBtn.style.color = '';
-      handleSend();
-    };
-    rec.onerror = function() { micBtn.style.color = ''; };
-    rec.onend = function() { micBtn.style.color = ''; };
-  });
 
   // Override WhatsApp intent to check messaging permission
   function parseMessageCommand(text) {
