@@ -2645,7 +2645,6 @@ provider.setCustomParameters({ prompt: 'select_account' });
 
 const authBtn = document.getElementById('authBtn');
 const authBtnLabel = document.getElementById('authBtnLabel');
-const isMobileAuth = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
 
 function getDisplayName(user) {
   if (!user) return 'Signed in';
@@ -2706,10 +2705,6 @@ async function startSignIn() {
   authBtnLabel.textContent = 'Connecting...';
   try {
     await setPersistence(auth, browserLocalPersistence);
-    if (isMobileAuth) {
-      await signInWithRedirect(auth, provider);
-      return;
-    }
     await signInWithPopup(auth, provider);
   } catch (error) {
     if (error && /auth\/popup-blocked/i.test(String(error.code || ''))) {
