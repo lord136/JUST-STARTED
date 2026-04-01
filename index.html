@@ -2618,19 +2618,20 @@ import {
   GoogleAuthProvider,
   browserLocalPersistence,
   setPersistence,
+  getRedirectResult,
   signInWithPopup,
   signInWithRedirect,
   onAuthStateChanged
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAAZ3sEJsMhvgTj4FOroyjgd4AIpnWm_nA',
-  authDomain: 'divy-1339d.firebaseapp.com',
-  projectId: 'divy-1339d',
-  storageBucket: 'divy-1339d.firebasestorage.app',
-  messagingSenderId: '1013492970798',
-  appId: '1:1013492970798:web:c24f32a481ec000019b6bf',
-  measurementId: 'G-5N0GL6WD5V'
+  apiKey: 'AIzaSyBHZ0KhppYjJzgAFKzvr-8lBA9d4ns_G-c',
+  authDomain: 'raghav-beta.firebaseapp.com',
+  projectId: 'raghav-beta',
+  storageBucket: 'raghav-beta.firebasestorage.app',
+  messagingSenderId: '653849025357',
+  appId: '1:653849025357:web:0de6d45b79b4e131b83504',
+  measurementId: 'G-RQBL65YWWB'
 };
 
 const app = initializeApp(firebaseConfig);
@@ -2672,6 +2673,34 @@ function resetAuthPill() {
   authBtnLabel.textContent = 'Sign in';
 }
 
+function showAuthFeedback(message) {
+  if (window.streamReply) {
+    window.streamReply(message, 'Answer');
+  } else {
+    authBtnLabel.textContent = message;
+  }
+}
+
+function explainAuthError(error) {
+  const code = error && error.code ? String(error.code) : '';
+  if (/auth\/unauthorized-domain/i.test(code)) {
+    return 'Sign-in is blocked because this website domain is not added in Firebase Authorized Domains yet.';
+  }
+  if (/auth\/operation-not-allowed/i.test(code)) {
+    return 'Google sign-in is not enabled in Firebase Authentication yet.';
+  }
+  if (/auth\/popup-blocked/i.test(code)) {
+    return 'The sign-in popup was blocked, so I switched to a direct sign-in flow. Try once more.';
+  }
+  if (/auth\/popup-closed-by-user/i.test(code)) {
+    return 'The sign-in popup was closed before the login finished.';
+  }
+  if (/auth\/cancelled-popup-request/i.test(code)) {
+    return 'Another sign-in request interrupted this one. Try again once.';
+  }
+  return 'Sign-in could not finish yet. Check Firebase Google sign-in and Authorized Domains once.';
+}
+
 async function startSignIn() {
   authBtn.classList.add('loading');
   authBtnLabel.textContent = 'Connecting...';
@@ -2683,9 +2712,25 @@ async function startSignIn() {
     }
     await signInWithPopup(auth, provider);
   } catch (error) {
+    if (error && /auth\/popup-blocked/i.test(String(error.code || ''))) {
+      try {
+        await signInWithRedirect(auth, provider);
+        return;
+      } catch (redirectError) {
+        resetAuthPill();
+        showAuthFeedback(explainAuthError(redirectError));
+        return;
+      }
+    }
     resetAuthPill();
+    showAuthFeedback(explainAuthError(error));
   }
 }
+
+getRedirectResult(auth).catch(function(error) {
+  resetAuthPill();
+  showAuthFeedback(explainAuthError(error));
+});
 
 onAuthStateChanged(auth, function(user) {
   if (user) {
