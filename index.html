@@ -448,7 +448,6 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
     </div>
     <div class="perm-actions">
       <button class="auth-primary" id="authSheetPrimary">Continue with Google</button>
-      <button class="auth-secondary" id="authSheetSecondary">Not now</button>
     </div>
   </div>
 </div>
@@ -3128,7 +3127,6 @@ const authBtn = document.getElementById('authBtn');
 const authBtnLabel = document.getElementById('authBtnLabel');
 const authSheet = document.getElementById('authSheet');
 const authSheetPrimary = document.getElementById('authSheetPrimary');
-const authSheetSecondary = document.getElementById('authSheetSecondary');
 
 function hideAuthSheet(rememberDismissal) {
   if (rememberDismissal && !authSheet.classList.contains('must-login')) {
@@ -3326,11 +3324,6 @@ authBtn.addEventListener('click', function() {
 authSheetPrimary.addEventListener('click', function() {
   if (authSheetPrimary.disabled) return;
   startSignIn();
-});
-
-authSheetSecondary.addEventListener('click', function() {
-  if (authSheet.classList.contains('must-login')) return;
-  hideAuthSheet(true);
 });
 
 authSheet.addEventListener('click', function(e) {
