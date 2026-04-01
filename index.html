@@ -3121,6 +3121,8 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 let currentFirebaseUser = null;
+let signInWatchdog = null;
+setPersistence(auth, browserLocalPersistence).catch(function() {});
 
 const authBtn = document.getElementById('authBtn');
 const authBtnLabel = document.getElementById('authBtnLabel');
@@ -3196,6 +3198,13 @@ function showAuthFeedback(message) {
   }
 }
 
+function clearSignInWatchdog() {
+  if (signInWatchdog) {
+    clearTimeout(signInWatchdog);
+    signInWatchdog = null;
+  }
+}
+
 function explainAuthError(error) {
   const code = error && error.code ? String(error.code) : '';
   const message = error && error.message ? String(error.message) : '';
@@ -3221,12 +3230,16 @@ function explainAuthError(error) {
 }
 
 async function startSignIn() {
+  clearSignInWatchdog();
   authBtn.classList.add('loading');
   authBtnLabel.textContent = 'Connecting...';
   authSheetPrimary.disabled = true;
   authSheetPrimary.textContent = 'Connecting...';
+  signInWatchdog = setTimeout(function() {
+    resetAuthPill();
+    showAuthFeedback('Google sign-in is taking too long. If the popup did not open, try once more.');
+  }, 12000);
   try {
-    await setPersistence(auth, browserLocalPersistence);
     await signInWithPopup(auth, provider);
   } catch (error) {
     if (error && /auth\/popup-blocked/i.test(String(error.code || ''))) {
@@ -3275,6 +3288,7 @@ getRedirectResult(auth).catch(function(error) {
 });
 
 onAuthStateChanged(auth, function(user) {
+  clearSignInWatchdog();
   if (user) {
     currentFirebaseUser = user;
     if (typeof window.raghavSetCurrentUser === 'function') {
