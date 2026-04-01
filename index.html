@@ -136,6 +136,11 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);animation:dotUp 1.2s ease-in-out infinite}
 .dots span:nth-child(2){animation-delay:.2s}
 .dots span:nth-child(3){animation-delay:.4s}
+.trace-wrap{display:flex;flex-direction:column;gap:10px;min-width:min(310px,72vw)}
+.trace-head{display:flex;align-items:center;gap:10px}
+.trace-kicker{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.44)}
+.trace-step{font-size:.92rem;line-height:1.45;color:rgba(255,255,255,.92)}
+.trace-mini{font-size:.76rem;line-height:1.35;color:rgba(255,255,255,.54)}
 @keyframes dotUp{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
 @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{to{opacity:1}}
@@ -319,6 +324,9 @@ body[data-theme="light"] .agent-card span{color:rgba(8,17,31,.62)}
 body[data-theme="light"] .agent-btn{background:rgba(8,17,31,.05);color:rgba(8,17,31,.8);border-color:rgba(15,23,42,.08)}
 body[data-theme="light"] .dots-wrap{background:rgba(15,23,42,.05);border-color:rgba(15,23,42,.08)}
 body[data-theme="light"] .dots span{background:rgba(8,17,31,.42)}
+body[data-theme="light"] .trace-kicker{color:rgba(8,17,31,.46)}
+body[data-theme="light"] .trace-step{color:rgba(8,17,31,.9)}
+body[data-theme="light"] .trace-mini{color:rgba(8,17,31,.56)}
 body[data-theme="light"] .pop-item{color:rgba(8,17,31,.78)}
 body[data-theme="light"] .pop-item:hover{background:rgba(8,17,31,.06)}
 body[data-theme="light"] .model-menu{background:rgba(255,255,255,.92)}
@@ -965,6 +973,8 @@ try {
   var localChatHistory = [];
   var workingState = null;
   var workingTimer = null;
+  var typingState = null;
+  var typingTimer = null;
   var textLoadProgress = {};
   var firstLocalReplyDone = false;
   var MODEL_FALLBACK_MS = 20000;
@@ -1494,19 +1504,38 @@ try {
     }
   }
 
-  function showDots(lane){
+  function showDots(lane, options){
     orbAv.classList.add('think');
+    hideDots();
+    typingState = {
+      startedAt: Date.now(),
+      lane: lane || 'Answer',
+      deepPlan: !!(options && options.deepPlan),
+      stepMs: options && options.stepMs ? options.stepMs : 1200,
+      steps: getThinkingTraceSteps(lane || 'Answer', !!(options && options.deepPlan)),
+      mini: getThinkingTraceMini(lane || 'Answer', !!(options && options.deepPlan))
+    };
     var row=document.createElement('div'); row.className='msg a'; row.id='typingRow';
     var tag = makeRouteTag(lane || 'Thinking');
     if (tag) row.appendChild(tag);
     var wrap = document.createElement('div');
-    wrap.className = 'dots-wrap';
-    wrap.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+    wrap.className = 'dots-wrap trace-wrap';
+    wrap.innerHTML = '<div class="trace-head"><div class="dots"><span></span><span></span><span></span></div><div class="trace-kicker"></div></div><div class="trace-step"></div><div class="trace-mini"></div>';
+    var kicker = wrap.querySelector('.trace-kicker');
+    if (kicker) kicker.textContent = getThinkingTraceKicker(typingState.lane, typingState.deepPlan);
     row.appendChild(wrap);
     chatLog.appendChild(row); scrollChatToLatest();
+    updateTypingTrace();
+    if (typingTimer) clearInterval(typingTimer);
+    typingTimer = setInterval(updateTypingTrace, 320);
   }
   function hideDots(){
     orbAv.classList.remove('think');
+    typingState = null;
+    if (typingTimer) {
+      clearInterval(typingTimer);
+      typingTimer = null;
+    }
     var el=document.getElementById('typingRow'); if(el) el.remove();
   }
 
@@ -1549,6 +1578,90 @@ try {
     updateWorkingMessage();
   }
 
+  function getThinkingTraceSteps(lane, deepPlan) {
+    var label = String(lane || 'Answer').toLowerCase();
+    if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
+      return [
+        'Reading the full question carefully',
+        'Reviewing the strongest angles',
+        'Building a clear stepwise answer',
+        'Polishing the final reply'
+      ];
+    }
+    if (label === 'definition') {
+      return [
+        'Checking local knowledge first',
+        'Checking trusted definitions',
+        'Writing a clean meaning'
+      ];
+    }
+    if (label === 'reference') {
+      return [
+        'Checking reference signals',
+        'Pulling the strongest facts',
+        'Building a grounded summary'
+      ];
+    }
+    if (label === 'weather') {
+      return [
+        'Reading the location request',
+        'Checking live forecast data',
+        'Preparing the weather reply'
+      ];
+    }
+    if (label === 'action' || label === 'mini agent') {
+      return [
+        'Understanding the action request',
+        'Preparing the fastest route',
+        'Getting the next step ready'
+      ];
+    }
+    return [
+      'Reading your question',
+      'Checking the best route',
+      'Preparing the final answer'
+    ];
+  }
+
+  function getThinkingTraceKicker(lane, deepPlan) {
+    var label = String(lane || 'Answer').toLowerCase();
+    if (deepPlan || label === 'reasoning' || label === 'raghav baan') return 'Deep thinking';
+    if (label === 'definition') return 'Checking meaning';
+    if (label === 'reference') return 'Checking sources';
+    if (label === 'weather') return 'Checking forecast';
+    if (label === 'action' || label === 'mini agent') return 'Preparing route';
+    return 'Working live';
+  }
+
+  function getThinkingTraceMini(lane, deepPlan) {
+    var label = String(lane || 'Answer').toLowerCase();
+    if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
+      return 'Raghav AI is using the premium thinking lane so the answer feels clearer, not just faster.';
+    }
+    if (label === 'definition') return 'This keeps the answer grounded instead of giving a random one-line guess.';
+    if (label === 'reference') return 'Raghav AI is weighing reference-style signals before replying.';
+    if (label === 'weather') return 'Live data is being checked before the forecast is shown.';
+    if (label === 'action' || label === 'mini agent') return 'The fastest next step is being prepared for you.';
+    return 'Raghav AI is staying in-chat and shaping the answer before it appears.';
+  }
+
+  function getThinkingTraceText(state) {
+    if (!state) return '';
+    var steps = state.steps && state.steps.length ? state.steps : getThinkingTraceSteps(state.lane, state.deepPlan);
+    var elapsed = Math.max(0, Date.now() - (state.startedAt || Date.now()));
+    var stepMs = state.stepMs || 1300;
+    var index = Math.min(steps.length - 1, Math.floor(elapsed / stepMs));
+    return steps[index] || steps[steps.length - 1] || '';
+  }
+
+  function updateTypingTrace() {
+    if (!typingState) return;
+    var step = document.querySelector('#typingRow .trace-step');
+    if (step) step.textContent = getThinkingTraceText(typingState);
+    var mini = document.querySelector('#typingRow .trace-mini');
+    if (mini) mini.textContent = typingState.mini || '';
+  }
+
   function getLoadPercent() {
     var store = textLoadProgress;
     var keys = Object.keys(store);
@@ -1570,8 +1683,12 @@ try {
   function buildWorkingMessage() {
     if (!workingState) return '';
     var activeLabel = getEffectiveModel();
+    var traceText = getThinkingTraceText(workingState);
 
     if (shouldUseRemoteReasoning()) {
+      if (traceText) {
+        return traceText + ". " + activeLabel + " is keeping the reply right here.";
+      }
       return activeLabel + " is connecting on the live server now so your answer can stay right here.";
     }
 
@@ -1579,19 +1696,19 @@ try {
     var textWarmupInFlight = !!(localGeneratorPromise || backgroundModelPreloadPromises[getEffectiveModel()] || backgroundModelPreloadPromises[defaultAnswerModel]);
 
     if (!localGenerator && !textWarmupInFlight) {
-      return "Raghav AI is preparing a private reply for you. Nothing from this moment is being kept, and the first answer can take a little longer while everything settles into place.";
+      return (traceText ? traceText + ". " : "") + "Raghav AI is preparing a private reply for you. Nothing from this moment is being kept, and the first answer can take a little longer while everything settles into place.";
     }
 
     if (!localGenerator && textWarmupInFlight) {
       var loadingMeta = [];
       if (progress !== null && progress < 100) loadingMeta.push('Download ' + progress + '%');
       if (progress !== null && progress >= 80 && progress < 100) {
-        return activeLabel + " is almost ready on this phone. Finishing the last part of your private reasoning setup." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
+        return (traceText ? traceText + ". " : "") + activeLabel + " is almost ready on this phone. Finishing the last part of your private reasoning setup." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
       }
-      return "Thanks for waiting. Raghav AI is preparing a private experience on your phone so your answers stay free and personal." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
+      return (traceText ? traceText + ". " : "") + "Thanks for waiting. Raghav AI is preparing a private experience on your phone so your answers stay free and personal." + (loadingMeta.length ? ' ' + loadingMeta.join(' • ') + '.' : '');
     }
 
-    return "Thinking through that now.";
+    return traceText ? traceText + "." : "Thinking through that now.";
   }
 
   function updateWorkingMessage() {
@@ -1604,7 +1721,11 @@ try {
     workingState = {
       startedAt: Date.now(),
       fallbackMs: options && options.fallbackMs ? options.fallbackMs : 0,
-      isFirstReply: !!(options && options.isFirstReply)
+      isFirstReply: !!(options && options.isFirstReply),
+      lane: options && options.lane ? options.lane : getEffectiveModel(),
+      deepPlan: !!(options && options.deepPlan),
+      stepMs: options && options.stepMs ? options.stepMs : 1300,
+      steps: getThinkingTraceSteps(options && options.lane ? options.lane : getEffectiveModel(), !!(options && options.deepPlan))
     };
     var row = document.createElement('div');
     row.className = 'msg a';
@@ -1622,7 +1743,7 @@ try {
   }
 
   async function showStaticWorkingThenReply(text, lane, sourceText) {
-    showDots(getEffectiveModel());
+    showDots(lane, { deepPlan: lane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan', stepMs: 1600 });
     await new Promise(function(resolve) { setTimeout(resolve, 480); });
     hideDots();
     await streamReply(text, lane, sourceText);
@@ -2502,6 +2623,7 @@ try {
     var replyLane = classifyReplyLane(processedText);
     var useLocalModel = shouldUseLocalModel(processedText);
     var isFirstReply = useLocalModel && !firstLocalReplyDone;
+    var deepPlan = replyLane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan';
     var mobileAgentAction = getMobileAgentAction(processedText);
     chatIn.value=''; chatIn.style.height='auto';
     hideSuggestions();
@@ -2518,9 +2640,9 @@ try {
       return;
     }
     if (useLocalModel) {
-      showWorkingMessage({ fallbackMs: isFirstReply ? 0 : MODEL_FALLBACK_MS, isFirstReply: isFirstReply });
+      showWorkingMessage({ fallbackMs: isFirstReply ? 0 : MODEL_FALLBACK_MS, isFirstReply: isFirstReply, lane: replyLane, deepPlan: deepPlan });
     } else {
-      showDots(replyLane);
+      showDots(replyLane, { deepPlan: deepPlan });
     }
     try {
       var resp = await getResponse(processedText);
