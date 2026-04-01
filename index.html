@@ -219,6 +219,18 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-yes:hover{box-shadow:0 18px 36px rgba(37,99,235,.28)}
 .perm-yes:active{transform:scale(.97)}
 .perm-no{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.6);font-weight:500;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:pointer}
+.auth-sheet{position:fixed;inset:0;z-index:9997;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.56);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .2s ease}
+.auth-sheet.show{display:flex}
+.auth-box{width:min(100%,400px)}
+.auth-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;position:relative}
+.auth-point{padding:12px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.07);min-height:96px}
+.auth-point strong{display:block;font-size:.8rem;font-weight:600;letter-spacing:-.2px}
+.auth-point span{display:block;margin-top:4px;font-size:.73rem;line-height:1.42;color:rgba(255,255,255,.5)}
+.auth-primary{padding:14px;border-radius:14px;background:linear-gradient(180deg,#ffffff,#e7ecf8);color:#000;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:transform .1s,box-shadow .2s}
+.auth-primary:hover{box-shadow:0 18px 36px rgba(255,255,255,.12)}
+.auth-primary:active{transform:scale(.97)}
+.auth-primary[disabled]{opacity:.82;cursor:default}
+.auth-secondary{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.6);font-weight:500;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:pointer}
 
 /* GUIDE FLASHCARD */
 .guide-sheet{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .2s ease}
@@ -250,6 +262,7 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
   .fcard p{font-size:.82rem;line-height:1.58}
   .perm-points{grid-template-columns:repeat(2,minmax(0,1fr))}
   .perm-point{min-height:96px}
+  .auth-points{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 body[data-theme="light"]{--bg:#eef3ff;--text:#08111f}
@@ -257,11 +270,14 @@ body[data-theme="light"] canvas#bg{opacity:.22}
 body[data-theme="light"] .hero::after{background:linear-gradient(transparent,var(--bg))}
 body[data-theme="light"] .hero-title .ch,body[data-theme="light"] .sec-h{background:linear-gradient(160deg,#08111f 18%,rgba(8,17,31,.46));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 body[data-theme="light"] .hero-badge,body[data-theme="light"] .nav-btn,body[data-theme="light"] .fcard,body[data-theme="light"] .chat-frame,body[data-theme="light"] .msg.a .bbl,body[data-theme="light"] .px-bar,body[data-theme="light"] .model-menu,body[data-theme="light"] .perm-box,body[data-theme="light"] .guide-box,body[data-theme="light"] .ib{background:rgba(255,255,255,.74);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .auth-sheet .perm-box{background:rgba(255,255,255,.74);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .perm-hero{border-color:rgba(15,23,42,.08)}
 body[data-theme="light"] .chat-hdr{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.65));border-bottom-color:rgba(15,23,42,.08)}
 body[data-theme="light"] .hero-sub,body[data-theme="light"] .hero-founder,body[data-theme="light"] .sec-eye,body[data-theme="light"] .chat-eye,body[data-theme="light"] .chat-st,body[data-theme="light"] .stamp,body[data-theme="light"] .pop-meta,body[data-theme="light"] .perm-box p,body[data-theme="light"] .guide-box p,body[data-theme="light"] .guide-item span,body[data-theme="light"] .perm-point span,body[data-theme="light"] .foot p,body[data-theme="light"] .fcard p,body[data-theme="light"] .ib-txt span,body[data-theme="light"] .perm-mini{color:rgba(8,17,31,.6)}
+body[data-theme="light"] .auth-point span{color:rgba(8,17,31,.6)}
 body[data-theme="light"] .chat-pill,body[data-theme="light"] .hero-badge,body[data-theme="light"] .px-badge,body[data-theme="light"] .guide-kicker,body[data-theme="light"] .perm-kicker{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:rgba(8,17,31,.72)}
 body[data-theme="light"] .chat-nm,body[data-theme="light"] .fcard h3,body[data-theme="light"] .pop-title,body[data-theme="light"] .perm-box h3,body[data-theme="light"] .guide-box h3,body[data-theme="light"] .guide-item strong,body[data-theme="light"] .perm-point strong{color:#08111f}
+body[data-theme="light"] .auth-point strong{color:#08111f}
 body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
 body[data-theme="light"] .auth-pill{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .auth-pill:hover{background:#fff}
@@ -387,6 +403,31 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
           <button class="px-send" id="sendBtn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="auth-sheet" id="authSheet">
+  <div class="perm-box auth-box">
+    <div class="perm-hero">
+      <div class="perm-hero-wordmark">Raghav AI</div>
+    </div>
+    <div class="perm-kicker">Phone-First Entry</div>
+    <h3>Sign up to experience a different kind of intelligence on your phone.</h3>
+    <p>Not another plain chatbot. A faster layer for actions, answers, and experimental moves that feel one step ahead.</p>
+    <div class="auth-points">
+      <div class="auth-point">
+        <strong>Private feeling</strong>
+        <span>Built to feel personal, calm, and closer to you than a normal web tool.</span>
+      </div>
+      <div class="auth-point">
+        <strong>Unexpectedly useful</strong>
+        <span>From sharper answers to quicker moves, it is designed to feel different the moment you enter.</span>
+      </div>
+    </div>
+    <div class="perm-actions">
+      <button class="auth-primary" id="authSheetPrimary">Sign up with Google</button>
+      <button class="auth-secondary" id="authSheetSecondary">Not now</button>
     </div>
   </div>
 </div>
@@ -2645,6 +2686,23 @@ provider.setCustomParameters({ prompt: 'select_account' });
 
 const authBtn = document.getElementById('authBtn');
 const authBtnLabel = document.getElementById('authBtnLabel');
+const authSheet = document.getElementById('authSheet');
+const authSheetPrimary = document.getElementById('authSheetPrimary');
+const authSheetSecondary = document.getElementById('authSheetSecondary');
+
+function hideAuthSheet(rememberDismissal) {
+  if (rememberDismissal) {
+    try { sessionStorage.setItem('raghav_auth_sheet_dismissed', 'yes'); } catch (e) {}
+  }
+  authSheet.classList.remove('show');
+}
+
+function showAuthSheet() {
+  let dismissed = false;
+  try { dismissed = sessionStorage.getItem('raghav_auth_sheet_dismissed') === 'yes'; } catch (e) {}
+  if (dismissed) return;
+  authSheet.classList.add('show');
+}
 
 function getDisplayName(user) {
   if (!user) return 'Signed in';
@@ -2663,6 +2721,9 @@ function lockAuthPill(user) {
   authBtn.classList.add('locked');
   authBtn.setAttribute('aria-label', 'Signed in');
   authBtnLabel.textContent = getDisplayName(user);
+  authSheetPrimary.disabled = false;
+  authSheetPrimary.textContent = 'Sign up with Google';
+  hideAuthSheet(false);
 }
 
 function resetAuthPill() {
@@ -2670,6 +2731,8 @@ function resetAuthPill() {
   authBtn.classList.remove('loading', 'locked');
   authBtn.setAttribute('aria-label', 'Sign in');
   authBtnLabel.textContent = 'Sign in';
+  authSheetPrimary.disabled = false;
+  authSheetPrimary.textContent = 'Sign up with Google';
 }
 
 function showAuthFeedback(message) {
@@ -2703,6 +2766,8 @@ function explainAuthError(error) {
 async function startSignIn() {
   authBtn.classList.add('loading');
   authBtnLabel.textContent = 'Connecting...';
+  authSheetPrimary.disabled = true;
+  authSheetPrimary.textContent = 'Connecting...';
   try {
     await setPersistence(auth, browserLocalPersistence);
     await signInWithPopup(auth, provider);
@@ -2732,12 +2797,26 @@ onAuthStateChanged(auth, function(user) {
     lockAuthPill(user);
   } else {
     resetAuthPill();
+    setTimeout(showAuthSheet, 700);
   }
 });
 
 authBtn.addEventListener('click', function() {
   if (authBtn.disabled) return;
   startSignIn();
+});
+
+authSheetPrimary.addEventListener('click', function() {
+  if (authSheetPrimary.disabled) return;
+  startSignIn();
+});
+
+authSheetSecondary.addEventListener('click', function() {
+  hideAuthSheet(true);
+});
+
+authSheet.addEventListener('click', function(e) {
+  if (e.target === authSheet) hideAuthSheet(true);
 });
 </script>
 </body>
