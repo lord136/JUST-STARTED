@@ -471,9 +471,9 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
         <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
       </div>
     </div>
-    <div class="perm-mini" id="permMini">$1</div>
+    <div class="perm-mini" id="permMini">Rs 10</div>
     <div class="perm-actions">
-      <button class="perm-yes" id="permYes">Unlock for $1</button>
+      <button class="perm-yes" id="permYes">Unlock for Rs 10</button>
       <button class="perm-no" id="permNo">Not Now</button>
     </div>
   </div>
@@ -2597,7 +2597,7 @@ try {
     ]);
     permMini.textContent = '';
     permMini.style.display = 'none';
-    permYes.textContent = premiumUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1');
+    permYes.textContent = premiumUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10');
     permYes.disabled = !!premiumUnlocked;
     permNo.textContent = 'Not Now';
 
@@ -2713,7 +2713,7 @@ try {
           ondismiss: function() {
             premiumUnlockInFlight = false;
             permYes.disabled = false;
-            permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+            permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10';
           }
         }
       };
@@ -2721,14 +2721,14 @@ try {
       rzp.on('payment.failed', function() {
         premiumUnlockInFlight = false;
         permYes.disabled = false;
-        permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+        permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10';
         streamReply('Payment did not complete this time. You can try again whenever you want.');
       });
       rzp.open();
     } catch (error) {
       premiumUnlockInFlight = false;
       permYes.disabled = false;
-      permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for $1' : 'Unlock for $1';
+      permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 10' : 'Unlock for Rs 10';
       streamReply('I could not open payment right now. Check that Razorpay keys are live on the server and try again.');
     }
   }
