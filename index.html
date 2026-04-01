@@ -988,12 +988,12 @@ try {
     'Raghav Beta': {
       status: 'Flagship replies for everyday help',
       textModelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
-      prompt: 'You are Raghav Beta, Raghav AI\'s flagship everyday assistant. Speak with deep respect, calm confidence, humility, and warmth. Keep answers genuine, grounded, and easy to trust. Help with everyday questions, reasoning, definitions, decisions, and practical next steps. Prefer short, clear replies for simple asks, but explain properly when the user truly needs help. Never act dramatic, arrogant, robotic, or fictional.'
+      prompt: 'You are Raghav Beta, Raghav AI\'s flagship everyday assistant. Speak with deep respect, calm confidence, humility, and warmth. Keep answers genuine, grounded, and easy to trust. Help with everyday questions, reasoning, definitions, decisions, and practical next steps. Keep replies short by default and medium only when the user clearly needs more. Never go long unless it is truly necessary. Never act dramatic, arrogant, robotic, or fictional.'
     },
     'Raghav Baan': {
       status: 'Premium flagship lane for fuller stepwise help',
       textModelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
-      prompt: 'You are Raghav Baan, the premium flagship lane inside Raghav AI. Answer fully respectfully, calmly, and in a way the user can easily understand. When the question needs guidance, explain step by step. When it is simple, stay crisp but polished. Never be robotic, vague, or dramatic.'
+      prompt: 'You are Raghav Baan, the premium flagship lane inside Raghav AI. Answer respectfully, calmly, and in a way the user can easily understand. Prefer short answers for simple asks and medium answers for deeper asks. When guidance is needed, explain step by step, but do not ramble. Never be robotic, vague, or dramatic.'
     }
   };
 
@@ -1510,10 +1510,11 @@ try {
     typingState = {
       startedAt: Date.now(),
       lane: lane || 'Answer',
+      phase: options && options.phase ? options.phase : 'trace',
       deepPlan: !!(options && options.deepPlan),
       stepMs: options && options.stepMs ? options.stepMs : 1200,
-      steps: getThinkingTraceSteps(lane || 'Answer', !!(options && options.deepPlan)),
-      mini: getThinkingTraceMini(lane || 'Answer', !!(options && options.deepPlan))
+      steps: getThinkingTraceSteps(lane || 'Answer', !!(options && options.deepPlan), options && options.phase ? options.phase : 'trace'),
+      mini: getThinkingTraceMini(lane || 'Answer', !!(options && options.deepPlan), options && options.phase ? options.phase : 'trace')
     };
     var row=document.createElement('div'); row.className='msg a'; row.id='typingRow';
     var tag = makeRouteTag(lane || 'Thinking');
@@ -1522,7 +1523,7 @@ try {
     wrap.className = 'dots-wrap trace-wrap';
     wrap.innerHTML = '<div class="trace-head"><div class="dots"><span></span><span></span><span></span></div><div class="trace-kicker"></div></div><div class="trace-step"></div><div class="trace-mini"></div>';
     var kicker = wrap.querySelector('.trace-kicker');
-    if (kicker) kicker.textContent = getThinkingTraceKicker(typingState.lane, typingState.deepPlan);
+    if (kicker) kicker.textContent = getThinkingTraceKicker(typingState.lane, typingState.deepPlan, typingState.phase);
     row.appendChild(wrap);
     chatLog.appendChild(row); scrollChatToLatest();
     updateTypingTrace();
@@ -1578,8 +1579,22 @@ try {
     updateWorkingMessage();
   }
 
-  function getThinkingTraceSteps(lane, deepPlan) {
+  function getThinkingTraceSteps(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (phase === 'ai') {
+      if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
+        return [
+          'Understanding your exact intent',
+          'Choosing the clearest answer path',
+          'Shaping a stepwise premium reply'
+        ];
+      }
+      return [
+        'Understanding your exact intent',
+        'Choosing the clearest answer path',
+        'Shaping a short useful reply'
+      ];
+    }
     if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
       return [
         'Reading the full question carefully',
@@ -1623,8 +1638,9 @@ try {
     ];
   }
 
-  function getThinkingTraceKicker(lane, deepPlan) {
+  function getThinkingTraceKicker(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (phase === 'ai') return deepPlan || label === 'reasoning' || label === 'raghav baan' ? 'AI premium thinking' : 'AI thinking';
     if (deepPlan || label === 'reasoning' || label === 'raghav baan') return 'Deep thinking';
     if (label === 'definition') return 'Checking meaning';
     if (label === 'reference') return 'Checking sources';
@@ -1633,8 +1649,14 @@ try {
     return 'Working live';
   }
 
-  function getThinkingTraceMini(lane, deepPlan) {
+  function getThinkingTraceMini(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (phase === 'ai') {
+      if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
+        return 'Raghav AI is shaping the final answer into a clearer premium reply, not a long ramble.';
+      }
+      return 'Raghav AI is shaping the final answer into a short or medium reply before it appears.';
+    }
     if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
       return 'Raghav AI is using the premium thinking lane so the answer feels clearer, not just faster.';
     }
@@ -1647,7 +1669,7 @@ try {
 
   function getThinkingTraceText(state) {
     if (!state) return '';
-    var steps = state.steps && state.steps.length ? state.steps : getThinkingTraceSteps(state.lane, state.deepPlan);
+    var steps = state.steps && state.steps.length ? state.steps : getThinkingTraceSteps(state.lane, state.deepPlan, state.phase);
     var elapsed = Math.max(0, Date.now() - (state.startedAt || Date.now()));
     var stepMs = state.stepMs || 1300;
     var index = Math.min(steps.length - 1, Math.floor(elapsed / stepMs));
@@ -1743,8 +1765,12 @@ try {
   }
 
   async function showStaticWorkingThenReply(text, lane, sourceText) {
-    showDots(lane, { deepPlan: lane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan', stepMs: 1600 });
-    await new Promise(function(resolve) { setTimeout(resolve, 480); });
+    var deepPlan = lane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan';
+    showDots(lane, { deepPlan: deepPlan, stepMs: 1400, phase: 'trace' });
+    await new Promise(function(resolve) { setTimeout(resolve, 900); });
+    hideDots();
+    showDots(lane, { deepPlan: deepPlan, stepMs: 850, phase: 'ai' });
+    await new Promise(function(resolve) { setTimeout(resolve, 720); });
     hideDots();
     await streamReply(text, lane, sourceText);
   }
