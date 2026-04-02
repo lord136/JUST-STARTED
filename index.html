@@ -23,6 +23,11 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .25s ease,color .25s ease}
+body::before,body::after{content:'';position:fixed;pointer-events:none;opacity:0;transition:opacity .45s ease;z-index:0}
+body.mobile-live::before{top:-18vh;left:-12vw;width:48vw;height:48vw;min-width:340px;min-height:340px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.18),rgba(124,58,237,.1) 34%,transparent 68%);filter:blur(22px);opacity:.95;animation:mobileAuraDrift 11s ease-in-out infinite}
+body.mobile-live::after{right:-14vw;bottom:-16vh;width:54vw;height:54vw;min-width:360px;min-height:360px;border-radius:50%;background:radial-gradient(circle at 32% 32%,rgba(216,180,254,.2),transparent 24%),radial-gradient(circle at 64% 58%,rgba(124,58,237,.18),transparent 30%),radial-gradient(circle at 50% 50%,rgba(91,33,182,.12),transparent 62%);filter:blur(30px);opacity:.82;animation:mobileAuraFlow 14s linear infinite}
+@keyframes mobileAuraDrift{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(4vw,3vh,0) scale(1.08)}}
+@keyframes mobileAuraFlow{0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}50%{transform:translate3d(-4vw,-3vh,0) rotate(180deg) scale(1.06)}100%{transform:translate3d(0,0,0) rotate(360deg) scale(1)}}
 body.auth-locked{overflow:hidden}
 body.auth-locked .hero,
 body.auth-locked .sec,
@@ -91,6 +96,9 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 
 .chat-frame{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:26px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .chat-frame::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:68%;height:150px;background:radial-gradient(circle,rgba(96,165,250,.13),transparent 70%);pointer-events:none}
+.chat-frame.mobile-live{box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03),0 0 0 1px rgba(168,85,247,.1),0 0 80px rgba(124,58,237,.12)}
+.chat-frame.mobile-live::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,transparent 18%,rgba(192,132,252,.08) 38%,transparent 58%,rgba(124,58,237,.06) 74%,transparent 100%);opacity:.95;animation:mobileFrameSweep 4.4s linear infinite}
+@keyframes mobileFrameSweep{0%{transform:translateX(-14%)}100%{transform:translateX(14%)}}
 .chat-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015))}
 .orb-av{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 0deg,#2563eb,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;transition:box-shadow .3s}
 .orb-av.think{animation:pulse 1s ease-in-out infinite}
@@ -289,6 +297,8 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 }
 
 body[data-theme="light"]{--bg:#eef3ff;--text:#08111f}
+body[data-theme="light"].mobile-live::before{background:radial-gradient(circle,rgba(168,85,247,.16),rgba(124,58,237,.08) 34%,transparent 68%);opacity:.78}
+body[data-theme="light"].mobile-live::after{opacity:.64}
 body[data-theme="light"] canvas#bg{opacity:.22}
 body[data-theme="light"] .hero::after{background:linear-gradient(transparent,var(--bg))}
 body[data-theme="light"] .hero-title .ch,body[data-theme="light"] .sec-h{background:linear-gradient(160deg,#08111f 18%,rgba(8,17,31,.46));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -2583,6 +2593,9 @@ try {
     if (isRestrictedAdultQuery(text)) {
       return getRestrictedAdultReply();
     }
+    if (isRevisionPdfIntent(text) && !messagingAllowed) {
+      return "Turn on Mobile+ to use the revision PDF lane. That is the premium study flow for exam packs, mind maps, key points, and practice questions.";
+    }
     var knownCommandReply = explainKnownCommand(text);
     if (knownCommandReply) return knownCommandReply;
 
@@ -2779,6 +2792,8 @@ try {
   function updateMobileAgentUI() {
     mobileBtn.classList.toggle('active-agent', messagingAllowed);
     mobileBtn.setAttribute('aria-pressed', messagingAllowed ? 'true' : 'false');
+    document.body.classList.toggle('mobile-live', messagingAllowed);
+    chatWrap.classList.toggle('mobile-live', messagingAllowed);
   }
 
   function updatePremiumAccessUI() {
@@ -3164,7 +3179,7 @@ try {
           title: 'Mini Agent is ready.',
           body: 'Say one natural line and Raghav AI prepares the next app for you instead of making you hop around manually.',
           points: [
-            { title: 'Messages', text: 'Try “Message my mom I will be late” and it prepares WhatsApp for you.' },
+            { title: 'Revision prep', text: 'Try “Create a revision PDF for CA from the past 5 years mix and mini topics” and Raghav AI prepares the study flow for you.' },
             { title: 'Call, SMS, email', text: 'Try “Call Rahul”, “Text dad I reached”, or “Email my teacher about leave”.' },
             { title: 'Maps, search, YouTube, shopping', text: 'Try “Navigate to airport”, “search best laptops”, or “YouTube lo-fi beats”.' }
           ],
@@ -3248,10 +3263,10 @@ try {
       title: 'Ask naturally. Raghav AI handles the next step.',
       body: 'Raghav AI is built to save time. Some requests stay in chat, and some jump straight to the place that gets you there faster.',
       points: [
-        { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already typed on Amazon or Flipkart.' },
+        { title: 'Type “what is programming” or “what is GPU”', text: 'Raghav AI can answer cleanly in chat without making you open extra tabs.' },
+        { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already prepared for you.' },
         { title: 'Type “how to make biryani”', text: 'Raghav AI can send you straight to YouTube with the recipe already searched.' },
-        { title: 'Type “message my mom I’ll be late”', text: 'With Mobile + on, Raghav AI prepares the message flow for you right away.' },
-        { title: 'Type a real question or definition', text: 'Raghav AI answers in chat first so you do not waste time opening ten links.' }
+        { title: 'Type a real question or definition', text: 'Raghav AI still answers in chat first when that is faster than opening extra links.' }
       ],
       primaryLabel: 'Start typing',
       secondaryLabel: 'Skip',
@@ -3400,6 +3415,12 @@ try {
     }
 
     return null;
+  }
+
+  function isRevisionPdfIntent(text) {
+    var cleaned = String(text || '').trim().toLowerCase();
+    if (!cleaned) return false;
+    return /\b(pdf|revision|revise|mind map|practice questions?|study pack|study sheet|exam|subject|past 5 years?)\b/.test(cleaned);
   }
 
   intents = intents.map(function(intent) {
