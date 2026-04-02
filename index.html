@@ -384,8 +384,8 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
     <h2 class="sec-h rv">Not just answers.<br>Actions.</h2>
   </div>
   <div class="fgrid">
-    <div class="fcard rv"><div class="fglow" style="background:#16a34a"></div><div class="fico">🔍</div><h3>Search Anything</h3><p>Ask Raghav AI to find anything on the web. It understands context and gives you exactly what matters.</p></div>
-    <div class="fcard rv"><div class="fglow" style="background:#ea580c"></div><div class="fico">🔒</div><h3>Completely Private</h3><p>Every word you type stays on your phone. Nothing is sent, stored, or shared. Zero data collection.</p></div>
+    <div class="fcard rv"><div class="fglow" style="background:#16a34a"></div><div class="fico">⚡</div><h3>Super Search</h3><p>Ask Raghav AI to find anything on the web. It understands context and delivers exactly what matters—fast, relevant, and noise-free.</p></div>
+    <div class="fcard rv"><div class="fglow" style="background:#ea580c"></div><div class="fico">🔒</div><h3>Completely Private</h3><p>Your conversations are not used to train our AI models, and we only process the data necessary to deliver and maintain the service.</p></div>
     <div class="fcard rv"><div class="fglow" style="background:#7c3aed"></div><div class="fico">📱</div><h3>Lives on Your Phone</h3><p>Add Raghav AI to your home screen. Open it like any app. No browser. No loading. Instant intelligence.</p></div>
   </div>
 </div>
@@ -526,6 +526,7 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
 <!-- THREE.JS (isolated) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
 try {
   (function(){
@@ -1150,6 +1151,30 @@ try {
     return data;
   }
 
+  async function requestRevisionPack(text) {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('REVISION_PDF_SERVER_NOT_CONFIGURED');
+    await warmRemoteReasoning(true);
+    var response = await fetch(base + '/api/revision-pack', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        modelName: 'Raghav Baan',
+        mobileAgent: messagingAllowed,
+        platform: isMobileDevice ? 'mobile' : 'desktop'
+      })
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok || !data.pack) {
+      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'REVISION_PDF_FAILED');
+    }
+    return data.pack;
+  }
+
   function readJsonStorage(key, fallback) {
     try {
       var raw = localStorage.getItem(key);
@@ -1469,6 +1494,219 @@ try {
     row.appendChild(card);
   }
 
+  function sanitizePdfFilename(name) {
+    return String(name || 'Revision-Pack.pdf')
+      .replace(/[\\/:*?"<>|]+/g, '-')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'Revision-Pack.pdf';
+  }
+
+  function buildRevisionPdfAsset(pack) {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      throw new Error('PDF_RUNTIME_NOT_READY');
+    }
+
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var pageHeight = doc.internal.pageSize.getHeight();
+    var margin = 44;
+    var width = pageWidth - margin * 2;
+    var y = 52;
+
+    function ensureRoom(needed) {
+      if (y + needed <= pageHeight - 48) return;
+      doc.addPage();
+      y = 52;
+    }
+
+    function writeParagraph(text, options) {
+      var fontSize = options && options.fontSize ? options.fontSize : 11;
+      var color = options && options.color ? options.color : [52, 64, 84];
+      var leading = options && options.leading ? options.leading : fontSize * 1.45;
+      var indent = options && options.indent ? options.indent : 0;
+      var weight = options && options.bold ? 'bold' : 'normal';
+      var lines = doc.splitTextToSize(String(text || ''), width - indent);
+      ensureRoom(lines.length * leading + 8);
+      doc.setFont('helvetica', weight);
+      doc.setFontSize(fontSize);
+      doc.setTextColor.apply(doc, color);
+      doc.text(lines, margin + indent, y);
+      y += lines.length * leading + 8;
+    }
+
+    function writeSection(title) {
+      ensureRoom(28);
+      doc.setDrawColor(196, 181, 253);
+      doc.setLineWidth(1.2);
+      doc.line(margin, y, margin + 44, y);
+      y += 16;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(37, 99, 235);
+      doc.text(title, margin, y);
+      y += 10;
+    }
+
+    doc.setFillColor(243, 232, 255);
+    doc.roundedRect(margin, y - 20, width, 78, 18, 18, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(17, 24, 39);
+    doc.text(String(pack.title || 'Revision Pack'), margin + 18, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(91, 33, 182);
+    var heroText = doc.splitTextToSize(String(pack.focus || ''), width - 36);
+    doc.text(heroText, margin + 18, y + 28);
+    y += 88;
+
+    writeSection('Past 5 Years Mix');
+    writeParagraph(pack.pastFiveYearsAngle || '', { fontSize: 11, color: [71, 85, 105] });
+
+    writeSection('Mind Map');
+    (pack.mindMap || []).forEach(function(branch) {
+      writeParagraph(branch.branch || '', { fontSize: 12, color: [17, 24, 39], bold: true });
+      (branch.points || []).forEach(function(point) {
+        writeParagraph('- ' + point, { fontSize: 10.5, color: [71, 85, 105], indent: 12 });
+      });
+    });
+
+    writeSection('Key Revision Points');
+    (pack.revisionPoints || []).forEach(function(point, index) {
+      writeParagraph((index + 1) + '. ' + point, { fontSize: 10.8, color: [31, 41, 55] });
+    });
+
+    writeSection('Practice Questions');
+    (pack.practiceQuestions || []).forEach(function(question, index) {
+      writeParagraph((index + 1) + '. ' + question, { fontSize: 10.8, color: [31, 41, 55] });
+    });
+
+    writeSection('Final Note');
+    writeParagraph(pack.closingNote || 'All the best.', { fontSize: 11, color: [91, 33, 182] });
+
+    var totalPages = doc.getNumberOfPages();
+    for (var pageIndex = 1; pageIndex <= totalPages; pageIndex++) {
+      doc.setPage(pageIndex);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(120, 128, 145);
+      doc.text('Raghav AI • Revision PDF', margin, pageHeight - 20);
+      doc.text(String(pageIndex), pageWidth - margin, pageHeight - 20, { align: 'right' });
+    }
+
+    var blob = doc.output('blob');
+    var filename = sanitizePdfFilename(pack.filename || pack.title || 'Revision-Pack') + (/\.pdf$/i.test(pack.filename || '') ? '' : '.pdf');
+    if (!/\.pdf$/i.test(filename)) filename += '.pdf';
+    return {
+      blob: blob,
+      url: URL.createObjectURL(blob),
+      filename: filename
+    };
+  }
+
+  function triggerPdfDownload(asset) {
+    if (!asset || !asset.url) return;
+    var anchor = document.createElement('a');
+    anchor.href = asset.url;
+    anchor.download = asset.filename || 'Revision-Pack.pdf';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+  }
+
+  function appendRevisionPdfCard(row, pack, asset, sourceText) {
+    var card = document.createElement('div');
+    card.className = 'agent-card';
+
+    var title = document.createElement('strong');
+    title.textContent = pack.title || 'Revision PDF';
+    card.appendChild(title);
+
+    var summary = document.createElement('span');
+    summary.textContent = 'Mind map, key revision points, practice questions, and an all the best note are packed into a real PDF file.';
+    card.appendChild(summary);
+
+    var actions = document.createElement('div');
+    actions.className = 'agent-actions';
+
+    var downloadBtn = document.createElement('button');
+    downloadBtn.type = 'button';
+    downloadBtn.className = 'agent-btn primary';
+    downloadBtn.textContent = 'Download PDF';
+    downloadBtn.addEventListener('click', function() {
+      triggerPdfDownload(asset);
+    });
+    actions.appendChild(downloadBtn);
+
+    var previewBtn = document.createElement('button');
+    previewBtn.type = 'button';
+    previewBtn.className = 'agent-btn';
+    previewBtn.textContent = 'Open preview';
+    previewBtn.addEventListener('click', function() {
+      mobileOpen(asset.url);
+    });
+    actions.appendChild(previewBtn);
+
+    var refineBtn = document.createElement('button');
+    refineBtn.type = 'button';
+    refineBtn.className = 'agent-btn';
+    refineBtn.textContent = 'Refine pack';
+    refineBtn.addEventListener('click', function() {
+      chatIn.value = 'Make this revision PDF tighter: ' + (sourceText || pack.title || 'this pack');
+      resizeComposer();
+      chatIn.focus();
+    });
+    actions.appendChild(refineBtn);
+
+    card.appendChild(actions);
+    row.appendChild(card);
+  }
+
+  function showRevisionPdfResult(pack, asset, sourceText) {
+    return new Promise(function(resolve) {
+      var row = document.createElement('div');
+      row.className = 'msg a';
+      var tag = makeRouteTag('Revision PDF');
+      if (tag) row.appendChild(tag);
+
+      var replyText = (pack.title || 'Your revision PDF') + ' is ready. I packed a mind map, key revision points, practice questions, and an all the best note into a real downloadable PDF.';
+      var body = document.createElement('div');
+      body.className = 'msg-body';
+      var bubble = document.createElement('div');
+      bubble.className = 'bbl';
+      var copyBtn = makeCopyButton(replyText);
+      var ts = document.createElement('div');
+      ts.className = 'stamp';
+      ts.textContent = getTime();
+
+      body.appendChild(bubble);
+      body.appendChild(copyBtn);
+      row.appendChild(body);
+      row.appendChild(ts);
+      chatLog.appendChild(row);
+      scrollChatToLatest();
+
+      var words = replyText.split(' '), wi = 0;
+      function next() {
+        if (wi >= words.length) {
+          bubble.innerHTML = replyText;
+          appendRevisionPdfCard(row, pack, asset, sourceText);
+          scrollChatToLatest();
+          haptic([8, 30, 8]);
+          resolve();
+          return;
+        }
+        bubble.innerHTML = words.slice(0, wi + 1).join(' ') + '<span class="cursor-blink"></span>';
+        scrollChatToLatest(true);
+        wi++;
+        setTimeout(next, 22 + Math.random() * 22);
+      }
+      next();
+    });
+  }
+
   function addUserMsg(text){
     var row=document.createElement('div'); row.className='msg u';
     var body=document.createElement('div'); body.className='msg-body';
@@ -1592,6 +1830,20 @@ try {
 
   function getThinkingTraceSteps(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (label === 'revision pdf') {
+      if (phase === 'ai') {
+        return [
+          'Shaping the revision structure',
+          'Tightening short exam notes',
+          'Preparing the final PDF'
+        ];
+      }
+      return [
+        'Reading your exam and scope',
+        'Pulling the past 5 years mix angle',
+        'Laying out the revision pack'
+      ];
+    }
     if (phase === 'ai') {
       if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
         return [
@@ -1651,6 +1903,7 @@ try {
 
   function getThinkingTraceKicker(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (label === 'revision pdf') return phase === 'ai' ? 'AI PDF thinking' : 'Building PDF';
     if (phase === 'ai') return deepPlan || label === 'reasoning' || label === 'raghav baan' ? 'AI premium thinking' : 'AI thinking';
     if (deepPlan || label === 'reasoning' || label === 'raghav baan') return 'Deep thinking';
     if (label === 'definition') return 'Checking meaning';
@@ -1662,6 +1915,11 @@ try {
 
   function getThinkingTraceMini(lane, deepPlan, phase) {
     var label = String(lane || 'Answer').toLowerCase();
+    if (label === 'revision pdf') {
+      return phase === 'ai'
+        ? 'Raghav AI is tightening the study content before it becomes a real downloadable PDF.'
+        : 'Mobile+ is building a revision pack with a mind map, key points, practice questions, and a final note.';
+    }
     if (phase === 'ai') {
       if (deepPlan || label === 'reasoning' || label === 'raghav baan') {
         return 'Raghav AI is shaping the final answer into a clearer premium reply, not a long ramble.';
@@ -2664,11 +2922,38 @@ try {
     var useLocalModel = shouldUseLocalModel(processedText);
     var isFirstReply = useLocalModel && !firstLocalReplyDone;
     var deepPlan = replyLane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan';
+    var wantsRevisionPdf = isRevisionPdfIntent(processedText);
     var mobileAgentAction = getMobileAgentAction(processedText);
     chatIn.value=''; chatIn.style.height='auto';
     hideSuggestions();
     haptic(15);
     addUserMsg(userText);
+    if (wantsRevisionPdf && messagingAllowed) {
+      showDots('Revision PDF', { deepPlan: true, phase: 'trace', stepMs: 1100 });
+      try {
+        var revisionPack = await requestRevisionPack(processedText);
+        showDots('Revision PDF', { deepPlan: true, phase: 'ai', stepMs: 950 });
+        var revisionAsset = buildRevisionPdfAsset(revisionPack);
+        hideDots();
+        await showRevisionPdfResult(revisionPack, revisionAsset, processedText);
+        if (shouldPromptPremiumAfterReply) {
+          maybeShowPremiumPromptAfterFirstAnswer();
+        }
+      } catch (revisionError) {
+        hideDots();
+        var revisionFailMessage = "I couldn’t build the revision PDF yet. Try the same request once more in a moment.";
+        if (revisionError && /PDF_RUNTIME_NOT_READY/i.test(String(revisionError.message || ''))) {
+          revisionFailMessage = "The PDF engine is not ready yet on this device. Refresh once and try the revision request again.";
+        } else if (revisionError && /REVISION_PDF_SERVER_NOT_CONFIGURED/i.test(String(revisionError.message || ''))) {
+          revisionFailMessage = "The live revision PDF server is not connected yet, so I can’t build the file right now.";
+        }
+        await streamReply(revisionFailMessage, 'Revision PDF', processedText);
+      }
+      if (!chatIn.value.trim()) {
+        showRandomSuggestions();
+      }
+      return;
+    }
     if (mobileAgentAction) {
       showAgentPreview(mobileAgentAction);
       if (shouldPromptPremiumAfterReply) {
@@ -3180,7 +3465,7 @@ try {
           title: 'Mini Agent is ready.',
           body: 'Say one natural line and Raghav AI prepares the next app for you instead of making you hop around manually.',
           points: [
-            { title: 'Revision prep', text: 'Try “Create a revision PDF for CA from the past 5 years mix and mini topics” and Raghav AI prepares the study flow for you.' },
+            { title: 'Revision prep', text: 'Try “Create a revision PDF for CA from the past 5 years mix and mini topics” and Raghav AI builds a real downloadable study PDF for you.' },
             { title: 'Call, SMS, email', text: 'Try “Call Rahul”, “Text dad I reached”, or “Email my teacher about leave”.' },
             { title: 'Maps, search, YouTube, shopping', text: 'Try “Navigate to airport”, “search best laptops”, or “YouTube lo-fi beats”.' }
           ],
