@@ -970,6 +970,7 @@ try {
 
   /* ── CHAT ENGINE ── */
   var chatLog = document.getElementById('chatLog');
+  var chatWrap = document.querySelector('.chat-frame');
   var sendBtn = document.getElementById('sendBtn');
   var orbAv = document.getElementById('orbAv');
   var modelBtnLabel = document.getElementById('modelBtnLabel');
@@ -2793,7 +2794,7 @@ try {
     mobileBtn.classList.toggle('active-agent', messagingAllowed);
     mobileBtn.setAttribute('aria-pressed', messagingAllowed ? 'true' : 'false');
     document.body.classList.toggle('mobile-live', messagingAllowed);
-    chatWrap.classList.toggle('mobile-live', messagingAllowed);
+    if (chatWrap) chatWrap.classList.toggle('mobile-live', messagingAllowed);
   }
 
   function updatePremiumAccessUI() {
