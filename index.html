@@ -1214,30 +1214,6 @@ try {
     return data.pack;
   }
 
-  async function requestResumeQuestions(text) {
-    var base = getRemoteReasoningBase();
-    if (!base) throw new Error('RESUME_SERVER_NOT_CONFIGURED');
-    await warmRemoteReasoning(true);
-    var response = await fetch(base + '/api/resume-questions', {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: text,
-        modelName: 'Raghav Baan',
-        mobileAgent: messagingAllowed,
-        platform: isMobileDevice ? 'mobile' : 'desktop'
-      })
-    });
-    var data = null;
-    try { data = await response.json(); } catch (e) {}
-    if (!response.ok || !data || !data.ok || !data.questions) {
-      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'RESUME_QUESTIONS_FAILED');
-    }
-    return data.questions;
-  }
-
   function readJsonStorage(key, fallback) {
     try {
       var raw = localStorage.getItem(key);
@@ -1823,14 +1799,66 @@ try {
     row.appendChild(card);
   }
 
-  function showResumeQuestionFlow(payload, sourceText) {
+  function appendResumeRouteCard(row) {
+    var card = document.createElement('div');
+    card.className = 'agent-card';
+
+    var title = document.createElement('strong');
+    title.textContent = 'Choose your resume lane';
+    card.appendChild(title);
+
+    var summary = document.createElement('span');
+    summary.textContent = 'Raghav AI can point you to the right tool here, but for a serious resume it is better to pick the lane that matches the result you want.';
+    card.appendChild(summary);
+
+    var actions = document.createElement('div');
+    actions.className = 'agent-actions';
+
+    [
+      {
+        label: 'Open Antigravity',
+        note: 'Design-first layouts and cleaner visual resumes.',
+        url: 'https://www.google.com/search?q=' + encodeURIComponent('Antigravity AI')
+      },
+      {
+        label: 'Open Claude AI',
+        note: 'Balanced writing, polish, and clearer wording.',
+        url: 'https://claude.ai/'
+      },
+      {
+        label: 'Open Codex',
+        note: 'Detailed drafting and stronger serious structure.',
+        url: 'https://openai.com/codex'
+      }
+    ].forEach(function(option, index) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'agent-btn' + (index === 1 ? ' primary' : '');
+      button.textContent = option.label;
+      button.title = option.note;
+      button.addEventListener('click', function() {
+        mobileOpen(option.url, option.label);
+      });
+      actions.appendChild(button);
+    });
+
+    var note = document.createElement('span');
+    note.className = 'attachment-note';
+    note.textContent = 'Antigravity for design, Claude AI for balanced polish, and Codex for deeper drafting.';
+
+    card.appendChild(actions);
+    card.appendChild(note);
+    row.appendChild(card);
+  }
+
+  function showResumeRouteResult(sourceText) {
     return new Promise(function(resolve) {
       var row = document.createElement('div');
       row.className = 'msg a';
-      var tag = makeRouteTag('Resume Builder');
+      var tag = makeRouteTag('Resume Route');
       if (tag) row.appendChild(tag);
 
-      var replyText = (payload.title || 'Resume details needed') + '. ' + (payload.intro || 'I need a few details first.') + ' ' + (payload.replyHint || '');
+      var replyText = 'A real resume needs a better lane than this chat flow. Pick the outcome you want and I will open the right tool for you: Antigravity for design-first, Claude AI for balanced polish, or Codex for deeper drafting.';
       var body = document.createElement('div');
       body.className = 'msg-body';
       var bubble = document.createElement('div');
@@ -1850,20 +1878,8 @@ try {
       var words = replyText.split(' '), wi = 0;
       function next() {
         if (wi >= words.length) {
-          bubble.innerHTML = formatReplyHtml(replyText, 'Resume Builder', sourceText);
-          if (payload.questions && payload.questions.length) {
-            var card = document.createElement('div');
-            card.className = 'agent-card';
-            var title = document.createElement('strong');
-            title.textContent = 'Send these details next';
-            card.appendChild(title);
-            var summary = document.createElement('span');
-            summary.innerHTML = payload.questions.map(function(question, index) {
-              return (index + 1) + '. ' + escapeHtml(question);
-            }).join('<br>');
-            card.appendChild(summary);
-            row.appendChild(card);
-          }
+          bubble.innerHTML = formatReplyHtml(replyText, 'Resume Route', sourceText);
+          appendResumeRouteCard(row);
           scrollChatToLatest();
           haptic([8, 30, 8]);
           resolve();
@@ -3067,8 +3083,8 @@ try {
     if (isRestrictedAdultQuery(text)) {
       return getRestrictedAdultReply();
     }
-    if (isResumeIntent(text) && !messagingAllowed) {
-      return getResumeWithMobileOffReply();
+    if (isResumeIntent(text)) {
+      return getResumeRouteReply();
     }
     if (isRevisionPdfIntent(text) && !messagingAllowed) {
       return "Turn on Mobile+ to use the revision PDF lane. That is the premium study flow for exam packs, mind maps, key points, and practice questions.";
@@ -3147,26 +3163,16 @@ try {
     hideSuggestions();
     haptic(15);
     addUserMsg(userText);
-    if (wantsResume && messagingAllowed) {
-      showDots('Resume Builder', { deepPlan: true, phase: 'trace', stepMs: 1100 });
-      try {
-        var resumeQuestions = await requestResumeQuestions(processedText);
-        showDots('Resume Builder', { deepPlan: true, phase: 'ai', stepMs: 900 });
-        hideDots();
-        await showResumeQuestionFlow(resumeQuestions, processedText);
-        if (shouldPromptPremiumAfterReply) {
-          maybeShowPremiumPromptAfterFirstAnswer();
-        }
-      } catch (resumeError) {
-        hideDots();
-        var resumeFailMessage = "I couldn’t start the resume builder yet. Try the same request once more in a moment.";
-        if (resumeError && /RESUME_SERVER_NOT_CONFIGURED/i.test(String(resumeError.message || ''))) {
-          resumeFailMessage = "The live resume builder server is not connected yet, so I can’t ask for the details right now.";
-        }
-        await streamReply(resumeFailMessage, 'Resume Builder', processedText);
-      }
+    if (wantsResume) {
+      showDots('Resume Route', { deepPlan: false, phase: 'trace', stepMs: 800 });
+      showDots('Resume Route', { deepPlan: false, phase: 'ai', stepMs: 760 });
+      hideDots();
+      await showResumeRouteResult(processedText);
       if (!chatIn.value.trim()) {
         showRandomSuggestions();
+      }
+      if (shouldPromptPremiumAfterReply) {
+        maybeShowPremiumPromptAfterFirstAnswer();
       }
       return;
     }
@@ -3658,12 +3664,12 @@ try {
       localStorage.setItem('orbiton_model_guide', 'yes');
       showGuideCard({
         kicker: 'Model',
-        title: 'How Raghav Beta answers',
-        body: 'Raghav Beta is the open everyday lane. It is built to feel fast, respectful, and broad enough for normal life questions, definitions, explanations, and practical help. Raghav Baan is the premium flagship lane for fuller stepwise answers when you want a stronger pass.',
+        title: 'Choose the lane you want',
+        body: 'Raghav AI does not use one lane for everything. Beta stays quick, Baan goes deeper, and the app shortcuts when that is the smarter move.',
         points: [
-          { title: 'Raghav Beta', text: 'Fast open model for all-day questions, definitions, and practical answers.' },
-          { title: 'Raghav Baan', text: 'Premium flagship lane for fuller reasoning, clearer structure, and stepwise help.' },
-          { title: 'Source-first when smarter', text: 'Quick routes still handle things like search, maps, shopping, and direct actions when that saves time.' }
+          { title: 'Raghav Beta', text: 'Open everyday lane for fast answers, clean definitions, and practical help.' },
+          { title: 'Raghav Baan', text: 'Premium flagship lane when you want stronger structure and a fuller pass.' },
+          { title: 'Shortcuts still win', text: 'Search, maps, shopping, and direct actions can jump straight to the useful place.' }
         ],
         primaryLabel: 'Open model',
         secondaryLabel: 'Later',
@@ -3826,14 +3832,14 @@ try {
     localStorage.setItem('orbiton_search_guide', 'yes');
     chatIn.blur();
     showGuideCard({
-      kicker: 'How It Works',
-      title: 'Ask naturally. Raghav AI handles the next step.',
-      body: 'Raghav AI is built to save time. Some requests stay in chat, and some jump straight to the place that gets you there faster.',
+      kicker: 'Search',
+      title: 'Search is only the first layer.',
+      body: 'Ask once and watch what lane Raghav AI chooses. Some requests stay in chat, some jump out fast, and Mobile+ unlocks the deeper layer.',
       points: [
-        { title: 'Type “what is programming” or “what is GPU”', text: 'Raghav AI can answer cleanly in chat without making you open extra tabs.' },
-        { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already prepared for you.' },
-        { title: 'Type “how to make biryani”', text: 'Raghav AI can send you straight to YouTube with the recipe already searched.' },
-        { title: 'Turn on Mobile+ for the mini agent', text: 'With Mobile+ on, Raghav AI can work for you and custom-make things like a revision PDF for NEET, ask the right details before building a resume, or prepare a message saying you will be late.' }
+        { title: 'Ask one clean thing', text: 'Try “what is programming” or “power” and see how tightly it answers in chat.' },
+        { title: 'Ask for the shortcut', text: 'Try “blue jeans” or “best computers” and let it jump to the useful place.' },
+        { title: 'Ask for the result', text: 'Try “how to make biryani” and watch it prepare the next step instead of making you search twice.' },
+        { title: 'Turn on Mobile+ for the hidden layer', text: 'Mini Agent can prep a revision PDF, line up a message, or route a bigger ask to the right tool for you.' }
       ],
       primaryLabel: 'Start typing',
       secondaryLabel: 'Skip',
@@ -3843,10 +3849,22 @@ try {
     });
   }
 
-  chatIn.addEventListener('pointerdown', function(e) {
+  function openSearchGuideFromTouch(e) {
     if (!isMobileDevice || searchGuideSeen) return;
-    e.preventDefault();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     showSearchGuideCardOnce();
+  }
+
+  chatIn.addEventListener('pointerdown', function(e) {
+    openSearchGuideFromTouch(e);
+  });
+
+  chatIn.addEventListener('touchstart', function(e) {
+    openSearchGuideFromTouch(e);
+  }, { passive: false });
+
+  chatIn.addEventListener('click', function(e) {
+    if (!searchGuideSeen) openSearchGuideFromTouch(e);
   });
 
   chatIn.addEventListener('focus', function() {
@@ -4007,8 +4025,8 @@ try {
     return /\b(resume|cv|curriculum vitae)\b/.test(cleaned);
   }
 
-  function getResumeWithMobileOffReply() {
-    return '**Resume Builder**\nMobile+ is off right now. Turn it on if you want me to create an actual resume PDF for you. 📄\n\nA strong resume usually needs:\n1. Your full name and contact details\n2. Your target role or career direction\n3. Your education or qualifications\n4. Your experience, projects, or achievements\n\nWould you like me to create it for you? Turn on Mobile+ and ask again here.';
+  function getResumeRouteReply() {
+    return '**Resume Route**\nFor a serious resume, it is better to use the right lane for the outcome you want.\n\nTry one of these:\n1. Antigravity for a design-first resume\n2. Claude AI for balanced polish\n3. Codex for deeper detailed drafting';
   }
 
   intents = intents.map(function(intent) {
