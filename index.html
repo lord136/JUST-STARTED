@@ -278,6 +278,25 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .guide-primary,.guide-secondary{border-radius:14px;font-size:.92rem;cursor:pointer}
 .guide-primary{padding:14px;border:none;background:linear-gradient(180deg,#ffffff,#e7ecf8);color:#000;font-weight:600}
 .guide-secondary{padding:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:rgba(255,255,255,.65);font-weight:500}
+.pdf-sheet{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.62);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:fadeIn .2s ease}
+.pdf-box{width:min(100%,920px);height:min(100%,86vh);display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,rgba(23,23,28,.98),rgba(12,12,16,.95));border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.03)}
+.pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pdf-title{font-size:.98rem;font-weight:700;letter-spacing:-.3px}
+.pdf-meta{font-size:.76rem;color:rgba(255,255,255,.55)}
+.pdf-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pdf-btn{padding:11px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;font-size:.82rem;font-family:inherit;cursor:pointer}
+.pdf-btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:rgba(96,165,250,.4)}
+.pdf-btn:disabled{opacity:.6;cursor:default}
+.pdf-frame{flex:1;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:#111;overflow:hidden}
+.pdf-frame iframe{width:100%;height:100%;border:none;background:#fff}
+.pdf-note{font-size:.74rem;color:rgba(255,255,255,.5)}
+.pdf-status{font-size:.72rem;color:#c4b5fd}
+.reply-rich{display:flex;flex-direction:column;gap:8px}
+.reply-rich p{margin:0}
+.reply-rich strong{font-weight:700;color:inherit}
+body[data-theme="light"] .pdf-box{background:rgba(255,255,255,.94);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .pdf-meta,body[data-theme="light"] .pdf-note{color:rgba(8,17,31,.6)}
+body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:#08111f}
 
 @media (pointer:coarse){
   .msg-copy{opacity:.78;transform:none}
@@ -507,6 +526,27 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
       <button class="guide-primary" id="guidePrimary">Got it</button>
       <button class="guide-secondary" id="guideSecondary">Not now</button>
     </div>
+  </div>
+</div>
+
+<div class="pdf-sheet" id="pdfSheet">
+  <div class="pdf-box">
+    <div class="pdf-toolbar">
+      <div>
+        <div class="pdf-title" id="pdfTitle">Revision PDF preview</div>
+        <div class="pdf-meta" id="pdfMeta">Review it, download it, or share it.</div>
+      </div>
+      <div class="pdf-actions">
+        <button class="pdf-btn primary" id="pdfDownloadBtn">Download PDF</button>
+        <button class="pdf-btn" id="pdfShareBtn">Share PDF</button>
+        <button class="pdf-btn" id="pdfCloseBtn">Close</button>
+      </div>
+    </div>
+    <div class="pdf-frame">
+      <iframe id="pdfPreviewFrame" title="Revision PDF preview"></iframe>
+    </div>
+    <div class="pdf-note" id="pdfNote">If preview is limited on your browser, use Download or Share.</div>
+    <div class="pdf-status" id="pdfStatus"></div>
   </div>
 </div>
 
@@ -1000,12 +1040,12 @@ try {
     'Raghav Beta': {
       status: 'Flagship replies for everyday help',
       textModelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
-      prompt: 'You are Raghav Beta, Raghav AI\'s flagship everyday assistant. Speak with deep respect, calm confidence, humility, and warmth. Keep answers genuine, grounded, and easy to trust. Help with everyday questions, reasoning, definitions, decisions, and practical next steps. Keep replies short by default and medium only when the user clearly needs more. Never go long unless it is truly necessary. Never act dramatic, arrogant, robotic, or fictional.'
+      prompt: 'You are Raghav Beta, Raghav AI\'s flagship everyday assistant. Speak with deep respect, calm confidence, humility, and warmth. Keep answers genuine, grounded, and easy to trust. Help with everyday questions, reasoning, definitions, decisions, and practical next steps. Keep replies short by default and medium only when the user clearly needs more. Never go long unless it is truly necessary. For definitions and concept explanations, prefer a clean bold heading, then short clear lines, and use at most one or two natural emoji when it helps the answer feel alive. Never act dramatic, arrogant, robotic, or fictional.'
     },
     'Raghav Baan': {
       status: 'Premium flagship lane for fuller stepwise help',
       textModelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
-      prompt: 'You are Raghav Baan, the premium flagship lane inside Raghav AI. Answer respectfully, calmly, and in a way the user can easily understand. Prefer short answers for simple asks and medium answers for deeper asks. When guidance is needed, explain step by step, but do not ramble. Never be robotic, vague, or dramatic.'
+      prompt: 'You are Raghav Baan, the premium flagship lane inside Raghav AI. Answer respectfully, calmly, and in a way the user can easily understand. Prefer short answers for simple asks and medium answers for deeper asks. When guidance is needed, explain step by step, but do not ramble. For definitions and explanations, prefer a clean bold heading, then short structured lines, and use at most one or two natural emoji when it improves warmth. Never be robotic, vague, or dramatic.'
     }
   };
 
@@ -1502,6 +1542,31 @@ try {
       .replace(/^-+|-+$/g, '') || 'Revision-Pack.pdf';
   }
 
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatReplyHtml(text, lane, sourceText) {
+    var raw = String(text || '').trim();
+    if (!raw) return '';
+    var normalized = raw.replace(/\r\n/g, '\n');
+    var sourceTerm = extractDefinitionTerm(sourceText || '') || ((sourceText || '').trim().split(/\s+/).length <= 2 ? (sourceText || '').trim() : '');
+    if ((lane === 'Definition' || isDefinitionQuery(sourceText || '') || (sourceTerm && localDefinitionMap[normalizeIntentText(sourceTerm)])) && normalized.indexOf('**') === -1) {
+      var heading = sourceTerm ? sourceTerm.charAt(0).toUpperCase() + sourceTerm.slice(1) : 'Meaning';
+      normalized = '**' + heading + '** ' + normalized + ' ⚡';
+    }
+    var html = escapeHtml(normalized)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n{2,}/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+    return '<div class="reply-rich"><p>' + html + '</p></div>';
+  }
+
   function buildRevisionPdfAsset(pack) {
     if (!window.jspdf || !window.jspdf.jsPDF) {
       throw new Error('PDF_RUNTIME_NOT_READY');
@@ -1599,21 +1664,89 @@ try {
     var blob = doc.output('blob');
     var filename = sanitizePdfFilename(pack.filename || pack.title || 'Revision-Pack') + (/\.pdf$/i.test(pack.filename || '') ? '' : '.pdf');
     if (!/\.pdf$/i.test(filename)) filename += '.pdf';
+    var filename = sanitizePdfFilename(pack.filename || pack.title || 'Revision-Pack');
+    if (!/\.pdf$/i.test(filename)) filename += '.pdf';
+    var file = null;
+    try {
+      if (typeof File === 'function') {
+        file = new File([blob], filename, { type: 'application/pdf' });
+      }
+    } catch (e) {}
     return {
       blob: blob,
       url: URL.createObjectURL(blob),
-      filename: filename
+      filename: filename,
+      file: file
     };
   }
 
-  function triggerPdfDownload(asset) {
+  function triggerPdfDownload(asset, button, statusEl) {
     if (!asset || !asset.url) return;
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Downloading...';
+    }
+    if (statusEl) statusEl.textContent = 'Preparing the file for download...';
     var anchor = document.createElement('a');
     anchor.href = asset.url;
     anchor.download = asset.filename || 'Revision-Pack.pdf';
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
+    setTimeout(function() {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Download PDF';
+      }
+      if (statusEl) statusEl.textContent = 'Download started. If your browser asks, choose Save or Share.';
+      updatePdfStatus('Download started. You can also preview or share the PDF.');
+    }, 420);
+  }
+
+  async function sharePdfAsset(asset, button, statusEl) {
+    if (!asset || !asset.file || !navigator.share || !navigator.canShare || !navigator.canShare({ files: [asset.file] })) {
+      if (statusEl) statusEl.textContent = 'Sharing is not supported on this device. Use Download instead.';
+      updatePdfStatus('Sharing is not supported here. Use Download instead.');
+      return;
+    }
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Sharing...';
+    }
+    if (statusEl) statusEl.textContent = 'Opening the share sheet...';
+    try {
+      await navigator.share({
+        title: asset.filename || 'Revision PDF',
+        text: 'Revision PDF from Raghav AI',
+        files: [asset.file]
+      });
+      if (statusEl) statusEl.textContent = 'Share sheet opened successfully.';
+      updatePdfStatus('Share sheet opened successfully.');
+    } catch (error) {
+      if (statusEl) statusEl.textContent = 'Share was cancelled or not completed.';
+      updatePdfStatus('Share was cancelled or not completed.');
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Share PDF';
+      }
+    }
+  }
+
+  function openPdfPreview(asset, pack) {
+    if (!pdfSheet || !pdfPreviewFrame || !asset || !asset.url) {
+      mobileOpen(asset && asset.url ? asset.url : '');
+      return;
+    }
+    activePdfAsset = asset;
+    pdfTitle.textContent = (pack && pack.title) || 'Revision PDF preview';
+    pdfMeta.textContent = (asset.filename || 'Revision-Pack.pdf') + ' • preview inside Raghav AI';
+    pdfPreviewFrame.src = asset.url + '#toolbar=0&navpanes=0&view=FitH';
+    pdfSheet.style.display = 'flex';
+    updatePdfStatus('Preview ready. Download or share when you want.');
+    if (pdfShareBtn) {
+      pdfShareBtn.style.display = asset.file && navigator.share && navigator.canShare && navigator.canShare({ files: [asset.file] }) ? 'inline-flex' : 'none';
+    }
   }
 
   function appendRevisionPdfCard(row, pack, asset, sourceText) {
@@ -1635,8 +1768,11 @@ try {
     downloadBtn.type = 'button';
     downloadBtn.className = 'agent-btn primary';
     downloadBtn.textContent = 'Download PDF';
+    var statusText = document.createElement('span');
+    statusText.className = 'attachment-note';
+    statusText.textContent = 'PDF ready. Download, preview, or share it.';
     downloadBtn.addEventListener('click', function() {
-      triggerPdfDownload(asset);
+      triggerPdfDownload(asset, downloadBtn, statusText);
     });
     actions.appendChild(downloadBtn);
 
@@ -1645,9 +1781,20 @@ try {
     previewBtn.className = 'agent-btn';
     previewBtn.textContent = 'Open preview';
     previewBtn.addEventListener('click', function() {
-      mobileOpen(asset.url);
+      openPdfPreview(asset, pack);
     });
     actions.appendChild(previewBtn);
+
+    if (asset && asset.file && navigator.share && navigator.canShare && navigator.canShare({ files: [asset.file] })) {
+      var shareBtn = document.createElement('button');
+      shareBtn.type = 'button';
+      shareBtn.className = 'agent-btn';
+      shareBtn.textContent = 'Share PDF';
+      shareBtn.addEventListener('click', function() {
+        sharePdfAsset(asset, shareBtn, statusText);
+      });
+      actions.appendChild(shareBtn);
+    }
 
     var refineBtn = document.createElement('button');
     refineBtn.type = 'button';
@@ -1661,6 +1808,7 @@ try {
     actions.appendChild(refineBtn);
 
     card.appendChild(actions);
+    card.appendChild(statusText);
     row.appendChild(card);
   }
 
@@ -1691,7 +1839,7 @@ try {
       var words = replyText.split(' '), wi = 0;
       function next() {
         if (wi >= words.length) {
-          bubble.innerHTML = replyText;
+          bubble.innerHTML = formatReplyHtml(replyText, 'Revision PDF', sourceText);
           appendRevisionPdfCard(row, pack, asset, sourceText);
           scrollChatToLatest();
           haptic([8, 30, 8]);
@@ -1804,7 +1952,7 @@ try {
       scrollChatToLatest();
       var words=text.split(' '), wi=0;
       function next(){
-        if(wi>=words.length){ b.innerHTML=text; appendFollowupChips(row, lane, sourceText); scrollChatToLatest(); haptic([8,30,8]); resolve(); return; }
+        if(wi>=words.length){ b.innerHTML=formatReplyHtml(text, lane, sourceText); appendFollowupChips(row, lane, sourceText); scrollChatToLatest(); haptic([8,30,8]); resolve(); return; }
         b.innerHTML=words.slice(0,wi+1).join(' ')+'<span class="cursor-blink"></span>';
         scrollChatToLatest(true); wi++;
         setTimeout(next, 25+Math.random()*25);
@@ -2206,7 +2354,7 @@ try {
 
   function isDefinitionQuery(text) {
     var cleaned = normalizeIntentText(text);
-    return /\b(what is|who is|define|definition of|meaning of|what does .* mean|what was)\b/.test(cleaned);
+    return /\b(what is|who is|define|definition of|meaning of|what does .* mean|what was)\b/.test(cleaned) || (!!cleaned && !!localDefinitionMap[cleaned]);
   }
 
   function isCommandLikeInput(text) {
@@ -2274,11 +2422,12 @@ try {
     function: 'A function is a reusable block of code that performs one specific job.',
     server: 'A server is a system that provides data, services, or files to other devices.',
     internet: 'The internet is a global network that connects computers and devices so they can share information.',
-    cloud: 'Cloud means using remote internet-based servers and services instead of only your own device.'
+    cloud: 'Cloud means using remote internet-based servers and services instead of only your own device.',
+    power: 'Power generally means the ability to do work or to cause something to happen. In physics, it is the rate at which work is done or energy is transferred. In daily life, it can also mean strength, ability, or control.'
   };
 
   function getLocalDefinitionAnswer(text) {
-    var term = extractDefinitionTerm(text);
+    var term = extractDefinitionTerm(text) || ((String(text || '').trim().split(/\s+/).length <= 2) ? String(text || '').trim() : '');
     if (!term) return null;
     var normalizedTerm = normalizeIntentText(term);
     return localDefinitionMap[normalizedTerm] || null;
@@ -2486,7 +2635,7 @@ try {
 
   function buildPromptForText(basePrompt, text) {
     if (isDefinitionQuery(text)) {
-      return basePrompt + ' The user is asking for a definition. Answer with a clean definition in 1 to 3 sentences and stay directly on topic.';
+      return basePrompt + ' The user is asking for a definition. Answer directly and stay on topic. Use a bold heading for the concept, then 2 to 4 short lines that feel clear and human, not robotic. Use at most one or two natural emoji if it helps.';
     }
     if (isCommandLikeInput(text)) {
       return basePrompt + ' The user pasted a command. Explain what it does in plain language in 1 to 3 sentences. Do not invent results or pretend it already ran.';
@@ -3048,6 +3197,15 @@ try {
   var raghavBaanMeta = raghavBaanBtn ? raghavBaanBtn.querySelector('.pop-meta') : null;
   var guidePrimaryHandler = null;
   var guideSecondaryHandler = null;
+  var pdfSheet = document.getElementById('pdfSheet');
+  var pdfTitle = document.getElementById('pdfTitle');
+  var pdfMeta = document.getElementById('pdfMeta');
+  var pdfPreviewFrame = document.getElementById('pdfPreviewFrame');
+  var pdfDownloadBtn = document.getElementById('pdfDownloadBtn');
+  var pdfShareBtn = document.getElementById('pdfShareBtn');
+  var pdfCloseBtn = document.getElementById('pdfCloseBtn');
+  var pdfStatus = document.getElementById('pdfStatus');
+  var activePdfAsset = null;
   var experimentalSheetMode = 'mobile-plus';
   var experimentalLockedModel = '';
   var premiumPromptShown = false;
@@ -3165,6 +3323,16 @@ try {
     guideSecondaryHandler = null;
   }
 
+  function closePdfPreview() {
+    if (!pdfSheet) return;
+    pdfSheet.style.display = 'none';
+    if (pdfPreviewFrame) pdfPreviewFrame.src = 'about:blank';
+  }
+
+  function updatePdfStatus(message) {
+    if (pdfStatus) pdfStatus.textContent = message || '';
+  }
+
   function renderExperimentalPoints(points) {
     permPoints.innerHTML = '';
     points.forEach(function(point) {
@@ -3243,6 +3411,32 @@ try {
   guideSheet.addEventListener('click', function(e) {
     if (e.target === this) closeGuideCard();
   });
+
+  if (pdfDownloadBtn) {
+    pdfDownloadBtn.addEventListener('click', function() {
+      if (!activePdfAsset) return;
+      triggerPdfDownload(activePdfAsset, pdfDownloadBtn, pdfStatus);
+    });
+  }
+
+  if (pdfShareBtn) {
+    pdfShareBtn.addEventListener('click', function() {
+      if (!activePdfAsset) return;
+      sharePdfAsset(activePdfAsset, pdfShareBtn, pdfStatus);
+    });
+  }
+
+  if (pdfCloseBtn) {
+    pdfCloseBtn.addEventListener('click', function() {
+      closePdfPreview();
+    });
+  }
+
+  if (pdfSheet) {
+    pdfSheet.addEventListener('click', function(e) {
+      if (e.target === this) closePdfPreview();
+    });
+  }
 
   async function markPremiumUnlocked(details) {
     applyPremiumState({ premiumUnlocked: true, messagingAllowed: true });
