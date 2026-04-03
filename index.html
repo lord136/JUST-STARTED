@@ -1214,6 +1214,30 @@ try {
     return data.pack;
   }
 
+  async function requestResumeQuestions(text) {
+    var base = getRemoteReasoningBase();
+    if (!base) throw new Error('RESUME_SERVER_NOT_CONFIGURED');
+    await warmRemoteReasoning(true);
+    var response = await fetch(base + '/api/resume-questions', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        modelName: 'Raghav Baan',
+        mobileAgent: messagingAllowed,
+        platform: isMobileDevice ? 'mobile' : 'desktop'
+      })
+    });
+    var data = null;
+    try { data = await response.json(); } catch (e) {}
+    if (!response.ok || !data || !data.ok || !data.questions) {
+      throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'RESUME_QUESTIONS_FAILED');
+    }
+    return data.questions;
+  }
+
   function readJsonStorage(key, fallback) {
     try {
       var raw = localStorage.getItem(key);
@@ -1797,6 +1821,61 @@ try {
     card.appendChild(actions);
     card.appendChild(statusText);
     row.appendChild(card);
+  }
+
+  function showResumeQuestionFlow(payload, sourceText) {
+    return new Promise(function(resolve) {
+      var row = document.createElement('div');
+      row.className = 'msg a';
+      var tag = makeRouteTag('Resume Builder');
+      if (tag) row.appendChild(tag);
+
+      var replyText = (payload.title || 'Resume details needed') + '. ' + (payload.intro || 'I need a few details first.') + ' ' + (payload.replyHint || '');
+      var body = document.createElement('div');
+      body.className = 'msg-body';
+      var bubble = document.createElement('div');
+      bubble.className = 'bbl';
+      var copyBtn = makeCopyButton(replyText);
+      var ts = document.createElement('div');
+      ts.className = 'stamp';
+      ts.textContent = getTime();
+
+      body.appendChild(bubble);
+      body.appendChild(copyBtn);
+      row.appendChild(body);
+      row.appendChild(ts);
+      chatLog.appendChild(row);
+      scrollChatToLatest();
+
+      var words = replyText.split(' '), wi = 0;
+      function next() {
+        if (wi >= words.length) {
+          bubble.innerHTML = formatReplyHtml(replyText, 'Resume Builder', sourceText);
+          if (payload.questions && payload.questions.length) {
+            var card = document.createElement('div');
+            card.className = 'agent-card';
+            var title = document.createElement('strong');
+            title.textContent = 'Send these details next';
+            card.appendChild(title);
+            var summary = document.createElement('span');
+            summary.innerHTML = payload.questions.map(function(question, index) {
+              return (index + 1) + '. ' + escapeHtml(question);
+            }).join('<br>');
+            card.appendChild(summary);
+            row.appendChild(card);
+          }
+          scrollChatToLatest();
+          haptic([8, 30, 8]);
+          resolve();
+          return;
+        }
+        bubble.innerHTML = words.slice(0, wi + 1).join(' ') + '<span class="cursor-blink"></span>';
+        scrollChatToLatest(true);
+        wi++;
+        setTimeout(next, 22 + Math.random() * 22);
+      }
+      next();
+    });
   }
 
   function showRevisionPdfResult(pack, asset, sourceText) {
@@ -3058,12 +3137,36 @@ try {
     var useLocalModel = shouldUseLocalModel(processedText);
     var isFirstReply = useLocalModel && !firstLocalReplyDone;
     var deepPlan = replyLane === 'Reasoning' && getEffectiveModel() === 'Raghav Baan';
+    var wantsResume = isResumeIntent(processedText);
     var wantsRevisionPdf = isRevisionPdfIntent(processedText);
     var mobileAgentAction = getMobileAgentAction(processedText);
     chatIn.value=''; chatIn.style.height='auto';
     hideSuggestions();
     haptic(15);
     addUserMsg(userText);
+    if (wantsResume && messagingAllowed) {
+      showDots('Resume Builder', { deepPlan: true, phase: 'trace', stepMs: 1100 });
+      try {
+        var resumeQuestions = await requestResumeQuestions(processedText);
+        showDots('Resume Builder', { deepPlan: true, phase: 'ai', stepMs: 900 });
+        hideDots();
+        await showResumeQuestionFlow(resumeQuestions, processedText);
+        if (shouldPromptPremiumAfterReply) {
+          maybeShowPremiumPromptAfterFirstAnswer();
+        }
+      } catch (resumeError) {
+        hideDots();
+        var resumeFailMessage = "I couldn’t start the resume builder yet. Try the same request once more in a moment.";
+        if (resumeError && /RESUME_SERVER_NOT_CONFIGURED/i.test(String(resumeError.message || ''))) {
+          resumeFailMessage = "The live resume builder server is not connected yet, so I can’t ask for the details right now.";
+        }
+        await streamReply(resumeFailMessage, 'Resume Builder', processedText);
+      }
+      if (!chatIn.value.trim()) {
+        showRandomSuggestions();
+      }
+      return;
+    }
     if (wantsRevisionPdf && messagingAllowed) {
       showDots('Revision PDF', { deepPlan: true, phase: 'trace', stepMs: 1100 });
       try {
@@ -3726,7 +3829,7 @@ try {
         { title: 'Type “what is programming” or “what is GPU”', text: 'Raghav AI can answer cleanly in chat without making you open extra tabs.' },
         { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already prepared for you.' },
         { title: 'Type “how to make biryani”', text: 'Raghav AI can send you straight to YouTube with the recipe already searched.' },
-        { title: 'Turn on Mobile+ for the mini agent', text: 'With Mobile+ on, Raghav AI can work for you and custom-make things like a resume draft, a revision PDF for NEET, or a message saying you will be late.' }
+        { title: 'Turn on Mobile+ for the mini agent', text: 'With Mobile+ on, Raghav AI can work for you and custom-make things like a revision PDF for NEET, ask the right details before building a resume, or prepare a message saying you will be late.' }
       ],
       primaryLabel: 'Start typing',
       secondaryLabel: 'Skip',
@@ -3881,6 +3984,12 @@ try {
     var cleaned = String(text || '').trim().toLowerCase();
     if (!cleaned) return false;
     return /\b(pdf|revision|revise|mind map|practice questions?|study pack|study sheet|exam|subject|past 5 years?)\b/.test(cleaned);
+  }
+
+  function isResumeIntent(text) {
+    var cleaned = String(text || '').trim().toLowerCase();
+    if (!cleaned) return false;
+    return /\b(resume|cv|curriculum vitae)\b/.test(cleaned);
   }
 
   intents = intents.map(function(intent) {
