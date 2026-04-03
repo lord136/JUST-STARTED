@@ -1779,6 +1779,159 @@ try {
     updatePdfStatus('Preview ready. Share it when you want.');
   }
 
+  var giftBookAssetPromise = null;
+  var GIFT_BOOK_URL = 'ai-mini-book-prem-peswani.pdf';
+  var GIFT_BOOK_FILENAME = 'Understanding_AI_MiniBook_PremPeswani.pdf';
+
+  function getPremiumGiftStorageKey(type) {
+    if (currentSignedInUser && currentSignedInUser.uid) {
+      return 'raghav_' + type + '_' + currentSignedInUser.uid;
+    }
+    return 'raghav_' + type;
+  }
+
+  function hasSeenPremiumGift() {
+    try {
+      return localStorage.getItem(getPremiumGiftStorageKey('gift_seen')) === 'yes';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function hasPendingPremiumGift() {
+    try {
+      return localStorage.getItem(getPremiumGiftStorageKey('gift_pending')) === 'yes';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function setPendingPremiumGift() {
+    try {
+      localStorage.setItem(getPremiumGiftStorageKey('gift_pending'), 'yes');
+    } catch (e) {}
+  }
+
+  function clearPendingPremiumGift() {
+    try {
+      localStorage.removeItem(getPremiumGiftStorageKey('gift_pending'));
+    } catch (e) {}
+  }
+
+  function markPremiumGiftSeen() {
+    try {
+      localStorage.setItem(getPremiumGiftStorageKey('gift_seen'), 'yes');
+      clearPendingPremiumGift();
+    } catch (e) {}
+  }
+
+  async function loadGiftBookAsset() {
+    if (giftBookAssetPromise) return giftBookAssetPromise;
+    giftBookAssetPromise = (async function() {
+      var absoluteUrl = new URL(GIFT_BOOK_URL, window.location.href).href;
+      try {
+        var response = await fetch(absoluteUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error('GIFT_BOOK_FETCH_FAILED');
+        var blob = await response.blob();
+        var file = null;
+        try {
+          if (typeof File === 'function') {
+            file = new File([blob], GIFT_BOOK_FILENAME, { type: 'application/pdf' });
+          }
+        } catch (e) {}
+        return {
+          blob: blob,
+          file: file,
+          filename: GIFT_BOOK_FILENAME,
+          url: URL.createObjectURL(blob)
+        };
+      } catch (e) {
+        return {
+          blob: null,
+          file: null,
+          filename: GIFT_BOOK_FILENAME,
+          url: absoluteUrl
+        };
+      }
+    })();
+    return giftBookAssetPromise;
+  }
+
+  function appendGiftBookCard(row, asset) {
+    var card = document.createElement('div');
+    card.className = 'agent-card';
+
+    var title = document.createElement('strong');
+    title.textContent = 'AI Mini Book by Prem';
+    card.appendChild(title);
+
+    var summary = document.createElement('span');
+    summary.textContent = 'A small thank-you gift for unlocking Raghav AI. Open it, preview it, or keep a copy with you.';
+    card.appendChild(summary);
+
+    var actions = document.createElement('div');
+    actions.className = 'agent-actions';
+
+    var previewBtn = document.createElement('button');
+    previewBtn.type = 'button';
+    previewBtn.className = 'agent-btn primary';
+    previewBtn.textContent = 'Open gift';
+    previewBtn.addEventListener('click', function() {
+      openPdfPreview(asset, { title: 'AI Mini Book by Prem' });
+    });
+    actions.appendChild(previewBtn);
+
+    var shareBtn = document.createElement('button');
+    shareBtn.type = 'button';
+    shareBtn.className = 'agent-btn';
+    shareBtn.textContent = 'Keep a copy';
+    shareBtn.addEventListener('click', function() {
+      sharePdfAsset(asset, shareBtn, note);
+    });
+    actions.appendChild(shareBtn);
+
+    var note = document.createElement('span');
+    note.className = 'attachment-note';
+    note.textContent = 'Gift unlocked. This one is only for you, one time. 🎁';
+
+    card.appendChild(actions);
+    card.appendChild(note);
+    row.appendChild(card);
+  }
+
+  async function showPremiumGiftToken() {
+    if (hasSeenPremiumGift()) {
+      clearPendingPremiumGift();
+      return;
+    }
+    var asset = await loadGiftBookAsset();
+    var row = document.createElement('div');
+    row.className = 'msg a';
+    var tag = makeRouteTag('AI Mini Book');
+    if (tag) row.appendChild(tag);
+
+    var body = document.createElement('div');
+    body.className = 'msg-body';
+    var bubble = document.createElement('div');
+    bubble.className = 'bbl';
+    var replyText = 'Thank you for unlocking Raghav AI. As a small gift token, I’m giving you my AI mini book by Prem. Keep it with you and open it anytime you want.';
+    bubble.innerHTML = formatReplyHtml(replyText, 'AI Mini Book', '');
+    var copyBtn = makeCopyButton(replyText);
+    var ts = document.createElement('div');
+    ts.className = 'stamp';
+    ts.textContent = getTime();
+
+    body.appendChild(bubble);
+    body.appendChild(copyBtn);
+    row.appendChild(body);
+    row.appendChild(ts);
+    appendGiftBookCard(row, asset);
+    chatLog.appendChild(row);
+    scrollChatToLatest();
+    markPremiumGiftSeen();
+    haptic([12, 30, 12]);
+  }
+
   function appendRevisionPdfCard(row, pack, asset, sourceText) {
     var card = document.createElement('div');
     card.className = 'agent-card';
@@ -3564,6 +3717,7 @@ try {
   }
 
   async function markPremiumUnlocked(details) {
+    setPendingPremiumGift();
     applyPremiumState({ premiumUnlocked: true, messagingAllowed: true });
     permSheet.style.display = 'none';
     if (typeof window.raghavPersistPremiumUnlock === 'function') {
@@ -3571,9 +3725,9 @@ try {
         await window.raghavPersistPremiumUnlock(details || {});
       } catch (e) {}
     }
-    setTimeout(function() {
-      streamReply('Premium is unlocked on your account. Mobile+ and the premium lane are ready for you now.');
-    }, 220);
+    await new Promise(function(resolve) { setTimeout(resolve, 220); });
+    await streamReply('Premium is unlocked on your account. Mobile+ and the premium lane are ready for you now.');
+    await showPremiumGiftToken();
   }
 
   async function launchPremiumCheckout() {
@@ -4369,6 +4523,11 @@ async function syncUserPremiumFromClaims(user, forceRefresh) {
       premiumUnlocked: premium,
       messagingAllowed: mobilePlusUnlocked
     });
+  }
+  if (premium && hasPendingPremiumGift() && !hasSeenPremiumGift()) {
+    setTimeout(function() {
+      showPremiumGiftToken().catch(function(){});
+    }, 320);
   }
   return claims;
 }
