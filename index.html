@@ -534,18 +534,17 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
     <div class="pdf-toolbar">
       <div>
         <div class="pdf-title" id="pdfTitle">Revision PDF preview</div>
-        <div class="pdf-meta" id="pdfMeta">Review it, download it, or share it.</div>
+        <div class="pdf-meta" id="pdfMeta">Review it and share it from here.</div>
       </div>
       <div class="pdf-actions">
-        <button class="pdf-btn primary" id="pdfDownloadBtn">Download PDF</button>
-        <button class="pdf-btn" id="pdfShareBtn">Share PDF</button>
+        <button class="pdf-btn primary" id="pdfDownloadBtn">Share it</button>
         <button class="pdf-btn" id="pdfCloseBtn">Close</button>
       </div>
     </div>
     <div class="pdf-frame">
       <iframe id="pdfPreviewFrame" title="Revision PDF preview"></iframe>
     </div>
-    <div class="pdf-note" id="pdfNote">If preview is limited on your browser, use Download or Share.</div>
+    <div class="pdf-note" id="pdfNote">If sharing is limited on your browser, Raghav AI will fall back to a file download.</div>
     <div class="pdf-status" id="pdfStatus"></div>
   </div>
 </div>
@@ -1705,8 +1704,9 @@ try {
 
   async function sharePdfAsset(asset, button, statusEl) {
     if (!asset || !asset.file || !navigator.share || !navigator.canShare || !navigator.canShare({ files: [asset.file] })) {
-      if (statusEl) statusEl.textContent = 'Sharing is not supported on this device. Use Download instead.';
-      updatePdfStatus('Sharing is not supported here. Use Download instead.');
+      if (statusEl) statusEl.textContent = 'Sharing is not supported here, so Raghav AI is saving the PDF instead.';
+      updatePdfStatus('Sharing is limited here, so the PDF is being saved instead.');
+      triggerPdfDownload(asset, null, statusEl);
       return;
     }
     if (button) {
@@ -1728,7 +1728,7 @@ try {
     } finally {
       if (button) {
         button.disabled = false;
-        button.textContent = 'Share PDF';
+        button.textContent = 'Share it';
       }
     }
   }
@@ -1743,10 +1743,7 @@ try {
     pdfMeta.textContent = (asset.filename || 'Revision-Pack.pdf') + ' • preview inside Raghav AI';
     pdfPreviewFrame.src = asset.url + '#toolbar=0&navpanes=0&view=FitH';
     pdfSheet.style.display = 'flex';
-    updatePdfStatus('Preview ready. Download or share when you want.');
-    if (pdfShareBtn) {
-      pdfShareBtn.style.display = asset.file && navigator.share && navigator.canShare && navigator.canShare({ files: [asset.file] }) ? 'inline-flex' : 'none';
-    }
+    updatePdfStatus('Preview ready. Share it when you want.');
   }
 
   function appendRevisionPdfCard(row, pack, asset, sourceText) {
@@ -1764,37 +1761,27 @@ try {
     var actions = document.createElement('div');
     actions.className = 'agent-actions';
 
-    var downloadBtn = document.createElement('button');
-    downloadBtn.type = 'button';
-    downloadBtn.className = 'agent-btn primary';
-    downloadBtn.textContent = 'Download PDF';
     var statusText = document.createElement('span');
     statusText.className = 'attachment-note';
-    statusText.textContent = 'PDF ready. Download, preview, or share it.';
-    downloadBtn.addEventListener('click', function() {
-      triggerPdfDownload(asset, downloadBtn, statusText);
-    });
-    actions.appendChild(downloadBtn);
+    statusText.textContent = 'PDF ready. Preview it or share it.';
 
     var previewBtn = document.createElement('button');
     previewBtn.type = 'button';
     previewBtn.className = 'agent-btn';
-    previewBtn.textContent = 'Open preview';
+    previewBtn.textContent = 'Preview';
     previewBtn.addEventListener('click', function() {
       openPdfPreview(asset, pack);
     });
     actions.appendChild(previewBtn);
 
-    if (asset && asset.file && navigator.share && navigator.canShare && navigator.canShare({ files: [asset.file] })) {
-      var shareBtn = document.createElement('button');
-      shareBtn.type = 'button';
-      shareBtn.className = 'agent-btn';
-      shareBtn.textContent = 'Share PDF';
-      shareBtn.addEventListener('click', function() {
-        sharePdfAsset(asset, shareBtn, statusText);
-      });
-      actions.appendChild(shareBtn);
-    }
+    var shareBtn = document.createElement('button');
+    shareBtn.type = 'button';
+    shareBtn.className = 'agent-btn primary';
+    shareBtn.textContent = 'Share it';
+    shareBtn.addEventListener('click', function() {
+      sharePdfAsset(asset, shareBtn, statusText);
+    });
+    actions.appendChild(shareBtn);
 
     var refineBtn = document.createElement('button');
     refineBtn.type = 'button';
@@ -3415,14 +3402,7 @@ try {
   if (pdfDownloadBtn) {
     pdfDownloadBtn.addEventListener('click', function() {
       if (!activePdfAsset) return;
-      triggerPdfDownload(activePdfAsset, pdfDownloadBtn, pdfStatus);
-    });
-  }
-
-  if (pdfShareBtn) {
-    pdfShareBtn.addEventListener('click', function() {
-      if (!activePdfAsset) return;
-      sharePdfAsset(activePdfAsset, pdfShareBtn, pdfStatus);
+      sharePdfAsset(activePdfAsset, pdfDownloadBtn, pdfStatus);
     });
   }
 
@@ -3746,7 +3726,7 @@ try {
         { title: 'Type “what is programming” or “what is GPU”', text: 'Raghav AI can answer cleanly in chat without making you open extra tabs.' },
         { title: 'Type “blue jeans” or “best computers”', text: 'Raghav AI can jump you straight to shopping results already prepared for you.' },
         { title: 'Type “how to make biryani”', text: 'Raghav AI can send you straight to YouTube with the recipe already searched.' },
-        { title: 'Type a real question or definition', text: 'Raghav AI still answers in chat first when that is faster than opening extra links.' }
+        { title: 'Turn on Mobile+ for the mini agent', text: 'With Mobile+ on, Raghav AI can work for you and custom-make things like a resume draft, a revision PDF for NEET, or a message saying you will be late.' }
       ],
       primaryLabel: 'Start typing',
       secondaryLabel: 'Skip',
