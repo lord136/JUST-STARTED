@@ -161,8 +161,10 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .px-input::placeholder{color:rgba(255,255,255,.25)}
 .suggest-row{display:flex;flex-wrap:wrap;gap:10px;padding:2px 2px 12px}
 .suggest-row[hidden]{display:none}
-.suggest-chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);font-size:.74rem;line-height:1;border:none;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease;font-family:inherit}
+.suggest-chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);font-size:.74rem;line-height:1;border:none;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;font-family:inherit}
 .suggest-chip:hover{background:rgba(255,255,255,.1);color:#fff}
+.suggest-chip.premium{background:linear-gradient(135deg,rgba(96,47,235,.22),rgba(32,124,229,.16));border:1px solid rgba(167,139,250,.32);color:#f5f3ff;box-shadow:0 10px 26px rgba(88,28,135,.18),inset 0 1px 0 rgba(255,255,255,.08)}
+.suggest-chip.premium:hover{background:linear-gradient(135deg,rgba(116,67,255,.32),rgba(59,130,246,.22));border-color:rgba(196,181,253,.48);color:#fff;transform:translateY(-1px)}
 .px-controls{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
 .px-left,.px-right{display:flex;align-items:center;gap:6px}
 .px-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 10px;border-radius:15px;background:transparent;border:none;color:rgba(255,255,255,.5);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -360,8 +362,10 @@ body[data-theme="light"] .pop-item{color:rgba(8,17,31,.78)}
 body[data-theme="light"] .pop-item:hover{background:rgba(8,17,31,.06)}
 body[data-theme="light"] .model-menu{background:rgba(255,255,255,.92)}
 body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
-body[data-theme="light"] .suggest-chip{background:rgba(8,17,31,.05);color:rgba(8,17,31,.7);border:1px solid rgba(15,23,42,.08)}
-body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#08111f}
+  body[data-theme="light"] .suggest-chip{background:rgba(8,17,31,.05);color:rgba(8,17,31,.7);border:1px solid rgba(15,23,42,.08)}
+  body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#08111f}
+  body[data-theme="light"] .suggest-chip.premium{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(59,130,246,.08));border-color:rgba(124,58,237,.18);color:#4c1d95;box-shadow:0 10px 22px rgba(59,130,246,.08),inset 0 1px 0 rgba(255,255,255,.55)}
+  body[data-theme="light"] .suggest-chip.premium:hover{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(59,130,246,.14));border-color:rgba(109,40,217,.24);color:#312e81}
 
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 </style>
@@ -717,6 +721,26 @@ try {
       'what is critical thinking'
     ]
   };
+  var mobilePlusSuggestionBuckets = {
+    concept: [
+      'what is artificial intelligence',
+      'what is quantum computing',
+      'what is emotional intelligence',
+      'what is machine learning'
+    ],
+    people: [
+      'who is Nikola Tesla',
+      'who is Alan Turing',
+      'who is Marie Curie',
+      'who is Leonardo da Vinci'
+    ],
+    revision: [
+      'mini revision PDF for NEET biology',
+      'mini revision PDF for CA economics',
+      'mini revision PDF for JEE mechanics',
+      'mini revision PDF for physics electricity'
+    ]
+  };
   var suggestionCatalog = [].concat(
     suggestionBuckets.strategy,
     suggestionBuckets.daily,
@@ -900,9 +924,10 @@ try {
     items.forEach(function(item) {
       var chip = document.createElement('button');
       chip.type = 'button';
-      chip.className = 'suggest-chip';
-      chip.textContent = item;
-      bindSuggestionChip(chip, item);
+      var value = typeof item === 'string' ? item : item.value;
+      chip.className = 'suggest-chip' + ((item && item.premium) ? ' premium' : '');
+      chip.textContent = value;
+      bindSuggestionChip(chip, value);
       suggestRow.appendChild(chip);
     });
   }
@@ -919,8 +944,16 @@ try {
     ]);
   }
 
+  function getMobilePlusSuggestionSet() {
+    return [
+      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.concept), premium: true },
+      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.people), premium: true },
+      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.revision), premium: true }
+    ];
+  }
+
   function showRandomSuggestions() {
-    renderSuggestionItems(getRandomSuggestionSet());
+    renderSuggestionItems(messagingAllowed ? getMobilePlusSuggestionSet() : getRandomSuggestionSet());
   }
 
   function applySuggestion(item) {
@@ -953,7 +986,7 @@ try {
     var corrected = normalizeUserText(raw);
 
     if (!raw) {
-      suggestions = getRandomSuggestionSet();
+      suggestions = messagingAllowed ? getMobilePlusSuggestionSet() : getRandomSuggestionSet();
       renderSuggestionItems(suggestions);
       return;
     }
