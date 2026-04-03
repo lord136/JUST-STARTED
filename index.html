@@ -484,7 +484,7 @@ body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#
       </div>
     </div>
     <div class="perm-actions">
-      <button class="auth-primary" id="authSheetPrimary">Continue with Google</button>
+      <button class="auth-primary" id="authSheetPrimary">Continue to Raghav AI</button>
     </div>
   </div>
 </div>
@@ -3067,6 +3067,9 @@ try {
     if (isRestrictedAdultQuery(text)) {
       return getRestrictedAdultReply();
     }
+    if (isResumeIntent(text) && !messagingAllowed) {
+      return getResumeWithMobileOffReply();
+    }
     if (isRevisionPdfIntent(text) && !messagingAllowed) {
       return "Turn on Mobile+ to use the revision PDF lane. That is the premium study flow for exam packs, mind maps, key points, and practice questions.";
     }
@@ -3816,11 +3819,12 @@ try {
   chatIn.addEventListener('focus', function() {
     startBackgroundWarmup();
   }, { once: true });
-  chatIn.addEventListener('focus', function() {
+
+  function showSearchGuideCardOnce() {
     if (searchGuideSeen) return;
     searchGuideSeen = true;
     localStorage.setItem('orbiton_search_guide', 'yes');
-    this.blur();
+    chatIn.blur();
     showGuideCard({
       kicker: 'How It Works',
       title: 'Ask naturally. Raghav AI handles the next step.',
@@ -3837,6 +3841,17 @@ try {
         setTimeout(function(){ chatIn.focus(); }, 80);
       }
     });
+  }
+
+  chatIn.addEventListener('pointerdown', function(e) {
+    if (!isMobileDevice || searchGuideSeen) return;
+    e.preventDefault();
+    showSearchGuideCardOnce();
+  });
+
+  chatIn.addEventListener('focus', function() {
+    if (searchGuideSeen) return;
+    showSearchGuideCardOnce();
   }, { once: true });
 
   // Override WhatsApp intent to check messaging permission
@@ -3990,6 +4005,10 @@ try {
     var cleaned = String(text || '').trim().toLowerCase();
     if (!cleaned) return false;
     return /\b(resume|cv|curriculum vitae)\b/.test(cleaned);
+  }
+
+  function getResumeWithMobileOffReply() {
+    return '**Resume Builder**\nMobile+ is off right now. Turn it on if you want me to create an actual resume PDF for you. 📄\n\nA strong resume usually needs:\n1. Your full name and contact details\n2. Your target role or career direction\n3. Your education or qualifications\n4. Your experience, projects, or achievements\n\nWould you like me to create it for you? Turn on Mobile+ and ask again here.';
   }
 
   intents = intents.map(function(intent) {
@@ -4159,7 +4178,7 @@ function lockAuthPill(user) {
   authBtn.setAttribute('aria-label', 'Signed in');
   authBtnLabel.textContent = getDisplayName(user);
   authSheetPrimary.disabled = false;
-  authSheetPrimary.textContent = 'Continue with Google';
+  authSheetPrimary.textContent = 'Continue to Raghav AI';
   hideAuthSheet(false);
 }
 
@@ -4169,7 +4188,7 @@ function resetAuthPill() {
   authBtn.setAttribute('aria-label', 'Sign in');
   authBtnLabel.textContent = 'Sign in';
   authSheetPrimary.disabled = false;
-  authSheetPrimary.textContent = 'Continue with Google';
+  authSheetPrimary.textContent = 'Continue to Raghav AI';
 }
 
 function showAuthFeedback(message) {
