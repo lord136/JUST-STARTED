@@ -11,12 +11,62 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Raghav AI">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="Raghav AI — AI that runs on your device. Created by Prem Peswani.">
-<link rel="icon" type="image/svg+xml" href="icon-192.svg">
+<meta name="description" content="Raghav AI is a phone-first AI assistant with smart search, direct actions, Mobile+, revision PDF flows, and premium reasoning by Prem Peswani.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://raghav-ai.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Raghav AI | Phone-First AI Assistant">
+<meta property="og:description" content="Phone-first AI with smart search, Mobile+, direct actions, and premium reasoning.">
+<meta property="og:url" content="https://raghav-ai.vercel.app/">
+<meta property="og:site_name" content="Raghav AI">
+<meta property="og:image" content="https://raghav-ai.vercel.app/icon-512.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Raghav AI | Phone-First AI Assistant">
+<meta name="twitter:description" content="Phone-first AI with smart search, Mobile+, direct actions, and premium reasoning.">
+<meta name="twitter:image" content="https://raghav-ai.vercel.app/icon-512.svg">
+<link rel="icon" type="image/svg+xml" sizes="any" href="icon-192.svg">
 <link rel="shortcut icon" href="icon-192.svg">
 <link rel="apple-touch-icon" href="icon-512.svg">
-<title>Raghav AI</title>
+<title>Raghav AI | Phone-First AI Assistant</title>
 <link rel="manifest" href="manifest.json">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Raghav AI",
+      "alternateName": "Raghav AI",
+      "url": "https://raghav-ai.vercel.app/"
+    },
+    {
+      "@type": "Organization",
+      "name": "Raghav AI",
+      "url": "https://raghav-ai.vercel.app/",
+      "logo": "https://raghav-ai.vercel.app/icon-512.svg",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "prempeswani1609@gmail.com"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Raghav AI",
+      "url": "https://raghav-ai.vercel.app/",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Any",
+      "creator": {
+        "@type": "Person",
+        "name": "Prem Peswani"
+      },
+      "description": "Phone-first AI assistant with smart search, direct actions, Mobile+, revision PDF flows, and premium reasoning."
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -372,14 +422,14 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 </style>
 </head>
-<body class="auth-locked">
+<body>
 
 <canvas id="bg"></canvas>
 
 <div class="auth-corner">
   <button class="auth-pill" id="authBtn" type="button" aria-label="Sign in">
     <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"></path><circle cx="12" cy="8" r="4"></circle></svg>
-    <span id="authBtnLabel">Sign in</span>
+    <span id="authBtnLabel">Enter</span>
   </button>
 </div>
 
@@ -476,21 +526,21 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     <div class="perm-hero">
       <div class="perm-hero-wordmark">Raghav AI</div>
     </div>
-    <div class="perm-kicker">Phone-First Entry</div>
-    <h3>Sign in to enter Raghav AI.</h3>
-    <p>Your account opens the app, keeps premium tied to you, and makes sure your unlock follows your identity instead of only one device.</p>
+    <div class="perm-kicker">Continue Your Entry</div>
+    <h3>Step into Raghav AI.</h3>
+    <p>Use your account to keep Mobile+, premium access, and your unlock with you whenever you come back.</p>
     <div class="auth-points">
       <div class="auth-point">
-        <strong>Private feeling</strong>
-        <span>Built to feel personal, calm, and closer to you than a normal web tool.</span>
+        <strong>Your access stays with you</strong>
+        <span>One identity keeps your entry, premium, and Mobile+ from feeling tied to only one device.</span>
       </div>
       <div class="auth-point">
-        <strong>Unexpectedly useful</strong>
-        <span>From sharper answers to quicker moves, it is designed to feel different the moment you enter.</span>
+        <strong>A calmer way to enter</strong>
+        <span>Continue once and come back to the same Raghav AI feeling without repeating the setup every time.</span>
       </div>
     </div>
     <div class="perm-actions">
-      <button class="auth-primary" id="authSheetPrimary">Continue to Raghav AI</button>
+      <button class="auth-primary" id="authSheetPrimary">Continue into Raghav AI</button>
     </div>
   </div>
 </div>
@@ -3552,12 +3602,13 @@ try {
 
   function setAppAccess(allowed) {
     appAccessUnlocked = !!allowed;
-    document.body.classList.toggle('auth-locked', !appAccessUnlocked);
+    document.body.classList.toggle('auth-locked', false);
     if (chatIn) {
-      chatIn.disabled = !appAccessUnlocked;
-      chatIn.placeholder = appAccessUnlocked ? 'Ask Raghav AI anything...' : 'Sign in to enter Raghav AI...';
+      chatIn.disabled = false;
+      chatIn.readOnly = !appAccessUnlocked;
+      chatIn.placeholder = appAccessUnlocked ? 'Ask Raghav AI anything...' : 'Tap here to continue into Raghav AI...';
     }
-    if (sendBtn) sendBtn.disabled = !appAccessUnlocked;
+    if (sendBtn) sendBtn.disabled = false;
     if (appAccessUnlocked) {
       startBackgroundWarmup();
       startKairosLite();
@@ -3566,6 +3617,14 @@ try {
     } else {
       stopKairosLite();
     }
+  }
+
+  function handleLockedComposerGate(e) {
+    if (appAccessUnlocked) return false;
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    if (chatIn) chatIn.blur();
+    if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
+    return true;
   }
 
   function applyPremiumState(options) {
@@ -4039,6 +4098,7 @@ try {
   }
 
   function openSearchGuideFromTouch(e) {
+    if (handleLockedComposerGate(e)) return;
     if (!isMobileDevice || searchGuideSeen) return;
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     showSearchGuideCardOnce();
@@ -4057,9 +4117,14 @@ try {
   });
 
   chatIn.addEventListener('focus', function() {
+    if (handleLockedComposerGate()) return;
     if (searchGuideSeen) return;
     showSearchGuideCardOnce();
   }, { once: true });
+
+  chatIn.addEventListener('keydown', function(e) {
+    if (handleLockedComposerGate(e)) return;
+  });
 
   // Override WhatsApp intent to check messaging permission
   function trimAgentValue(value) {
@@ -4360,7 +4425,7 @@ function showAuthSheet(forceLocked) {
 }
 
 window.openRaghavAuthGate = function() {
-  showAuthSheet(true);
+  showAuthSheet(false);
 };
 
 try {
@@ -4385,7 +4450,7 @@ function lockAuthPill(user) {
   authBtn.setAttribute('aria-label', 'Signed in');
   authBtnLabel.textContent = getDisplayName(user);
   authSheetPrimary.disabled = false;
-  authSheetPrimary.textContent = 'Continue to Raghav AI';
+  authSheetPrimary.textContent = 'Continue into Raghav AI';
   hideAuthSheet(false);
 }
 
@@ -4393,9 +4458,9 @@ function resetAuthPill() {
   authBtn.disabled = false;
   authBtn.classList.remove('loading', 'locked');
   authBtn.setAttribute('aria-label', 'Sign in');
-  authBtnLabel.textContent = 'Sign in';
+  authBtnLabel.textContent = 'Enter';
   authSheetPrimary.disabled = false;
-  authSheetPrimary.textContent = 'Continue to Raghav AI';
+  authSheetPrimary.textContent = 'Continue into Raghav AI';
 }
 
 function showAuthFeedback(message) {
