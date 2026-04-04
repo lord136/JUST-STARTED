@@ -618,45 +618,113 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   <div class="ib-txt"><strong>Install on iPhone</strong><span>Tap <b>Share</b> ↗ then <b>Add to Home Screen</b></span></div>
 </div>
 
-<!-- THREE.JS (isolated) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<!-- LAZY RUNTIMES -->
 <script>
-try {
-  (function(){
-    var cv = document.getElementById('bg');
+(function() {
+  'use strict';
+
+  var scriptPromises = Object.create(null);
+
+  function loadScriptOnce(url, globalCheck) {
+    if (typeof globalCheck === 'function' && globalCheck()) {
+      return Promise.resolve(true);
+    }
+    if (scriptPromises[url]) {
+      return scriptPromises[url];
+    }
+    scriptPromises[url] = new Promise(function(resolve, reject) {
+      var script = document.createElement('script');
+      script.src = url;
+      script.async = true;
+      script.setAttribute('data-raghav-src', url);
+      script.onload = function() { resolve(true); };
+      script.onerror = function() { reject(new Error('Failed to load ' + url)); };
+      document.head.appendChild(script);
+    }).catch(function(error) {
+      delete scriptPromises[url];
+      throw error;
+    });
+    return scriptPromises[url];
+  }
+
+  function scheduleIdleTask(task, timeoutMs, fallbackDelayMs) {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(function() { task(); }, { timeout: timeoutMs || 2500 });
+      return;
+    }
+    window.setTimeout(task, fallbackDelayMs || 1200);
+  }
+
+  window.__raghavLoadScriptOnce = loadScriptOnce;
+  window.__raghavScheduleIdleTask = scheduleIdleTask;
+  window.__raghavEnsureRazorpay = function() {
+    return loadScriptOnce('https://checkout.razorpay.com/v1/checkout.js', function() {
+      return typeof window.Razorpay === 'function';
+    }).then(function() {
+      return window.Razorpay;
+    });
+  };
+  window.__raghavEnsureJsPdf = function() {
+    return loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js', function() {
+      return !!(window.jspdf && window.jspdf.jsPDF);
+    }).then(function() {
+      return window.jspdf && window.jspdf.jsPDF;
+    });
+  };
+  window.__raghavEnsureConfetti = function() {
+    return loadScriptOnce('https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js', function() {
+      return typeof window.confetti === 'function';
+    }).then(function() {
+      return window.confetti;
+    });
+  };
+
+  var bgCanvas = document.getElementById('bg');
+  var backgroundStarted = false;
+
+  function shouldShowBackground() {
     var isMobileBg = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(innerWidth, innerHeight) < 1025);
+    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return !isMobileBg && !prefersReducedMotion;
+  }
+
+  function initThreeBackground() {
+    var cv = document.getElementById('bg');
+    if (!cv || !window.THREE) return;
     var scene = new THREE.Scene();
-    var cam = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 1, 2000);
-    var rend = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true});
+    var cam = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 2000);
+    var rend = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
     rend.setSize(innerWidth, innerHeight);
     rend.setPixelRatio(Math.min(devicePixelRatio, 2));
     var sg = new THREE.BufferGeometry();
-    var N = isMobileBg ? 2000 : 6000, sp = new Float32Array(N*3);
-    for(var i=0;i<N*3;i++) sp[i]=(Math.random()-0.5)*1200;
+    var N = 4200;
+    var sp = new Float32Array(N * 3);
+    for (var i = 0; i < N * 3; i++) sp[i] = (Math.random() - 0.5) * 1200;
     sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
-    var sm = new THREE.PointsMaterial({size:1.2,color:0xffffff,transparent:true,opacity:0.7});
-    var stars = new THREE.Points(sg, sm); scene.add(stars);
-    var ng = new THREE.BufferGeometry(), np = new Float32Array(300*3);
-    for(var j=0;j<300*3;j++) np[j]=(Math.random()-0.5)*400;
+    var sm = new THREE.PointsMaterial({ size: 1.2, color: 0xffffff, transparent: true, opacity: 0.7 });
+    var stars = new THREE.Points(sg, sm);
+    scene.add(stars);
+    var ng = new THREE.BufferGeometry();
+    var np = new Float32Array(300 * 3);
+    for (var j = 0; j < 300 * 3; j++) np[j] = (Math.random() - 0.5) * 400;
     ng.setAttribute('position', new THREE.BufferAttribute(np, 3));
-    scene.add(new THREE.Points(ng, new THREE.PointsMaterial({size:55,color:0x3366ff,transparent:true,opacity:0.04,blending:THREE.AdditiveBlending})));
-    var wg = new THREE.BufferGeometry(), wp = new Float32Array(200*3);
-    for(var k=0;k<200*3;k++) wp[k]=(Math.random()-0.5)*350;
+    scene.add(new THREE.Points(ng, new THREE.PointsMaterial({ size: 55, color: 0x3366ff, transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending })));
+    var wg = new THREE.BufferGeometry();
+    var wp = new Float32Array(200 * 3);
+    for (var k = 0; k < 200 * 3; k++) wp[k] = (Math.random() - 0.5) * 350;
     wg.setAttribute('position', new THREE.BufferAttribute(wp, 3));
-    scene.add(new THREE.Points(wg, new THREE.PointsMaterial({size:70,color:0x8833ff,transparent:true,opacity:0.03,blending:THREE.AdditiveBlending})));
+    scene.add(new THREE.Points(wg, new THREE.PointsMaterial({ size: 70, color: 0x8833ff, transparent: true, opacity: 0.03, blending: THREE.AdditiveBlending })));
     cam.position.z = 12;
     var scrollY = 0;
     var rafId = 0;
     var running = !document.hidden;
-    window.addEventListener('scroll', function(){ scrollY = window.scrollY; });
-    function loop(){
+    window.addEventListener('scroll', function() { scrollY = window.scrollY; }, { passive: true });
+    function loop() {
       if (!running) return;
       rafId = requestAnimationFrame(loop);
-      stars.rotation.y += .00008;
-      stars.rotation.x += .00004;
-      cam.position.y = -scrollY * .003;
+      stars.rotation.y += 0.00008;
+      stars.rotation.x += 0.00004;
+      cam.position.y = -scrollY * 0.003;
       rend.render(scene, cam);
     }
     function setRunning(nextState) {
@@ -673,13 +741,54 @@ try {
     document.addEventListener('visibilitychange', function() {
       setRunning(!document.hidden);
     });
-    window.addEventListener('resize', function(){ cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix(); rend.setSize(innerWidth, innerHeight); });
-  })();
-} catch(e) { console.warn('Three.js skipped:', e.message); }
-</script>
+    window.addEventListener('resize', function() {
+      cam.aspect = innerWidth / innerHeight;
+      cam.updateProjectionMatrix();
+      rend.setSize(innerWidth, innerHeight);
+    });
+  }
 
-<!-- CONFETTI -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  window.__raghavStartBackground = function() {
+    if (backgroundStarted) return Promise.resolve(true);
+    backgroundStarted = true;
+    return loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', function() {
+      return !!window.THREE;
+    }).then(function() {
+      try {
+        initThreeBackground();
+        return true;
+      } catch (error) {
+        backgroundStarted = false;
+        if (bgCanvas) bgCanvas.style.display = 'none';
+        console.warn('Three.js skipped:', error && error.message ? error.message : error);
+        return false;
+      }
+    }).catch(function(error) {
+      backgroundStarted = false;
+      if (bgCanvas) bgCanvas.style.display = 'none';
+      console.warn('Three.js skipped:', error && error.message ? error.message : error);
+      return false;
+    });
+  };
+
+  if (!shouldShowBackground()) {
+    if (bgCanvas) bgCanvas.style.display = 'none';
+    return;
+  }
+
+  function bootBackground() {
+    scheduleIdleTask(function() {
+      window.__raghavStartBackground();
+    }, 3200, 1600);
+  }
+
+  if (document.readyState === 'complete') {
+    bootBackground();
+  } else {
+    window.addEventListener('load', bootBackground, { once: true });
+  }
+})();
+</script>
 
 <!-- MAIN APP -->
 <script>
@@ -1141,6 +1250,35 @@ try {
   function haptic(ms){ try{navigator.vibrate(ms)}catch(e){} }
   var isMobileDevice = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
   var isLowMemoryMobile = isMobileDevice && typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 2;
+
+  function scheduleIdleTask(task, timeoutMs, fallbackDelayMs) {
+    if (typeof window.__raghavScheduleIdleTask === 'function') {
+      window.__raghavScheduleIdleTask(task, timeoutMs, fallbackDelayMs);
+      return;
+    }
+    setTimeout(task, fallbackDelayMs || 1200);
+  }
+
+  function ensureRazorpayRuntime() {
+    if (typeof window.__raghavEnsureRazorpay === 'function') {
+      return window.__raghavEnsureRazorpay();
+    }
+    return Promise.resolve(window.Razorpay || null);
+  }
+
+  function ensureJsPdfRuntime() {
+    if (typeof window.__raghavEnsureJsPdf === 'function') {
+      return window.__raghavEnsureJsPdf();
+    }
+    return Promise.resolve(window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : null);
+  }
+
+  function ensureConfettiRuntime() {
+    if (typeof window.__raghavEnsureConfetti === 'function') {
+      return window.__raghavEnsureConfetti();
+    }
+    return Promise.resolve(typeof window.confetti === 'function' ? window.confetti : null);
+  }
 
   function getRemoteReasoningBase() {
     return String(window.RAGHAV_REMOTE_URL || REMOTE_REASONING_URL || '').trim().replace(/\/+$/, '');
@@ -3419,6 +3557,7 @@ try {
       try {
         var revisionPack = await requestRevisionPack(processedText);
         showDots('Revision PDF', { deepPlan: true, phase: 'ai', stepMs: 950 });
+        await ensureJsPdfRuntime();
         var revisionAsset = buildRevisionPdfAsset(revisionPack);
         hideDots();
         await showRevisionPdfResult(revisionPack, revisionAsset, processedText);
@@ -3807,6 +3946,7 @@ try {
     permYes.textContent = 'Connecting...';
     try {
       var payment = await getPremiumPaymentConfig();
+      await ensureRazorpayRuntime();
       if (!window.Razorpay) {
         throw new Error('Razorpay checkout is not available yet.');
       }
@@ -3868,26 +4008,27 @@ try {
   function startBackgroundWarmup() {
     if (startupWarmupStarted || window.location.protocol === 'file:') return;
     startupWarmupStarted = true;
+    scheduleIdleTask(function() {
+      if (isMobileDevice) {
+        warmRemoteReasoning();
+        return;
+      }
 
-    if (isMobileDevice) {
-      warmRemoteReasoning();
-      return;
-    }
+      if (isLowMemoryMobile) return;
 
-    if (isLowMemoryMobile) return;
+      var orderedModels = [defaultAnswerModel].concat(
+        Object.keys(modelConfigs).filter(function(name) { return name !== defaultAnswerModel; })
+      );
 
-    var orderedModels = [defaultAnswerModel].concat(
-      Object.keys(modelConfigs).filter(function(name) { return name !== defaultAnswerModel; })
-    );
-
-    orderedModels.reduce(function(chain, modelName, index) {
-      return chain.then(function() {
-        return preloadTextModel(modelName, {
-          retain: index === 0 && !activeModel,
-          trackProgress: index === 0
-        }).catch(function(){});
-      });
-    }, Promise.resolve());
+      orderedModels.reduce(function(chain, modelName, index) {
+        return chain.then(function() {
+          return preloadTextModel(modelName, {
+            retain: index === 0 && !activeModel,
+            trackProgress: index === 0
+          }).catch(function(){});
+        });
+      }, Promise.resolve());
+    }, 3600, 1600);
   }
 
   async function setActiveModel(modelName) {
@@ -4347,13 +4488,16 @@ try {
     document.getElementById('androidBar').classList.remove('show');
     startBackgroundWarmup();
     haptic([20,50,20,50,60]);
-    if(typeof confetti==='function') confetti({particleCount:120,spread:90,origin:{y:.6},colors:['#ffffff','#2563eb','#7c3aed']});
+    ensureConfettiRuntime().then(function(confettiFn) {
+      if (typeof confettiFn === 'function') {
+        confettiFn({particleCount:120,spread:90,origin:{y:.6},colors:['#ffffff','#2563eb','#7c3aed']});
+      }
+    }).catch(function(){});
   });
 })();
 </script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import { getAnalytics, isSupported as analyticsSupported } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -4377,9 +4521,34 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-analyticsSupported().then(function(supported) {
-  if (supported) getAnalytics(app);
-}).catch(function() {});
+function bootAnalyticsWhenIdle() {
+  function startAnalytics() {
+    import('https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js').then(function(analyticsModule) {
+      return analyticsModule.isSupported().then(function(supported) {
+        if (supported) analyticsModule.getAnalytics(app);
+      });
+    }).catch(function() {});
+  }
+
+  if (document.readyState === 'complete') {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(startAnalytics, { timeout: 4500 });
+    } else {
+      setTimeout(startAnalytics, 2400);
+    }
+    return;
+  }
+
+  window.addEventListener('load', function() {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(startAnalytics, { timeout: 4500 });
+    } else {
+      setTimeout(startAnalytics, 2400);
+    }
+  }, { once: true });
+}
+
+bootAnalyticsWhenIdle();
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
