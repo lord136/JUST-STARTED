@@ -1504,6 +1504,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     renderSuggestionItems(suggestions);
   }
 
+  window.raghavUpdateSuggestions = updateSuggestions;
+
   applyTheme(getInitialTheme(), false);
   if (themeBtn) {
     themeBtn.addEventListener('click', function() {
@@ -1919,12 +1921,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     return popup;
   }
 
-  function prefersReducedMotion() {
+  function userPrefersReducedMotion() {
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   function scrollChatToLatest(forceInstant) {
-    var behavior = forceInstant || prefersReducedMotion() ? 'auto' : 'smooth';
+    var behavior = forceInstant || userPrefersReducedMotion() ? 'auto' : 'smooth';
     requestAnimationFrame(function() {
       try {
         chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: behavior });
@@ -5500,11 +5502,14 @@ onAuthStateChanged(auth, function(user) {
     if (typeof window.raghavSetAppAccess === 'function') {
       window.raghavSetAppAccess(true);
     }
-    if (currentLandingPage === 1) {
+    if (document.body.getAttribute('data-landing-page') === '1') {
       setTimeout(function() {
-        if (chatIn && document.activeElement !== chatIn) {
-          chatIn.focus();
-          updateSuggestions();
+        const composer = document.getElementById('chatIn');
+        if (composer && document.activeElement !== composer) {
+          composer.focus();
+        }
+        if (typeof window.raghavUpdateSuggestions === 'function') {
+          window.raghavUpdateSuggestions();
         }
       }, 140);
     }
