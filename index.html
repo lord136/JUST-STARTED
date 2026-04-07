@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -11,18 +11,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Raghav AI">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="Raghav AI is a phone-first AI assistant with smart search, direct actions, Mobile+, revision PDF flows, and premium reasoning by Prem Peswani.">
+<meta name="description" content="Raghav AI is a phone-first AI assistant with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://www.raghavam.in/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Raghav AI | Phone-First AI Assistant">
-<meta property="og:description" content="Phone-first AI with smart search, Mobile+, direct actions, and premium reasoning.">
+<meta property="og:description" content="Phone-first AI with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta property="og:url" content="https://www.raghavam.in/">
 <meta property="og:site_name" content="Raghav AI">
 <meta property="og:image" content="https://www.raghavam.in/icon-512.svg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Raghav AI | Phone-First AI Assistant">
-<meta name="twitter:description" content="Phone-first AI with smart search, Mobile+, direct actions, and premium reasoning.">
+<meta name="twitter:description" content="Phone-first AI with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta name="twitter:image" content="https://www.raghavam.in/icon-512.svg">
 <link rel="icon" type="image/svg+xml" sizes="any" href="icon-192.svg">
 <link rel="shortcut icon" href="icon-192.svg">
@@ -62,19 +62,20 @@
         "@type": "Person",
         "name": "Prem Peswani"
       },
-      "description": "Phone-first AI assistant with smart search, direct actions, Mobile+, revision PDF flows, and premium reasoning."
+      "description": "Phone-first AI assistant with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane."
     }
   ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#000;--text:#fff;--muted:rgba(255,255,255,.45);--glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--hborder:rgba(255,255,255,.2);--cardhov:rgba(255,255,255,.06);--btnbg:#fff;--btntxt:#000}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .25s ease,color .25s ease}
+body.launching{overflow:hidden}
 body::before,body::after{content:'';position:fixed;pointer-events:none;opacity:0;transition:opacity .45s ease;z-index:0}
 body.mobile-live::before{top:-18vh;left:-12vw;width:48vw;height:48vw;min-width:340px;min-height:340px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.18),rgba(124,58,237,.1) 34%,transparent 68%);filter:blur(22px);opacity:.95;animation:mobileAuraDrift 11s ease-in-out infinite}
 body.mobile-live::after{right:-14vw;bottom:-16vh;width:54vw;height:54vw;min-width:360px;min-height:360px;border-radius:50%;background:radial-gradient(circle at 32% 32%,rgba(216,180,254,.2),transparent 24%),radial-gradient(circle at 64% 58%,rgba(124,58,237,.18),transparent 30%),radial-gradient(circle at 50% 50%,rgba(91,33,182,.12),transparent 62%);filter:blur(30px);opacity:.82;animation:mobileAuraFlow 14s linear infinite}
@@ -84,12 +85,37 @@ body.auth-locked{overflow:hidden}
 body.auth-locked .hero,
 body.auth-locked .sec,
 body.auth-locked .chat-sec,
+body.auth-locked .landing-deck,
 body.auth-locked .foot,
 body.auth-locked .ib,
 body.auth-locked .nav,
 body.auth-locked .auth-corner{filter:blur(18px);opacity:.16;pointer-events:none;user-select:none}
 body.auth-locked .auth-sheet{display:flex}
 canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+/* OPENING */
+.launch-splash{position:fixed;inset:0;z-index:350;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(59,130,246,.16),transparent 28%),radial-gradient(circle at 50% 65%,rgba(124,58,237,.14),transparent 34%),#02040b;transition:opacity .7s ease,visibility .7s ease}
+.launch-splash.is-done{opacity:0;visibility:hidden}
+.launch-core{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px}
+.launch-orbit{position:relative;width:188px;height:188px}
+.launch-core-logo{position:absolute;top:50%;left:50%;width:92px;height:92px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(191,219,254,.95),rgba(96,165,250,.42) 32%,rgba(37,99,235,.12) 70%,transparent 100%);box-shadow:0 0 34px rgba(96,165,250,.22),inset 0 0 16px rgba(255,255,255,.1);font-family:'Space Grotesk','Inter',sans-serif;font-size:2.15rem;font-weight:700;letter-spacing:-.06em;color:#e5f2ff;animation:launchPulse 3.2s ease-in-out infinite}
+.launch-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(148,163,184,.16)}
+.launch-ring.a{transform:rotate(14deg) scale(.9);border-color:rgba(96,165,250,.2);animation:orbitSpin 11s linear infinite}
+.launch-ring.b{transform:rotate(-22deg) scale(1.12,.76);border-color:rgba(196,181,253,.22);animation:orbitSpinReverse 13s linear infinite}
+.launch-ring.c{transform:rotate(36deg) scale(.72,1.16);border-color:rgba(148,163,184,.18);animation:orbitSpin 16s linear infinite}
+.launch-dot{position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 10px currentColor}
+.launch-dot.a{top:20px;left:132px;color:#93c5fd;animation:orbitDotOne 8s linear infinite}
+.launch-dot.b{bottom:34px;left:34px;color:#fde68a;animation:orbitDotTwo 9.5s linear infinite}
+.launch-dot.c{top:88px;right:2px;color:#c4b5fd;animation:orbitDotThree 10.8s linear infinite}
+.launch-wordmark{font-family:'Cormorant Garamond','Space Grotesk',serif;font-size:clamp(3rem,7.4vw,5.6rem);font-weight:700;letter-spacing:-.04em;line-height:.88;background:linear-gradient(160deg,#fff 14%,rgba(255,255,255,.42));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;transform:translateY(18px);animation:fadeUp 1s ease .28s forwards}
+.launch-credit{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.5);opacity:0;animation:fadeUp .8s ease .7s forwards}
+.launch-credit strong{color:#fff;font-weight:600}
+@keyframes launchPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+@keyframes orbitSpin{0%{transform:rotate(0deg) scale(.9)}100%{transform:rotate(360deg) scale(.9)}}
+@keyframes orbitSpinReverse{0%{transform:rotate(0deg) scale(1.12,.76)}100%{transform:rotate(-360deg) scale(1.12,.76)}}
+@keyframes orbitDotOne{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(10px,-12px,0)}100%{transform:translate3d(0,0,0)}}
+@keyframes orbitDotTwo{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(-8px,10px,0)}100%{transform:translate3d(0,0,0)}}
+@keyframes orbitDotThree{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(8px,-8px,0)}100%{transform:translate3d(0,0,0)}}
 
 /* NAV */
 .nav{position:fixed;top:16px;right:20px;z-index:200}
@@ -112,7 +138,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .hero-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(3.6rem,11vw,8rem);font-weight:700;letter-spacing:-.06em;line-height:.92;min-height:1.12em}
 .hero-title .ch{display:inline-block;opacity:0;transform:translateY(30px);background:linear-gradient(160deg,#fff 18%,rgba(255,255,255,.42));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-title .ch.gap{width:.32em;min-width:.32em;background:none}
-.hero-sub{font-size:clamp(.95rem,2.2vw,1.25rem);color:rgba(255,255,255,.45);max-width:540px;line-height:1.68;margin-top:34px;font-weight:300;opacity:0;animation:fadeUp 1s ease 2s forwards}
+.hero-sub{font-size:clamp(.95rem,2.2vw,1.25rem);color:rgba(255,255,255,.45);max-width:640px;line-height:1.68;margin-top:34px;font-weight:300;opacity:0;animation:fadeUp 1s ease 2s forwards}
 .hero-founder{margin-top:36px;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);opacity:0;animation:founderIn 2s cubic-bezier(.16,1,.3,1) 2.5s forwards}
 .hero-founder strong{color:#fff;font-weight:600}
 .hero-cta{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .8s ease 3s forwards}
@@ -141,6 +167,13 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .fcard:hover .fico{transform:scale(1.08) rotate(-3deg)}
 .fcard h3{font-size:1.05rem;font-weight:600;margin-bottom:8px;letter-spacing:-.3px}
 .fcard p{font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.65}
+.feyebrow{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-bottom:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.58)}
+.fexamples{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.fexample{padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.fexample strong{display:block;font-size:.74rem;font-weight:600;letter-spacing:-.2px;color:#fff}
+.fexample span{display:block;margin-top:4px;font-size:.72rem;line-height:1.45;color:rgba(255,255,255,.54)}
+.fline{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:.74rem;color:rgba(191,219,254,.85)}
+.fline i{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(37,99,235,.16);font-style:normal;font-size:.68rem;color:#dbeafe}
 
 /* CHAT SECTION */
 .chat-sec{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 20px 120px}
@@ -213,10 +246,15 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .px-input::placeholder{color:rgba(255,255,255,.25)}
 .suggest-row{display:flex;flex-wrap:wrap;gap:10px;padding:2px 2px 12px}
 .suggest-row[hidden]{display:none}
-.suggest-chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.72);font-size:.74rem;line-height:1;border:none;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;font-family:inherit}
-.suggest-chip:hover{background:rgba(255,255,255,.1);color:#fff}
-.suggest-chip.premium{background:linear-gradient(135deg,rgba(96,47,235,.22),rgba(32,124,229,.16));border:1px solid rgba(167,139,250,.32);color:#f5f3ff;box-shadow:0 10px 26px rgba(88,28,135,.18),inset 0 1px 0 rgba(255,255,255,.08)}
-.suggest-chip.premium:hover{background:linear-gradient(135deg,rgba(116,67,255,.32),rgba(59,130,246,.22));border-color:rgba(196,181,253,.48);color:#fff;transform:translateY(-1px)}
+.suggest-chip{--chip-bg:rgba(255,255,255,.05);--chip-border:rgba(255,255,255,.08);--chip-text:rgba(255,255,255,.78);--chip-shadow:inset 0 1px 0 rgba(255,255,255,.04);--chip-hover-bg:rgba(255,255,255,.1);padding:8px 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-text);font-size:.74rem;line-height:1;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease;font-family:inherit;box-shadow:var(--chip-shadow)}
+.suggest-chip:hover{background:var(--chip-hover-bg);color:#fff;transform:translateY(-1px)}
+.suggest-chip.tone-saffron{--chip-bg:linear-gradient(135deg,rgba(245,158,11,.08),rgba(234,88,12,.04));--chip-border:rgba(251,191,36,.18);--chip-text:rgba(253,224,171,.92);--chip-shadow:0 8px 22px rgba(245,158,11,.08),inset 0 1px 0 rgba(255,255,255,.04);--chip-hover-bg:linear-gradient(135deg,rgba(245,158,11,.14),rgba(234,88,12,.08))}
+.suggest-chip.tone-violet{--chip-bg:linear-gradient(135deg,rgba(139,92,246,.09),rgba(59,130,246,.05));--chip-border:rgba(167,139,250,.18);--chip-text:rgba(221,214,254,.92);--chip-shadow:0 8px 22px rgba(124,58,237,.08),inset 0 1px 0 rgba(255,255,255,.04);--chip-hover-bg:linear-gradient(135deg,rgba(139,92,246,.15),rgba(59,130,246,.09))}
+.suggest-chip.tone-emerald{--chip-bg:linear-gradient(135deg,rgba(16,185,129,.09),rgba(34,197,94,.05));--chip-border:rgba(52,211,153,.18);--chip-text:rgba(187,247,208,.92);--chip-shadow:0 8px 22px rgba(16,185,129,.08),inset 0 1px 0 rgba(255,255,255,.04);--chip-hover-bg:linear-gradient(135deg,rgba(16,185,129,.15),rgba(34,197,94,.08))}
+.suggest-chip.premium{--chip-text:#f8fafc;filter:saturate(1.08)}
+.suggest-chip.premium.tone-saffron{--chip-bg:linear-gradient(135deg,rgba(245,158,11,.24),rgba(251,146,60,.14));--chip-border:rgba(252,211,77,.34);--chip-shadow:0 12px 26px rgba(245,158,11,.18),inset 0 1px 0 rgba(255,255,255,.1);--chip-hover-bg:linear-gradient(135deg,rgba(245,158,11,.32),rgba(251,146,60,.2))}
+.suggest-chip.premium.tone-violet{--chip-bg:linear-gradient(135deg,rgba(96,47,235,.24),rgba(32,124,229,.16));--chip-border:rgba(167,139,250,.34);--chip-shadow:0 12px 26px rgba(88,28,135,.2),inset 0 1px 0 rgba(255,255,255,.1);--chip-hover-bg:linear-gradient(135deg,rgba(116,67,255,.32),rgba(59,130,246,.22))}
+.suggest-chip.premium.tone-emerald{--chip-bg:linear-gradient(135deg,rgba(16,185,129,.24),rgba(14,165,233,.14));--chip-border:rgba(110,231,183,.32);--chip-shadow:0 12px 26px rgba(5,150,105,.18),inset 0 1px 0 rgba(255,255,255,.1);--chip-hover-bg:linear-gradient(135deg,rgba(16,185,129,.32),rgba(14,165,233,.2))}
 .px-controls{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
 .px-left,.px-right{display:flex;align-items:center;gap:6px}
 .px-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 10px;border-radius:15px;background:transparent;border:none;color:rgba(255,255,255,.5);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
@@ -240,6 +278,112 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .attachment-note{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:4px;line-height:1.4}
 .attachment-remove{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;cursor:pointer;flex-shrink:0}
 .hidden-file{display:none}
+
+/* LANDING DECK */
+.landing-deck{position:relative;z-index:1;height:100vh;overflow:hidden}
+.landing-track{display:flex;width:100%;height:100%;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.16,1,.3,1)}
+.landing-page{position:relative;flex:0 0 100%;width:100%;max-width:100%;min-height:100vh;padding:96px 24px 54px;display:flex;align-items:center;justify-content:center}
+.landing-deck .rv{opacity:1;transform:none;transition:none}
+.landing-deck.reel-active .landing-page-welcome .landing-panel{opacity:.16;transform:scale(.985);filter:blur(14px);transition:opacity .35s ease,transform .55s cubic-bezier(.16,1,.3,1),filter .55s ease}
+.landing-panel{width:min(1160px,100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.landing-panel-wide{gap:28px}
+.landing-kicker{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.landing-copy{max-width:760px;font-size:clamp(.96rem,2vw,1.16rem);line-height:1.72;color:rgba(255,255,255,.54)}
+.landing-title-lg{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(3rem,9vw,6.6rem);font-weight:700;letter-spacing:-.07em;line-height:.92;min-height:1.1em;background:linear-gradient(160deg,#fff 18%,rgba(255,255,255,.42));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.landing-page-welcome .landing-title-lg{font-family:'Cormorant Garamond','Space Grotesk',serif;font-size:clamp(3.8rem,10vw,7.4rem);font-weight:700;letter-spacing:-.045em;line-height:.86}
+.landing-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2rem,4vw,3.4rem);font-weight:700;letter-spacing:-.05em;line-height:1}
+.landing-subcopy{margin-top:14px;max-width:680px;font-size:.96rem;line-height:1.72;color:rgba(255,255,255,.48)}
+.landing-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.landing-btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 28px;border-radius:999px;border:none;background:#fff;color:#000;font-family:inherit;font-size:.92rem;font-weight:600;text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.landing-btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,255,255,.12)}
+.landing-btn.ghost{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff}
+.landing-btn.ghost:hover{box-shadow:none;border-color:rgba(255,255,255,.16)}
+.landing-dots{display:none}
+.landing-dot{width:10px;height:10px;border-radius:50%;border:none;background:rgba(255,255,255,.18);cursor:pointer;transition:transform .2s ease,background .2s ease}
+.landing-dot.is-active{background:#fff;transform:scale(1.18)}
+.landing-page-welcome::before,.landing-page-search::before{content:'';position:absolute;inset:auto auto 0 50%;transform:translateX(-50%);width:min(72vw,900px);height:32vh;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 68%);pointer-events:none;filter:blur(8px)}
+.why-reel{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;padding:28px;background:radial-gradient(circle at 22% 18%,rgba(59,130,246,.14),transparent 24%),radial-gradient(circle at 78% 20%,rgba(168,85,247,.14),transparent 22%),linear-gradient(180deg,rgba(2,4,11,.82),rgba(2,4,11,.95));opacity:0;pointer-events:none;transition:opacity .35s ease}
+.why-reel.is-visible{opacity:1;pointer-events:auto}
+.why-reel-shell{width:min(960px,100%);padding:24px;border-radius:30px;background:linear-gradient(180deg,rgba(10,14,25,.96),rgba(3,6,12,.98));border:1px solid rgba(255,255,255,.08);box-shadow:0 28px 80px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.03) inset;display:flex;flex-direction:column;gap:18px}
+.why-reel-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.why-reel-kicker{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.why-reel-skip{border:none;background:transparent;color:rgba(255,255,255,.56);font:inherit;font-size:.82rem;cursor:pointer}
+.why-reel-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.why-progress{position:relative;height:4px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.why-progress::after{content:'';position:absolute;inset:0;transform:scaleX(0);transform-origin:left center;background:linear-gradient(90deg,#60a5fa,#c084fc);transition:transform .38s ease,opacity .25s ease;opacity:.55}
+.why-reel[data-scene="0"] .why-progress[data-step="0"]::after,
+.why-reel[data-scene="1"] .why-progress[data-step="0"]::after,
+.why-reel[data-scene="2"] .why-progress[data-step="0"]::after,
+.why-reel[data-scene="1"] .why-progress[data-step="1"]::after,
+.why-reel[data-scene="2"] .why-progress[data-step="1"]::after,
+.why-reel[data-scene="2"] .why-progress[data-step="2"]::after{transform:scaleX(1);opacity:1}
+.why-reel-stage{position:relative;min-height:330px}
+.why-scene{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,400px);align-items:center;gap:26px;opacity:0;transform:translateY(16px) scale(.98);transition:opacity .38s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.why-reel[data-scene="0"] .why-scene[data-scene="0"],
+.why-reel[data-scene="1"] .why-scene[data-scene="1"],
+.why-reel[data-scene="2"] .why-scene[data-scene="2"]{opacity:1;transform:none}
+.why-copy{display:flex;flex-direction:column;gap:12px;text-align:left}
+.why-badge{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.why-copy h3{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(1.9rem,4vw,2.8rem);font-weight:700;letter-spacing:-.05em;line-height:.96}
+.why-copy p{max-width:420px;font-size:.94rem;line-height:1.66;color:rgba(255,255,255,.58)}
+.why-visual{position:relative;height:286px;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.08);overflow:hidden}
+.why-route-query,.why-route-node,.why-knowledge-pill,.why-mobile-pill{position:absolute;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#fff}
+.why-route-query{top:28px;left:24px;right:24px;height:52px;border-radius:18px;font-size:.9rem;font-weight:600}
+.why-route-query::after{content:'';position:absolute;left:16px;right:16px;bottom:11px;height:2px;background:linear-gradient(90deg,rgba(96,165,250,.08),rgba(96,165,250,.75),rgba(192,132,252,.24));animation:routePulse 1.1s ease-in-out infinite}
+.why-route-node{width:108px;height:70px;border-radius:22px;font-size:.82rem;font-weight:600}
+.why-route-node.one{left:20px;bottom:28px}
+.why-route-node.two{left:50%;bottom:18px;transform:translateX(-50%)}
+.why-route-node.three{right:20px;bottom:28px}
+.why-route-trail{position:absolute;left:50%;top:100px;bottom:82px;width:2px;transform:translateX(-50%);background:linear-gradient(180deg,rgba(96,165,250,.04),rgba(96,165,250,.88),rgba(192,132,252,.32));box-shadow:0 0 26px rgba(96,165,250,.28);animation:trailFloat 1.1s ease-in-out infinite}
+.why-knowledge-core{position:absolute;top:50%;left:50%;width:122px;height:122px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(191,219,254,.96),rgba(96,165,250,.34) 34%,rgba(59,130,246,.08) 72%,transparent 100%);box-shadow:0 0 34px rgba(96,165,250,.24);font-size:1.95rem;animation:knowledgePulse 1.45s ease-in-out infinite}
+.why-knowledge-ring{position:absolute;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
+.why-knowledge-ring.one{inset:26px 36px}
+.why-knowledge-ring.two{inset:44px 64px}
+.why-knowledge-pill{height:46px;padding:0 16px;border-radius:16px;font-size:.8rem;font-weight:600}
+.why-knowledge-pill.a{top:28px;left:24px}
+.why-knowledge-pill.b{top:64px;right:24px}
+.why-knowledge-pill.c{bottom:28px;left:50%;transform:translateX(-50%)}
+.why-mobile-screen{position:absolute;inset:24px;border-radius:26px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(11,17,31,.95),rgba(24,10,36,.92));overflow:hidden}
+.why-mobile-glow{position:absolute;inset:-18%;background:radial-gradient(circle at 28% 30%,rgba(168,85,247,.18),transparent 24%),radial-gradient(circle at 72% 58%,rgba(96,165,250,.18),transparent 26%),radial-gradient(circle at 50% 50%,rgba(139,92,246,.14),transparent 62%);animation:mobileSweep 2.3s linear infinite}
+.why-mobile-orbit{position:absolute;top:22px;right:24px;width:86px;height:86px;border-radius:50%;border:1px solid rgba(192,132,252,.18)}
+.why-mobile-orbit::before,.why-mobile-orbit::after{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid rgba(96,165,250,.18)}
+.why-mobile-orbit::before{transform:rotate(28deg) scale(1.08,.72)}
+.why-mobile-orbit::after{transform:rotate(-22deg) scale(.76,1.14)}
+.why-mobile-core{position:absolute;top:50%;left:50%;width:28px;height:28px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,255,255,.95),rgba(96,165,250,.45) 48%,transparent 76%);box-shadow:0 0 24px rgba(96,165,250,.28)}
+.why-mobile-pill{top:28px;left:24px;right:128px;height:52px;border-radius:18px;font-size:.88rem;font-weight:600;justify-content:flex-start;padding:0 16px}
+.why-mobile-pill::after{content:'Mobile+ live';position:absolute;right:12px;top:50%;transform:translateY(-50%);padding:5px 8px;border-radius:999px;background:rgba(168,85,247,.18);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#e9d5ff}
+.why-mobile-stack{position:absolute;left:24px;right:24px;top:98px;bottom:24px;display:grid;grid-template-rows:1.2fr .95fr .95fr;gap:12px}
+.why-mobile-card{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:15px 16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);box-shadow:0 18px 44px rgba(0,0,0,.18)}
+.why-mobile-card strong{display:block;font-size:.84rem;font-weight:650;letter-spacing:-.02em;color:#fff}
+.why-mobile-card span{display:block;margin-top:6px;font-size:.72rem;line-height:1.38;color:rgba(255,255,255,.56)}
+.why-mobile-card i{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 11px;border-radius:999px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.24);font-style:normal;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#f5d0fe}
+.why-mobile-card.primary{background:linear-gradient(135deg,rgba(30,41,59,.72),rgba(91,33,182,.28))}
+.why-mobile-card.primary i{background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.24);color:#dbeafe}
+.why-mobile-card.secondary{align-items:center}
+.why-mobile-card.secondary i{background:rgba(37,99,235,.12);border-color:rgba(96,165,250,.22);color:#dbeafe}
+.why-mobile-card.tertiary i{background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.2);color:#fbcfe8}
+.why-mobile-card.tertiary::after{content:'';position:absolute;left:18px;right:18px;bottom:12px;height:2px;background:linear-gradient(90deg,rgba(168,85,247,.16),rgba(96,165,250,.7),rgba(168,85,247,.16));opacity:.72}
+@keyframes routePulse{0%,100%{opacity:.42;transform:scaleX(.88)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes trailFloat{0%,100%{opacity:.56;transform:translateX(-50%) scaleY(.92)}50%{opacity:1;transform:translateX(-50%) scaleY(1)}}
+@keyframes knowledgePulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+@keyframes mobileSweep{0%{transform:translate3d(-6%,0,0) rotate(0deg)}100%{transform:translate3d(6%,0,0) rotate(360deg)}}
+.landing-page-search{padding-top:118px}
+.chat-sec{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:0;height:100%;display:flex;align-items:center;justify-content:center}
+.chat-frame{width:min(1040px,100%);height:min(84vh,820px);display:flex;flex-direction:column;justify-content:center;gap:18px;background:transparent;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible}
+.chat-frame::before,.chat-frame::after{display:none}
+.search-stage-copy{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;max-width:760px;margin:0 auto}
+.search-stage-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.05em;line-height:1}
+.search-stage-sub{font-size:.96rem;line-height:1.72;color:rgba(255,255,255,.5)}
+.chat-hdr{width:min(860px,100%);margin:0 auto;opacity:0;max-height:0;padding:0 4px;overflow:hidden;border:none;background:transparent;transition:opacity .35s ease,max-height .35s ease,padding .35s ease}
+.chat-log{display:none;flex:1;min-height:0;width:min(860px,100%);height:auto;margin:0 auto;padding:0 6px 8px}
+.px-bar{width:min(860px,100%);margin:0 auto;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.chat-frame.engaged{justify-content:flex-end}
+.chat-frame.engaged .search-stage-copy{display:none}
+.chat-frame.engaged .chat-hdr{opacity:1;max-height:84px;padding:0 4px 8px}
+.chat-frame.engaged .chat-log{display:flex}
+.chat-frame.engaged .px-bar{margin-top:0}
+.chat-frame.engaged .chat-log .msg.a .bbl,.chat-frame.engaged .chat-log .msg.u .bbl{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.foot{display:none}
 
 /* FOOTER */
 .foot{position:relative;z-index:1;text-align:center;padding:32px 24px 60px;border-top:1px solid rgba(255,255,255,.08)}
@@ -357,13 +501,32 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
 }
 
 @media (max-width: 780px){
-  .sec{padding:88px 20px 104px}
-  .sec-head{margin-bottom:42px}
-  .fgrid{grid-template-columns:1fr;gap:12px}
-  .fcard{padding:20px 18px;min-height:0;border-radius:20px}
-  .fico{width:42px;height:42px;margin-bottom:14px}
-  .fcard h3{font-size:1rem}
-  .fcard p{font-size:.82rem;line-height:1.58}
+  .landing-page{padding:92px 18px 54px}
+  .landing-title{font-size:1.82rem}
+  .landing-subcopy,.landing-copy,.search-stage-sub{font-size:.88rem;line-height:1.62}
+  .landing-page-welcome .landing-title-lg{font-size:clamp(3.2rem,16vw,5rem);line-height:.88}
+  .why-reel{padding:18px}
+  .why-reel-shell{padding:18px 16px 16px;border-radius:24px;gap:14px}
+  .why-reel-stage{min-height:432px}
+  .why-scene{grid-template-columns:1fr;gap:14px}
+  .why-copy{text-align:center;align-items:center}
+  .why-copy h3{font-size:1.52rem}
+  .why-copy p{font-size:.82rem;line-height:1.52}
+  .why-visual{height:220px;border-radius:22px}
+  .why-mobile-screen{inset:18px}
+  .why-mobile-orbit{top:18px;right:18px;width:72px;height:72px}
+  .why-mobile-pill{left:18px;right:98px;top:20px;height:46px;font-size:.78rem;padding:0 14px}
+  .why-mobile-pill::after{display:none}
+  .why-mobile-stack{left:18px;right:18px;top:80px;bottom:18px;gap:10px}
+  .why-mobile-card{padding:12px 13px;border-radius:16px}
+  .why-mobile-card strong{font-size:.76rem}
+  .why-mobile-card span{margin-top:4px;font-size:.66rem;line-height:1.32}
+  .why-mobile-card i{min-width:30px;height:30px;padding:0 9px;font-size:.55rem}
+  .launch-orbit{width:152px;height:152px}
+  .launch-core-logo{width:78px;height:78px;font-size:1.8rem}
+  .launch-wordmark{font-size:2.8rem}
+  .chat-frame{height:min(78vh,760px)}
+  .chat-log,.chat-hdr,.px-bar{width:100%}
   .perm-points{grid-template-columns:repeat(2,minmax(0,1fr))}
   .perm-point{min-height:96px}
   .auth-points{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -378,11 +541,36 @@ body[data-theme="light"] .hero-title .ch,body[data-theme="light"] .sec-h{backgro
 body[data-theme="light"] .hero-badge,body[data-theme="light"] .nav-btn,body[data-theme="light"] .fcard,body[data-theme="light"] .chat-frame,body[data-theme="light"] .msg.a .bbl,body[data-theme="light"] .px-bar,body[data-theme="light"] .model-menu,body[data-theme="light"] .perm-box,body[data-theme="light"] .guide-box,body[data-theme="light"] .ib{background:rgba(255,255,255,.74);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .auth-sheet .perm-box{background:rgba(255,255,255,.74);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .perm-hero{border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .landing-kicker{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:rgba(8,17,31,.62)}
+body[data-theme="light"] .landing-title,body[data-theme="light"] .search-stage-title,body[data-theme="light"] .landing-title-lg{color:#08111f;background:linear-gradient(160deg,#08111f 18%,rgba(8,17,31,.46));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+body[data-theme="light"] .landing-copy,body[data-theme="light"] .landing-subcopy,body[data-theme="light"] .search-stage-sub{color:rgba(8,17,31,.58)}
+body[data-theme="light"] .landing-btn{background:#08111f;color:#fff;box-shadow:0 18px 36px rgba(8,17,31,.12)}
+body[data-theme="light"] .landing-btn.ghost{background:rgba(8,17,31,.04);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .landing-dot{background:rgba(8,17,31,.18)}
+body[data-theme="light"] .landing-dot.is-active{background:#08111f}
+body[data-theme="light"] .why-reel{background:radial-gradient(circle at 24% 20%,rgba(59,130,246,.08),transparent 24%),radial-gradient(circle at 78% 24%,rgba(168,85,247,.08),transparent 22%),rgba(238,243,255,.96)}
+body[data-theme="light"] .why-reel-shell{background:rgba(255,255,255,.92);border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .why-reel-kicker,body[data-theme="light"] .why-badge,body[data-theme="light"] .why-route-query,body[data-theme="light"] .why-route-node,body[data-theme="light"] .why-knowledge-pill,body[data-theme="light"] .why-mobile-pill{background:rgba(8,17,31,.04);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .why-copy h3{color:#08111f}
+body[data-theme="light"] .why-copy p,body[data-theme="light"] .why-reel-skip{color:rgba(8,17,31,.62)}
+body[data-theme="light"] .why-visual{background:linear-gradient(180deg,rgba(248,250,255,.92),rgba(239,243,255,.94));border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .why-mobile-screen{background:linear-gradient(180deg,rgba(248,250,255,.96),rgba(238,243,255,.98));border-color:rgba(15,23,42,.08)}
+body[data-theme="light"] .why-mobile-card{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);box-shadow:0 18px 40px rgba(8,17,31,.06)}
+body[data-theme="light"] .why-mobile-card strong{color:#08111f}
+body[data-theme="light"] .why-mobile-card span{color:rgba(8,17,31,.58)}
+body[data-theme="light"] .why-mobile-card i{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.12);color:#6d28d9}
+body[data-theme="light"] .chat-frame{background:transparent}
+body[data-theme="light"] .chat-hdr{background:transparent}
 body[data-theme="light"] .chat-hdr{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.65));border-bottom-color:rgba(15,23,42,.08)}
 body[data-theme="light"] .hero-sub,body[data-theme="light"] .hero-founder,body[data-theme="light"] .sec-eye,body[data-theme="light"] .chat-eye,body[data-theme="light"] .chat-st,body[data-theme="light"] .stamp,body[data-theme="light"] .pop-meta,body[data-theme="light"] .perm-box p,body[data-theme="light"] .guide-box p,body[data-theme="light"] .guide-item span,body[data-theme="light"] .perm-point span,body[data-theme="light"] .foot p,body[data-theme="light"] .fcard p,body[data-theme="light"] .ib-txt span,body[data-theme="light"] .perm-mini{color:rgba(8,17,31,.6)}
 body[data-theme="light"] .auth-point span{color:rgba(8,17,31,.6)}
 body[data-theme="light"] .chat-pill,body[data-theme="light"] .hero-badge,body[data-theme="light"] .px-badge,body[data-theme="light"] .guide-kicker,body[data-theme="light"] .perm-kicker{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:rgba(8,17,31,.72)}
 body[data-theme="light"] .chat-nm,body[data-theme="light"] .fcard h3,body[data-theme="light"] .pop-title,body[data-theme="light"] .perm-box h3,body[data-theme="light"] .guide-box h3,body[data-theme="light"] .guide-item strong,body[data-theme="light"] .perm-point strong{color:#08111f}
+body[data-theme="light"] .feyebrow,body[data-theme="light"] .fexample{background:rgba(8,17,31,.04);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .fexample strong{color:#08111f}
+body[data-theme="light"] .fexample span{color:rgba(8,17,31,.62)}
+body[data-theme="light"] .fline{color:#1d4ed8}
+body[data-theme="light"] .fline i{background:rgba(37,99,235,.1);color:#1d4ed8}
 body[data-theme="light"] .auth-point strong{color:#08111f}
 body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
 body[data-theme="light"] .auth-pill{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);color:#08111f}
@@ -414,10 +602,14 @@ body[data-theme="light"] .pop-item{color:rgba(8,17,31,.78)}
 body[data-theme="light"] .pop-item:hover{background:rgba(8,17,31,.06)}
 body[data-theme="light"] .model-menu{background:rgba(255,255,255,.92)}
 body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
-  body[data-theme="light"] .suggest-chip{background:rgba(8,17,31,.05);color:rgba(8,17,31,.7);border:1px solid rgba(15,23,42,.08)}
-  body[data-theme="light"] .suggest-chip:hover{background:rgba(8,17,31,.1);color:#08111f}
-  body[data-theme="light"] .suggest-chip.premium{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(59,130,246,.08));border-color:rgba(124,58,237,.18);color:#4c1d95;box-shadow:0 10px 22px rgba(59,130,246,.08),inset 0 1px 0 rgba(255,255,255,.55)}
-  body[data-theme="light"] .suggest-chip.premium:hover{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(59,130,246,.14));border-color:rgba(109,40,217,.24);color:#312e81}
+  body[data-theme="light"] .suggest-chip{--chip-bg:rgba(8,17,31,.05);--chip-border:rgba(15,23,42,.08);--chip-text:rgba(8,17,31,.74);--chip-shadow:inset 0 1px 0 rgba(255,255,255,.45);--chip-hover-bg:rgba(8,17,31,.1);color:var(--chip-text);border-color:var(--chip-border);background:var(--chip-bg)}
+  body[data-theme="light"] .suggest-chip:hover{background:var(--chip-hover-bg);color:#08111f}
+  body[data-theme="light"] .suggest-chip.tone-saffron{--chip-bg:linear-gradient(135deg,rgba(251,191,36,.14),rgba(249,115,22,.08));--chip-border:rgba(245,158,11,.18);--chip-text:#92400e;--chip-shadow:0 10px 22px rgba(245,158,11,.08),inset 0 1px 0 rgba(255,255,255,.55);--chip-hover-bg:linear-gradient(135deg,rgba(251,191,36,.2),rgba(249,115,22,.12))}
+  body[data-theme="light"] .suggest-chip.tone-violet{--chip-bg:linear-gradient(135deg,rgba(139,92,246,.12),rgba(59,130,246,.07));--chip-border:rgba(124,58,237,.16);--chip-text:#4c1d95;--chip-shadow:0 10px 22px rgba(59,130,246,.08),inset 0 1px 0 rgba(255,255,255,.55);--chip-hover-bg:linear-gradient(135deg,rgba(139,92,246,.18),rgba(59,130,246,.12))}
+  body[data-theme="light"] .suggest-chip.tone-emerald{--chip-bg:linear-gradient(135deg,rgba(16,185,129,.12),rgba(34,197,94,.07));--chip-border:rgba(16,185,129,.16);--chip-text:#065f46;--chip-shadow:0 10px 22px rgba(16,185,129,.08),inset 0 1px 0 rgba(255,255,255,.55);--chip-hover-bg:linear-gradient(135deg,rgba(16,185,129,.18),rgba(34,197,94,.12))}
+  body[data-theme="light"] .suggest-chip.premium.tone-saffron{--chip-bg:linear-gradient(135deg,rgba(251,191,36,.22),rgba(249,115,22,.14));--chip-border:rgba(245,158,11,.24);--chip-text:#7c2d12}
+  body[data-theme="light"] .suggest-chip.premium.tone-violet{--chip-bg:linear-gradient(135deg,rgba(139,92,246,.2),rgba(59,130,246,.14));--chip-border:rgba(109,40,217,.24);--chip-text:#312e81}
+  body[data-theme="light"] .suggest-chip.premium.tone-emerald{--chip-bg:linear-gradient(135deg,rgba(16,185,129,.2),rgba(14,165,233,.12));--chip-border:rgba(5,150,105,.22);--chip-text:#065f46}
 
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 </style>
@@ -439,85 +631,164 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   </button>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">⚡ Zero Cloud · Zero Cost · Always Private</div>
-  <h1 class="hero-title" id="heroTitle"></h1>
-  <p class="hero-sub">Your phone is the most powerful AI on the planet. No subscriptions. No servers. Just Raghav AI, thinking entirely on your device.</p>
-  <div class="hero-founder">Created by <strong>Prem Peswani</strong></div>
-  <div class="hero-cta">
-    <a href="#chat" class="btn-p">Talk to Raghav AI</a>
-    <a href="#features" class="btn-g">See What It Does</a>
-  </div>
-  <div class="scroll-hint"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></div>
-</section>
-
-<!-- FEATURES -->
-<div class="sec" id="features">
-  <div class="sec-head">
-    <p class="sec-eye rv">Agentic Capabilities</p>
-    <h2 class="sec-h rv">Not just answers.<br>Actions.</h2>
-  </div>
-  <div class="fgrid">
-    <div class="fcard rv"><div class="fglow" style="background:#16a34a"></div><div class="fico">⚡</div><h3>Super Search</h3><p>Ask Raghav AI to find anything on the web. It understands context and delivers exactly what matters—fast, relevant, and noise-free.</p></div>
-    <div class="fcard rv"><div class="fglow" style="background:#ea580c"></div><div class="fico">🔒</div><h3>Completely Private</h3><p>Your conversations are not used to train our AI models, and we only process the data necessary to deliver and maintain the service.</p></div>
-    <div class="fcard rv"><div class="fglow" style="background:#7c3aed"></div><div class="fico">📱</div><h3>Lives on Your Phone</h3><p>Add Raghav AI to your home screen. Open it like any app. No browser. No loading. Instant intelligence.</p></div>
+<div class="launch-splash" id="launchSplash" aria-hidden="true">
+  <div class="launch-core">
+    <div class="launch-orbit">
+      <span class="launch-ring a"></span>
+      <span class="launch-ring b"></span>
+      <span class="launch-ring c"></span>
+      <span class="launch-dot a"></span>
+      <span class="launch-dot b"></span>
+      <span class="launch-dot c"></span>
+      <div class="launch-core-logo">O</div>
+    </div>
+    <div class="launch-wordmark">Raghav AI</div>
+    <div class="launch-credit">Created by <strong>Prem Peswani</strong></div>
   </div>
 </div>
 
-<!-- CHAT -->
-<div class="chat-sec" id="chat">
-  <p class="chat-eye rv">Try It Right Now</p>
-  <div class="chat-frame rv">
-    <div class="chat-hdr">
-      <div class="orb-av" id="orbAv">O</div>
-      <div>
-        <div class="chat-nm">Raghav AI</div>
-        <div class="chat-meta">
-          <div class="chat-st" id="chatStatus">Ready on your phone</div>
-          <div class="chat-pill" id="runtimePill">Auto</div>
-        </div>
+<div class="landing-deck" id="landingDeck">
+  <div class="why-reel" id="whyReel" data-scene="0" aria-hidden="true">
+    <div class="why-reel-shell">
+      <div class="why-reel-top">
+        <div class="why-reel-kicker">Why it feels different</div>
+        <button class="why-reel-skip" id="whyReelSkip" type="button">Skip</button>
       </div>
-    </div>
-    <div class="chat-log" id="chatLog"></div>
-    <!-- PERPLEXITY-STYLE INPUT BAR -->
-    <div class="px-bar" id="pxBar">
-      <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1"></textarea>
-      <div class="suggest-row" id="suggestRow" hidden></div>
-      <div class="px-controls">
-        <div class="px-left">
-          <!-- MOBILE + BUTTON -->
-          <button class="px-btn px-badge" id="mobileBtn">
-            <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
-          </button>
-        </div>
-        <div class="px-right">
-          <div class="model-wrap">
-            <button class="px-btn model-trigger" id="modelBtn">
-              <span id="modelBtnLabel">Raghav Beta</span>
-              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="model-menu" id="modelMenu">
-              <button class="pop-item model-choice" data-model="Raghav Beta">
-                <span>◎</span>
-                <span class="pop-body">
-                  <span class="pop-title">Raghav Beta</span>
-                  <span class="pop-meta">Open everyday model. Fast, respectful, and built for common questions, explanations, and practical help.</span>
-                </span>
-              </button>
-              <button class="pop-item model-choice locked" data-model="Raghav Baan">
-                <span>🔒</span>
-                <span class="pop-body">
-                  <span class="pop-title">Raghav Baan</span>
-                  <span class="pop-meta">Premium flagship lane for fuller reasoning, stepwise guidance, and the full experimental experience.</span>
-                </span>
-              </button>
+      <div class="why-reel-progress" aria-hidden="true">
+        <div class="why-progress" data-step="0"></div>
+        <div class="why-progress" data-step="1"></div>
+        <div class="why-progress" data-step="2"></div>
+      </div>
+      <div class="why-reel-stage">
+        <article class="why-scene" data-scene="0">
+          <div class="why-copy">
+            <div class="why-badge">Search That Lands</div>
+            <h3>Ask once. Land faster.</h3>
+            <p>Instead of throwing a noisy web wall at you, Raghav AI pushes the search toward the place that actually fits.</p>
+          </div>
+          <div class="why-visual">
+            <div class="why-route-query">Best laptop under 50000</div>
+            <div class="why-route-trail"></div>
+            <div class="why-route-node one">Amazon</div>
+            <div class="why-route-node two">Myntra</div>
+            <div class="why-route-node three">Flipkart</div>
+          </div>
+        </article>
+        <article class="why-scene" data-scene="1">
+          <div class="why-copy">
+            <div class="why-badge">Phone-First AI</div>
+            <h3>People and concepts, without drag.</h3>
+            <p>Type a name or a concept and get the full picture in a clean, phone-first rhythm.</p>
+          </div>
+          <div class="why-visual">
+            <div class="why-knowledge-ring one"></div>
+            <div class="why-knowledge-ring two"></div>
+            <div class="why-knowledge-core">◎</div>
+            <div class="why-knowledge-pill a">A. P. J. Abdul Kalam</div>
+            <div class="why-knowledge-pill b">Nikola Tesla</div>
+            <div class="why-knowledge-pill c">Artificial intelligence</div>
+          </div>
+        </article>
+        <article class="why-scene" data-scene="2">
+          <div class="why-copy">
+            <div class="why-badge">Mobile+ Hidden Layer</div>
+            <h3>Mobile+ moves before you do.</h3>
+            <p>It lines up the next step with a premium feel: study pack ready, action drafted, deeper pass unlocked.</p>
+          </div>
+          <div class="why-visual">
+            <div class="why-mobile-screen">
+              <div class="why-mobile-glow"></div>
+              <div class="why-mobile-orbit"><div class="why-mobile-core"></div></div>
+              <div class="why-mobile-pill">Prepared next step</div>
+              <div class="why-mobile-stack">
+                <div class="why-mobile-card primary">
+                  <div><strong>Mini revision PDF</strong><span>Mind map, quick points, and practice questions already lined up.</span></div>
+                  <i>Ready</i>
+                </div>
+                <div class="why-mobile-card secondary">
+                  <div><strong>Message drafted</strong><span>One clean move into the app that actually fits the ask.</span></div>
+                  <i>Route</i>
+                </div>
+                <div class="why-mobile-card tertiary">
+                  <div><strong>Raghav Baan unlocked</strong><span>Deeper reasoning wakes only when the question deserves more.</span></div>
+                  <i>Plus</i>
+                </div>
+              </div>
             </div>
           </div>
-          <button class="px-send" id="sendBtn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-        </div>
+        </article>
       </div>
     </div>
+  </div>
+  <div class="landing-track" id="landingTrack">
+    <section class="landing-page landing-page-welcome">
+      <div class="landing-panel rv">
+        <div class="landing-kicker">Welcome</div>
+        <h1 class="landing-title-lg hero-title" id="heroTitle"></h1>
+        <p class="landing-copy">A phone-first AI assistant that knows when to stay fast, when to go deeper, and when to move you straight to the useful place.</p>
+        <div class="landing-actions">
+          <button class="landing-btn" id="landingNextWelcome">See why it feels different</button>
+        </div>
+      </div>
+    </section>
+    <section class="landing-page landing-page-search" id="chat">
+      <div class="chat-sec">
+        <div class="chat-frame rv" id="chatStage">
+          <div class="search-stage-copy" id="searchStageCopy">
+            <div class="landing-kicker">Raghav AI</div>
+            <h2 class="search-stage-title">Ask once. Let the right lane handle the rest.</h2>
+            <p class="search-stage-sub">Search stays simple, Mobile+ stays hidden until you want it, and deeper reasoning only wakes when the question truly deserves it.</p>
+          </div>
+          <div class="chat-hdr">
+            <div class="orb-av" id="orbAv">O</div>
+            <div>
+              <div class="chat-nm">Raghav AI</div>
+              <div class="chat-meta">
+                <div class="chat-st" id="chatStatus">Ready on your phone</div>
+                <div class="chat-pill" id="runtimePill">Auto</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-log" id="chatLog"></div>
+          <div class="px-bar" id="pxBar">
+            <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1" aria-label="Ask Raghav AI anything" enterkeyhint="send"></textarea>
+            <div class="suggest-row" id="suggestRow" hidden></div>
+            <div class="px-controls">
+              <div class="px-left">
+                <button class="px-btn px-badge" id="mobileBtn">
+                  <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
+                </button>
+              </div>
+              <div class="px-right">
+                <div class="model-wrap">
+                  <button class="px-btn model-trigger" id="modelBtn">
+                    <span id="modelBtnLabel">Raghav Beta</span>
+                    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                  <div class="model-menu" id="modelMenu">
+                    <button class="pop-item model-choice" data-model="Raghav Beta">
+                      <span>◎</span>
+                      <span class="pop-body">
+                        <span class="pop-title">Raghav Beta</span>
+                        <span class="pop-meta">Open everyday model. Fast, respectful, and built for common questions, explanations, and practical help.</span>
+                      </span>
+                    </button>
+                    <button class="pop-item model-choice locked" data-model="Raghav Baan">
+                      <span>🔒</span>
+                      <span class="pop-body">
+                        <span class="pop-title">Raghav Baan</span>
+                        <span class="pop-meta">Premium flagship lane for fuller reasoning, stepwise guidance, and the full experimental experience.</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <button class="px-send" id="sendBtn" aria-label="Send message"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -552,7 +823,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       <div class="perm-hero-wordmark">Raghav AI</div>
     </div>
     <div class="perm-kicker" id="permKicker">Experimental</div>
-    <h3 id="permTitle">Experience our experimental features for the price of a pastry 🍰</h3>
+    <h3 id="permTitle">Unlock the hidden layer.</h3>
     <p id="permBody" style="display:none"></p>
     <div class="perm-points" id="permPoints">
       <div class="perm-point">
@@ -564,7 +835,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
       </div>
     </div>
-    <div class="perm-mini" id="permMini">Rs 39</div>
+    <div class="perm-mini" id="permMini">Rs 39 · 10 deep passes</div>
     <div class="perm-actions">
       <button class="perm-yes" id="permYes">Unlock for Rs 39</button>
       <button class="perm-no" id="permNo">Not Now</button>
@@ -798,8 +1069,19 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   /* ── TYPEWRITER ── */
   var WORD = 'Raghav AI';
   var titleEl = document.getElementById('heroTitle');
+  var launchSplash = document.getElementById('launchSplash');
+  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var launchIntroDuration = prefersReducedMotion ? 700 : (window.innerWidth <= 780 ? 1500 : 1850);
   var ci = 0;
   titleEl.setAttribute('aria-label', WORD);
+  titleEl.textContent = '';
+  if (launchSplash) {
+    document.body.classList.add('launching');
+    setTimeout(function() {
+      launchSplash.classList.add('is-done');
+      document.body.classList.remove('launching');
+    }, launchIntroDuration);
+  }
   setTimeout(function(){
     var iv = setInterval(function(){
       if(ci >= WORD.length){ clearInterval(iv); return; }
@@ -816,7 +1098,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       try { navigator.vibrate(4); } catch(e){}
       ci++;
     }, 110);
-  }, 400);
+  }, launchSplash ? Math.max(260, launchIntroDuration - 260) : 400);
 
   /* ── SCROLL REVEAL ── */
   var rvEls = document.querySelectorAll('.rv');
@@ -857,43 +1139,37 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var SUN_ICON = '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   var MOON_ICON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>';
   var suggestionBuckets = {
-    strategy: [
-      'strategy to become more confident',
-      'how to think more clearly',
-      'steps to become disciplined',
-      'how to stop overthinking',
-      'strategy to improve focus',
-      'how to build self respect'
+    mythology: [
+      'who is Lord Krishna',
+      'what is Bhagavad Gita',
+      'why is Diwali celebrated',
+      'what makes Varanasi special'
     ],
-    daily: [
-      'how to improve daily',
-      'daily steps to stay focused',
-      'small habits to improve every day',
-      'how to build a better routine',
-      'how to become better each day',
-      'daily plan to stay consistent'
+    geniuses: [
+      'who is A. P. J. Abdul Kalam',
+      'who is C. V. Raman',
+      'who is Srinivasa Ramanujan',
+      'who is Vikram Sarabhai'
     ],
-    definition: [
-      'meaning of GPU',
-      'what is programming',
-      'definition of empathy',
-      'meaning of discipline',
-      'what is Python',
-      'what is critical thinking'
+    india: [
+      'why is Kerala so famous in India',
+      'what makes ISRO special',
+      'why is Jaipur famous',
+      'why is Indian classical music special'
     ]
   };
   var mobilePlusSuggestionBuckets = {
-    concept: [
-      'what is artificial intelligence',
-      'what is quantum computing',
-      'what is emotional intelligence',
-      'what is machine learning'
+    mythology: [
+      'who is Lord Krishna',
+      'what is Bhagavad Gita',
+      'what makes Varanasi special',
+      'why is Diwali celebrated'
     ],
-    people: [
-      'who is Nikola Tesla',
-      'who is Alan Turing',
-      'who is Marie Curie',
-      'who is Leonardo da Vinci'
+    geniuses: [
+      'who is A. P. J. Abdul Kalam',
+      'who is C. V. Raman',
+      'who is Srinivasa Ramanujan',
+      'who is Vikram Sarabhai'
     ],
     revision: [
       'mini revision PDF for NEET biology',
@@ -903,9 +1179,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     ]
   };
   var suggestionCatalog = [].concat(
-    suggestionBuckets.strategy,
-    suggestionBuckets.daily,
-    suggestionBuckets.definition
+    suggestionBuckets.mythology,
+    suggestionBuckets.geniuses,
+    suggestionBuckets.india
   );
   var suggestionDisplayCount = 3;
   var localKnowledgeSeeds = [
@@ -926,6 +1202,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     { term: 'operating system', meaning: 'An operating system is the core software that manages your device, apps, files, and hardware.', why: 'It matters because every phone and computer depends on it to function.', example: 'Android, iOS, Windows, and macOS are operating systems.' },
     { term: 'machine learning', meaning: 'Machine learning is a way of building systems that learn patterns from data instead of following only fixed rules.', why: 'It matters because it powers prediction, personalization, recognition, and many modern AI features.', example: 'Spam filters and recommendation systems often use machine learning.' },
     { term: 'artificial intelligence', meaning: 'Artificial intelligence is the broad field of making systems perform tasks that usually require human-like intelligence.', why: 'It matters because it can help with language, vision, search, planning, and decision support.', example: 'A chatbot answering questions is one form of AI.' },
+    { term: 'bhagavad gita', meaning: 'The Bhagavad Gita is a sacred Hindu scripture presented as a dialogue between Lord Krishna and Arjuna about duty, action, self-mastery, and spiritual understanding.', why: 'It matters because it has deeply influenced Indian philosophy, ethics, and spiritual thought.', example: 'Many people read the Bhagavad Gita for guidance on discipline, purpose, and inner balance.' },
+    { term: 'isro', meaning: 'ISRO is the Indian Space Research Organisation, India’s national space agency.', why: 'It matters because it led major Indian space missions and helped make India a respected space power.', example: 'Chandrayaan and Mangalyaan are major missions associated with ISRO.' },
     { term: 'neural network', meaning: 'A neural network is a model inspired by the brain that learns patterns from data through layers of computation.', why: 'It matters because many modern AI systems are based on neural networks.', example: 'Image recognition and language models often use neural networks.' },
     { term: 'prompt', meaning: 'A prompt is the instruction or input you give to an AI system.', why: 'It matters because better prompts often lead to clearer, more useful results.', example: 'Asking an AI to explain something step by step is a prompt.' },
     { term: 'function', meaning: 'A function is a reusable block of code that performs one specific job.', why: 'It matters because functions help keep code organized, cleaner, and easier to reuse.', example: 'A function can format a date or send a message.' },
@@ -988,7 +1266,47 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     { key: 'how to study better', answer: 'Study in shorter focused blocks, test yourself often, and review the hardest parts first. Better study comes from active recall and consistency.' },
     { key: 'how to speak confidently', answer: 'Slow your pace, finish your sentences, and focus on clarity more than perfection. Confidence in speaking grows from repetition and calm delivery.' },
     { key: 'how to avoid procrastination', answer: 'Shrink the task, start for five minutes, and remove the easiest distraction first. Procrastination usually breaks once motion begins.' },
-    { key: 'how to calm anxiety', answer: 'Ground yourself with slower breathing, narrow attention to the next small action, and reduce uncertainty where you can. Anxiety becomes easier to handle when the moment feels smaller.' }
+    { key: 'how to calm anxiety', answer: 'Ground yourself with slower breathing, narrow attention to the next small action, and reduce uncertainty where you can. Anxiety becomes easier to handle when the moment feels smaller.' },
+    { key: 'why is kerala so famous in india', answer: 'Kerala is famous in India for high literacy, natural beauty, backwaters, spices, Ayurveda, and a strong social-development reputation. Many people also know it for calm landscapes, rich culture, and tourism.' },
+    { key: 'why is diwali celebrated', answer: 'Diwali is celebrated as the festival of lights and is widely associated with the victory of light over darkness, good over evil, and hope over fear. Different Indian traditions connect it to Lord Rama’s return, Goddess Lakshmi, and spiritual renewal.' },
+    { key: 'what makes varanasi special', answer: 'Varanasi is special because it is one of India’s oldest and most sacred cities, deeply linked with Lord Shiva, the Ganga, spiritual learning, and living Hindu tradition. People know it for its ghats, temples, ritual life, and timeless cultural atmosphere.' },
+    { key: 'what makes isro special', answer: 'ISRO is special because it built a powerful space reputation with disciplined engineering, cost-effective missions, and major achievements like Chandrayaan and Mangalyaan. It represents Indian scientific ambition with practical results.' },
+    { key: 'why is jaipur famous', answer: 'Jaipur is famous for its royal history, forts, palaces, crafts, and pink-city identity. Many people know it for architecture, tourism, jewelry, and its strong connection to Rajasthan’s heritage.' },
+    { key: 'why is indian classical music special', answer: 'Indian classical music is special because it combines deep emotion, disciplined tradition, improvisation, and spiritual depth through ragas and rhythm systems. It is respected for both technical richness and inner feeling.' }
+  ];
+  var localPersonalitySeeds = [
+    { aliases: ['lord krishna', 'krishna', 'shri krishna', 'sri krishna'], name: 'Lord Krishna', role: 'One of the central deities in Hindu tradition and a major figure in the Mahabharata and the Bhagavad Gita.', work: ['guides Arjuna in the Bhagavad Gita', 'is associated with wisdom, devotion, and dharma', 'remains one of the most deeply loved figures in Hindu spiritual life'], legacy: 'He is revered for divine wisdom, compassion, courage, and guidance through difficult duty.' },
+    { aliases: ['a p j abdul kalam', 'apj abdul kalam', 'abdul kalam', 'a p j kalam'], name: 'A. P. J. Abdul Kalam', role: 'Indian aerospace scientist and former President of India.', work: ['led missile and space efforts', 'earned the name Missile Man of India', 'inspired students through science and public service'], legacy: 'He is remembered for combining science, humility, and national service.' },
+    { aliases: ['c v raman', 'cv raman', 'sir c v raman', 'chandrasekhara venkata raman'], name: 'C. V. Raman', role: 'Indian physicist and Nobel Prize winner.', work: ['discovered the Raman Effect', 'helped place Indian science on the global stage', 'became one of the most respected scientific minds in Indian history'], legacy: 'He is remembered as one of India’s great scientific geniuses.' },
+    { aliases: ['srinivasa ramanujan', 'ramanujan'], name: 'Srinivasa Ramanujan', role: 'Indian mathematician known for extraordinary intuition in number theory.', work: ['made deep contributions to pure mathematics', 'developed remarkable results with very little formal training early on', 'became one of the most celebrated mathematical minds linked to India'], legacy: 'He is remembered as one of the greatest mathematical geniuses in history.' },
+    { aliases: ['vikram sarabhai', 'sarabhai'], name: 'Vikram Sarabhai', role: 'Indian physicist and institution builder, often called the father of the Indian space program.', work: ['helped shape India’s space vision', 'built scientific institutions', 'laid the foundation for India’s long-term space effort'], legacy: 'He is remembered for giving India a confident scientific and space direction.' },
+    { aliases: ['ratan tata', 'tata'], name: 'Ratan Tata', role: 'Indian industrialist and former chairman of Tata Group.', work: ['expanded Tata globally', 'backed long-term Indian innovation', 'became known for calm and ethical leadership'], legacy: 'He is widely respected for business leadership with public trust.' },
+    { aliases: ['sundar pichai', 'pichai'], name: 'Sundar Pichai', role: 'Indian-born technology executive and CEO of Alphabet and Google.', work: ['helped lead Chrome and Android growth', 'became one of the most visible leaders in global tech', 'shaped major consumer internet products'], legacy: 'He is known for quiet product leadership at global scale.' },
+    { aliases: ['narendra modi', 'modi'], name: 'Narendra Modi', role: 'Prime Minister of India.', work: ['leads the Indian central government', 'shapes national policy and diplomacy', 'remains one of the most influential political figures in India'], legacy: 'He is widely discussed for political strategy, governance, and public communication.' },
+    { aliases: ['babasaheb ambedkar', 'babasaheb', 'ambedkar', 'b r ambedkar', 'br ambedkar', 'dr b r ambedkar', 'dr br ambedkar', 'bhimrao ambedkar', 'dr bhimrao ambedkar'], name: 'Dr. B. R. Ambedkar', role: 'Indian jurist, social reformer, economist, and chief architect of the Constitution of India.', work: ['fought for social justice and equality', 'played a central role in shaping the Constitution of India', 'became one of the most important thinkers and reformers in modern Indian history'], legacy: 'He is remembered as a legendary reformer and one of the strongest intellectual architects of modern India.' },
+    { aliases: ['mahatma gandhi', 'gandhi', 'mohandas gandhi', 'm k gandhi'], name: 'Mahatma Gandhi', role: 'Leader of India’s freedom movement and global symbol of nonviolent resistance.', work: ['led mass civil resistance', 'made nonviolence a political force', 'influenced freedom struggles far beyond India'], legacy: 'He is remembered for moral leadership and nonviolent action.' },
+    { aliases: ['bhagat singh'], name: 'Bhagat Singh', role: 'Indian revolutionary freedom fighter.', work: ['became a symbol of youthful resistance to colonial rule', 'wrote and argued passionately about freedom and justice', 'remains a major icon in Indian public memory'], legacy: 'He is remembered for courage, sacrifice, and revolutionary spirit.' },
+    { aliases: ['swami vivekananda', 'vivekananda'], name: 'Swami Vivekananda', role: 'Indian monk, thinker, and public teacher.', work: ['popularized Vedanta internationally', 'spoke at the Parliament of the World’s Religions', 'inspired youth through discipline and self-belief'], legacy: 'He is remembered for spiritual clarity, confidence, and national inspiration.' },
+    { aliases: ['sachin tendulkar', 'sachin'], name: 'Sachin Tendulkar', role: 'Indian cricketer and one of the most celebrated batters in cricket history.', work: ['set major batting records', 'became a defining sports figure in India', 'earned the title Master Blaster'], legacy: 'He is remembered for excellence, longevity, and national sporting pride.' },
+    { aliases: ['m s dhoni', 'ms dhoni', 'mahendra singh dhoni', 'dhoni'], name: 'M. S. Dhoni', role: 'Indian cricketer and former national team captain.', work: ['won major ICC trophies for India', 'became known for calm finishing and leadership', 'built a reputation for composure under pressure'], legacy: 'He is remembered for clutch leadership and calm decision-making.' },
+    { aliases: ['virat kohli', 'kohli'], name: 'Virat Kohli', role: 'Indian cricketer known for modern batting intensity and leadership.', work: ['scored heavily across formats', 'became one of cricket’s biggest global stars', 'helped redefine fitness standards in Indian cricket'], legacy: 'He is remembered for relentless competitiveness and consistency.' },
+    { aliases: ['shah rukh khan', 'srk', 'shahrukh khan'], name: 'Shah Rukh Khan', role: 'Indian actor and film producer.', work: ['became one of Bollywood’s most recognizable stars', 'built a large global fan base', 'is known for charisma and long-term screen presence'], legacy: 'He is remembered as one of the defining stars of modern Indian cinema.' },
+    { aliases: ['amitabh bachchan', 'bachchan'], name: 'Amitabh Bachchan', role: 'Indian actor and cultural icon.', work: ['became one of Hindi cinema’s most influential actors', 'maintained relevance across decades', 'is known for his voice, screen presence, and longevity'], legacy: 'He is remembered as one of the pillars of Indian film history.' },
+    { aliases: ['kalpana chawla', 'chawla'], name: 'Kalpana Chawla', role: 'Indian-born astronaut and aerospace engineer.', work: ['became the first woman of Indian origin in space', 'worked on space missions with NASA', 'inspired generations of students'], legacy: 'She is remembered for scientific ambition and courage.' },
+    { aliases: ['homi bhabha', 'bhabha'], name: 'Homi J. Bhabha', role: 'Indian nuclear physicist and institution builder.', work: ['helped shape India’s nuclear science program', 'founded major scientific institutions', 'strengthened India’s research ecosystem'], legacy: 'He is remembered as a founding architect of modern Indian science institutions.' },
+    { aliases: ['narayana murthy', 'n r narayana murthy', 'murthy'], name: 'N. R. Narayana Murthy', role: 'Indian entrepreneur and co-founder of Infosys.', work: ['helped build India’s software services reputation', 'became associated with disciplined corporate governance', 'influenced the Indian startup and IT story'], legacy: 'He is remembered for helping define India’s modern IT industry.' },
+    { aliases: ['nandan nilekani', 'nilekani'], name: 'Nandan Nilekani', role: 'Indian entrepreneur and public policy technologist.', work: ['co-founded Infosys', 'played a major role in Aadhaar', 'helped shape digital public infrastructure in India'], legacy: 'He is remembered for building both technology companies and public digital systems.' },
+    { aliases: ['nikola tesla', 'tesla'], name: 'Nikola Tesla', role: 'Inventor and electrical engineer.', work: ['advanced alternating current systems', 'helped shape modern power transmission', 'designed the Tesla coil and induction motor ideas'], legacy: 'He is remembered for helping define modern electrical power systems.' },
+    { aliases: ['alan turing', 'turing'], name: 'Alan Turing', role: 'Mathematician, codebreaker, and pioneer of computer science.', work: ['helped break wartime codes', 'laid foundations for computing theory', 'shaped early thinking about machine intelligence'], legacy: 'He is remembered as one of the core founders of modern computing.' },
+    { aliases: ['marie curie', 'curie'], name: 'Marie Curie', role: 'Physicist and chemist.', work: ['pioneered radioactivity research', 'won Nobel Prizes in two sciences', 'changed how science understood radiation'], legacy: 'She is remembered for scientific rigor and historic breakthroughs.' },
+    { aliases: ['leonardo da vinci', 'da vinci', 'leonardo'], name: 'Leonardo da Vinci', role: 'Artist, inventor, and Renaissance thinker.', work: ['painted world-famous works', 'filled notebooks with engineering and anatomy studies', 'became a symbol of wide-ranging genius'], legacy: 'He is remembered for combining art, science, and imagination.' },
+    { aliases: ['albert einstein', 'einstein'], name: 'Albert Einstein', role: 'Physicist.', work: ['developed the theory of relativity', 'reshaped modern physics', 'became one of science’s most recognizable figures'], legacy: 'He is remembered for transforming the way people understand space, time, and energy.' },
+    { aliases: ['ada lovelace', 'lovelace'], name: 'Ada Lovelace', role: 'Mathematician and early computing thinker.', work: ['wrote notes around Charles Babbage’s analytical engine', 'described how a machine could process symbols beyond simple arithmetic', 'became an early icon in computing history'], legacy: 'She is remembered as one of the earliest visionaries of programmable computing.' },
+    { aliases: ['isaac newton', 'newton'], name: 'Isaac Newton', role: 'Physicist and mathematician.', work: ['developed laws of motion and gravity', 'shaped calculus and classical mechanics', 'defined foundational scientific methods for physics'], legacy: 'He is remembered for laying down some of the core laws of classical science.' },
+    { aliases: ['steve jobs', 'jobs'], name: 'Steve Jobs', role: 'Technology entrepreneur and co-founder of Apple.', work: ['helped create the Macintosh, iPhone, and iPad eras', 'made product design and consumer technology feel more integrated', 'became known for sharp product instincts'], legacy: 'He is remembered for turning product design into a cultural force in technology.' },
+    { aliases: ['bill gates', 'gates'], name: 'Bill Gates', role: 'Technology entrepreneur and philanthropist.', work: ['co-founded Microsoft', 'helped put personal computing into the mainstream', 'later focused heavily on global philanthropy'], legacy: 'He is remembered for both software business scale and later philanthropic work.' },
+    { aliases: ['elon musk', 'musk'], name: 'Elon Musk', role: 'Entrepreneur known for electric vehicles, rockets, and internet ventures.', work: ['led Tesla and SpaceX', 'pushed reusable rockets into mainstream conversation', 'became a dominant figure in public tech culture'], legacy: 'He is remembered for ambitious engineering bets and highly visible leadership.' },
+    { aliases: ['nelson mandela', 'mandela'], name: 'Nelson Mandela', role: 'South African anti-apartheid leader and former president.', work: ['became the face of resistance against apartheid', 'helped guide democratic transition', 'became a global symbol of reconciliation'], legacy: 'He is remembered for resilience, justice, and reconciliation.' }
   ];
 
   function shuffleList(items) {
@@ -1082,11 +1400,13 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!suggestRow) return;
     suggestRow.hidden = false;
     suggestRow.innerHTML = '';
+    var toneClasses = ['tone-saffron', 'tone-violet', 'tone-emerald'];
     items.forEach(function(item) {
       var chip = document.createElement('button');
       chip.type = 'button';
       var value = typeof item === 'string' ? item : item.value;
-      chip.className = 'suggest-chip' + ((item && item.premium) ? ' premium' : '');
+      var toneClass = toneClasses[suggestRow.children.length % toneClasses.length];
+      chip.className = 'suggest-chip ' + toneClass + ((item && item.premium) ? ' premium' : '');
       chip.textContent = value;
       bindSuggestionChip(chip, value);
       suggestRow.appendChild(chip);
@@ -1098,18 +1418,18 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function getRandomSuggestionSet() {
-    return shuffleList([
-      pickRandomSuggestion(suggestionBuckets.strategy),
-      pickRandomSuggestion(suggestionBuckets.daily),
-      pickRandomSuggestion(suggestionBuckets.definition)
-    ]);
+    return [
+      suggestionBuckets.mythology[0],
+      suggestionBuckets.geniuses[0],
+      suggestionBuckets.india[0]
+    ];
   }
 
   function getMobilePlusSuggestionSet() {
     return [
-      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.concept), premium: true },
-      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.people), premium: true },
-      { value: pickRandomSuggestion(mobilePlusSuggestionBuckets.revision), premium: true }
+      { value: mobilePlusSuggestionBuckets.mythology[0], premium: true },
+      { value: mobilePlusSuggestionBuckets.geniuses[0], premium: true },
+      { value: mobilePlusSuggestionBuckets.revision[0], premium: true }
     ];
   }
 
@@ -1205,9 +1525,19 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   /* ── CHAT ENGINE ── */
   var chatLog = document.getElementById('chatLog');
   var chatWrap = document.querySelector('.chat-frame');
+  var chatStage = document.getElementById('chatStage');
   var sendBtn = document.getElementById('sendBtn');
   var orbAv = document.getElementById('orbAv');
   var modelBtnLabel = document.getElementById('modelBtnLabel');
+  var landingDeck = document.getElementById('landingDeck');
+  var landingTrack = document.getElementById('landingTrack');
+  var landingDots = Array.prototype.slice.call(document.querySelectorAll('[data-landing-page]'));
+  var landingNextWelcome = document.getElementById('landingNextWelcome');
+  var whyReel = document.getElementById('whyReel');
+  var whyReelSkip = document.getElementById('whyReelSkip');
+  var currentLandingPage = 0;
+  var conversationStageActive = false;
+  var whyReelTimers = [];
   var localGenerator = null;
   var localGeneratorPromise = null;
   var localGeneratorModelId = null;
@@ -1307,12 +1637,17 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
   }
 
-  async function getRemoteReasoningResponse(text) {
+  async function getRemoteReasoningResponse(text, options) {
     var base = getRemoteReasoningBase();
     if (!base) throw new Error('REMOTE_REASONING_NOT_CONFIGURED');
     await warmRemoteReasoning();
     var effectiveModel = getEffectiveModel();
-    var remoteLane = effectiveModel === 'Raghav Baan' ? 'premium' : 'beta';
+    var remoteLane = options && options.lane ? options.lane : (effectiveModel === 'Raghav Baan' ? 'premium' : 'beta');
+    var consumePremiumCredit = !!(options && options.consumePremiumCredit);
+    var idToken = '';
+    if (consumePremiumCredit && currentFirebaseUser) {
+      idToken = await currentFirebaseUser.getIdToken();
+    }
     var response = await fetch(base + '/api/reason', {
       method: 'POST',
       mode: 'cors',
@@ -1322,6 +1657,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         message: text,
         lane: remoteLane,
         modelName: effectiveModel,
+        consumePremiumCredit: consumePremiumCredit,
+        idToken: idToken,
         planMode: remoteLane === 'premium' && shouldUseDeepPlan(text) ? 'deep' : 'standard',
         memoryProfile: getPreferenceMemorySummary(),
         platform: isMobileDevice ? 'mobile' : 'desktop',
@@ -1333,16 +1670,32 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       data = await response.json();
     } catch (e) {}
     if (!response.ok) {
+      if (data && data.entitlements && typeof data.entitlements.premiumReasoningCredits === 'number') {
+        setPremiumReasoningCredits(data.entitlements.premiumReasoningCredits);
+        updatePremiumAccessUI();
+        updateModelUI();
+      }
       var remoteError = new Error(data && data.error ? data.error : 'REMOTE_REASONING_FAILED');
       remoteError.status = response.status;
       throw remoteError;
     }
     if (!data || !data.answer) throw new Error('REMOTE_REASONING_EMPTY');
+    if (typeof data.creditsRemaining === 'number' && Number.isFinite(data.creditsRemaining)) {
+      setPremiumReasoningCredits(data.creditsRemaining);
+      updatePremiumAccessUI();
+      updateModelUI();
+    }
     return String(data.answer || '').trim();
   }
 
   function getRemoteFailureMessage(error) {
     var message = error && error.message ? String(error.message) : '';
+    if (/PREMIUM_REASONING_EXHAUSTED/i.test(message)) {
+      return "Your premium reasoning passes are finished for now. Mobile+, definitions, and quick routes still stay open.";
+    }
+    if (/PREMIUM_REASONING_LOCKED/i.test(message)) {
+      return "Unlock Mobile+ and Raghav Baan to keep the deeper reasoning lane going.";
+    }
     if (/OPENROUTER_API_KEY/i.test(message)) {
       return "The live AI server is missing its OpenRouter API key right now. Add OPENROUTER_API_KEY in Render and the replies will start working.";
     }
@@ -1782,6 +2135,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       var heading = sourceTerm ? sourceTerm.charAt(0).toUpperCase() + sourceTerm.slice(1) : 'Meaning';
       normalized = '**' + heading + '** ' + normalized + ' ⚡';
     }
+    if (!/\*\*Hare Krishna\*\*\s*💙$/i.test(normalized)) {
+      normalized += '\n\n**Hare Krishna** 💙';
+    }
     var html = escapeHtml(normalized)
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\n{2,}/g, '</p><p>')
@@ -1884,8 +2240,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
 
     var blob = doc.output('blob');
-    var filename = sanitizePdfFilename(pack.filename || pack.title || 'Revision-Pack') + (/\.pdf$/i.test(pack.filename || '') ? '' : '.pdf');
-    if (!/\.pdf$/i.test(filename)) filename += '.pdf';
     var filename = sanitizePdfFilename(pack.filename || pack.title || 'Revision-Pack');
     if (!/\.pdf$/i.test(filename)) filename += '.pdf';
     var file = null;
@@ -2314,6 +2668,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function addUserMsg(text){
+    enterConversationStage({ skipFocus: true });
     var row=document.createElement('div'); row.className='msg u';
     var body=document.createElement('div'); body.className='msg-body';
     var b=document.createElement('div'); b.className='bbl'; b.textContent=text;
@@ -2327,11 +2682,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   function showAgentPreview(action) {
     hideDots();
     hideWorkingMessage();
+    enterConversationStage({ skipFocus: true });
     var row=document.createElement('div'); row.className='msg a';
     var tag = makeRouteTag('Mini Agent');
     if (tag) row.appendChild(tag);
     var body=document.createElement('div'); body.className='msg-body';
-    var b=document.createElement('div'); b.className='bbl'; b.textContent=action.reply;
+    var b=document.createElement('div'); b.className='bbl'; b.innerHTML = formatReplyHtml(action.reply, 'Mini Agent', action.originalText || action.reply);
     var copyBtn=makeCopyButton(action.reply);
     var ts=document.createElement('div'); ts.className='stamp'; ts.textContent=getTime();
     body.appendChild(b);
@@ -2569,7 +2925,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function getOpeningStory() {
-    return "Raghav AI is being made to save time, feel personal, and keep everyday help free. Its goal is simple: fewer taps, less delay, better privacy, and no data leakage from the moments that matter to you. It is built for everyday use, not coding, and designed to serve both online and offline once your phone is ready. For real questions, learning, and problems, Raghav AI answers right here. For things that are faster somewhere else, it can take you straight there with your words already prepared, like shopping on Amazon or Flipkart, fashion on Myntra, or recipes on YouTube. Nothing in this chat is being kept after the moment. While you read this, your private assistant is getting ready quietly in the background. Ask anything when you're ready.";
+    return "Raghav AI is built to keep the fast things light, the deep things deliberate, and the phone experience cleaner than a normal AI tab. Static knowledge, direct routes, and quick help stay ready right here. When a question deserves a deeper pass, the live reasoning lane wakes up and takes over. Ask anything when you're ready.";
   }
 
   function getModelId(modelName) {
@@ -2593,7 +2949,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var textWarmupInFlight = !!(localGeneratorPromise || backgroundModelPreloadPromises[getEffectiveModel()] || backgroundModelPreloadPromises[defaultAnswerModel]);
 
     if (!localGenerator && !textWarmupInFlight) {
-      return (traceText ? traceText + ". " : "") + "Raghav AI is preparing a private reply for you. Nothing from this moment is being kept, and the first answer can take a little longer while everything settles into place.";
+      return (traceText ? traceText + ". " : "") + "Raghav AI is preparing the first reply for you. The first answer can take a little longer while the local lane settles into place.";
     }
 
     if (!localGenerator && textWarmupInFlight) {
@@ -2662,7 +3018,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function shouldUseLocalModel(text) {
-    return isReasoningQuery(text);
+    return isReasoningQuery(text) && !shouldUseRemoteReasoning();
   }
 
   function isReasoningQuery(text) {
@@ -2742,6 +3098,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
     var fashionTerms = /\b(jeans|blue jeans|shirt|t shirt|tshirt|kurta|hoodie|dress|saree|sari|shoes|sneakers|watch|bag|jacket|fashion|clothes|clothing)\b/;
     var techTerms = /\b(mobile|phone|iphone|android|laptop|computer|pc|monitor|tablet|earbuds|headphones|keyboard|mouse|printer|tv)\b/;
+    var fitnessTerms = /\b(exercise|cycle|cycle price|fitness|dumbbell|treadmill|kettlebell|yoga mat|home gym|skip rope)\b/;
     var shoppingWords = /\b(buy|shop|price|offer|offers|deal|deals|best|cheap|under|sale)\b/;
     var recipeTerms = /\b(recipe|how to make|make\b|cook|cooking|biryani|pasta|cake|tea|coffee|paneer|chicken|rice)\b/;
 
@@ -2753,7 +3110,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       };
     }
 
-    if ((techTerms.test(cleaned) && shoppingWords.test(cleaned)) || /\b(best computers?|best laptops?|best mobiles?|best phones?)\b/.test(cleaned)) {
+    if (fitnessTerms.test(cleaned) && shoppingWords.test(cleaned)) {
       return {
         type: 'flipkart',
         url: 'https://www.flipkart.com/search?q=' + encodeURIComponent(text),
@@ -2771,21 +3128,21 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
     if (fashionTerms.test(cleaned) && /\bamazon\b/.test(cleaned)) {
       return {
-        type: 'amazon',
-        url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text.replace(/\bamazon\b/i, '').replace(/\bfrom\b/i, '').trim() || text),
-        reply: "I’m opening Amazon with that already typed so you can jump straight to the results."
+        type: 'myntra',
+        url: 'https://www.myntra.com/' + encodeURIComponent(text.replace(/\bamazon\b/i, '').replace(/\bfrom\b/i, '').trim() || text).replace(/%20/g, '-'),
+        reply: "I’m opening Myntra with that already typed so you can jump straight to the styles."
       };
     }
 
     if (fashionTerms.test(cleaned)) {
       return {
-        type: 'amazon',
-        url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text),
-        reply: "I’m opening Amazon with that already typed so you can jump straight to the results."
+        type: 'myntra',
+        url: 'https://www.myntra.com/' + encodeURIComponent(text).replace(/%20/g, '-'),
+        reply: "I’m opening Myntra with that already typed so you can jump straight to the styles."
       };
     }
 
-    if ((techTerms.test(cleaned) || /\bamazon\b/.test(cleaned)) && shoppingWords.test(cleaned)) {
+    if ((techTerms.test(cleaned) && shoppingWords.test(cleaned)) || /\b(best computers?|best laptops?|best mobiles?|best phones?)\b/.test(cleaned) || ((techTerms.test(cleaned) || /\bamazon\b/.test(cleaned)) && shoppingWords.test(cleaned))) {
       return {
         type: 'amazon',
         url: 'https://www.amazon.in/s?k=' + encodeURIComponent(text.replace(/\bamazon\b/i, '').trim() || text),
@@ -2958,11 +3315,55 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   var localKnowledgeMap = buildLocalKnowledgeMap();
+  var localPersonalityMap = buildLocalPersonalityMap();
 
   function getLocalKnowledgeAnswer(text) {
     var cleaned = normalizeIntentText(text);
     if (!cleaned) return null;
     return localKnowledgeMap[cleaned] || null;
+  }
+
+  function buildLocalPersonalityMap() {
+    var map = {};
+    localPersonalitySeeds.forEach(function(entry) {
+      (entry.aliases || []).forEach(function(alias) {
+        map[normalizeIntentText(alias)] = entry;
+      });
+      map[normalizeIntentText(entry.name)] = entry;
+    });
+    return map;
+  }
+
+  function extractPersonalityTerm(text) {
+    var raw = String(text || '').trim().replace(/[?]+$/g, '');
+    if (!raw) return '';
+    var patterns = [
+      /^(?:who is|who was|tell me about|about|biography of|life of)\s+(.+)$/i,
+      /^(?:what did|what does)\s+(.+?)\s+(?:do)$/i
+    ];
+    for (var i = 0; i < patterns.length; i++) {
+      var match = raw.match(patterns[i]);
+      if (match && match[1]) {
+        return match[1].trim().replace(/^(a|an|the)\s+/i, '');
+      }
+    }
+    return raw.split(/\s+/).length <= 4 ? raw : '';
+  }
+
+  function getLocalPersonalityAnswer(text) {
+    var candidate = extractPersonalityTerm(text);
+    if (!candidate) return null;
+    var entry = localPersonalityMap[normalizeIntentText(candidate)];
+    if (!entry) return null;
+    var lines = [
+      '**' + entry.name + '**',
+      entry.role,
+      '',
+      'Known for: ' + (entry.work || []).join(', ') + '.',
+      '',
+      entry.legacy
+    ];
+    return lines.join('\n');
   }
 
   async function getDictionaryAnswer(text) {
@@ -3055,6 +3456,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   async function getSectorAnswer(text) {
     var localKnowledgeResult = getLocalKnowledgeAnswer(text);
     if (localKnowledgeResult) return localKnowledgeResult;
+
+    var personalityResult = getLocalPersonalityAnswer(text);
+    if (personalityResult) return personalityResult;
 
     var weatherResult = await getWeatherAnswer(text);
     if (weatherResult) return weatherResult;
@@ -3375,9 +3779,28 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (isRestrictedAdultQuery(text)) {
       return getRestrictedAdultReply();
     }
+    var reasoningAccess = getReasoningAccessState();
+    if (reasoningAccess.mode === 'locked') {
+      openExperimentalSheet('reasoning-limit', 'Raghav Baan');
+      return 'You used the 3 free deep reasoning asks on this account. Definitions, quick facts, direct routes, and Mobile+ actions can still stay light. Unlock Mobile+ and Raghav Baan to open 10 premium reasoning passes.';
+    }
+    if (reasoningAccess.mode === 'exhausted') {
+      if (activeModel === 'Raghav Baan') {
+        activeModel = 'Raghav Beta';
+        updateModelUI();
+      }
+      return 'Your 10 premium reasoning passes are finished for now. Mobile+, fast lanes, definitions, and direct routes still stay open on this account.';
+    }
     if (shouldUseRemoteReasoning()) {
       try {
-        return await getRemoteReasoningResponse(text);
+        var remoteReply = await getRemoteReasoningResponse(text, {
+          lane: getEffectiveModel() === 'Raghav Baan' ? 'premium' : 'beta',
+          consumePremiumCredit: reasoningAccess.mode === 'premium'
+        });
+        if (reasoningAccess.mode === 'free') {
+          incrementFreeReasoningUsage();
+        }
+        return remoteReply;
       } catch (remoteError) {
         var remoteFailureMessage = getRemoteFailureMessage(remoteError);
         var remoteSectorResult = await getSectorAnswer(text);
@@ -3412,7 +3835,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   /* ── INTENT ENGINE ── */
   var intents = [
     {p:/^(hi+|hello+|hey+|heyy+|helo+|hullo+|hii+|yo+|sup|h+w+l+o+)\b/i, r:function(){ return "I'm Raghav AI. Built to feel personal, private, and fast on your phone. Ask me anything, learn something new, or tell me what you want done."; }},
-    {p:/who (made|built|created|are) you/i, r:function(){ return "I was created by Prem Peswani. Everything stays on your phone."; }},
+    {p:/who (made|built|created|are) you/i, r:function(){ return "I was created by Prem Peswani. Fast lanes stay light, and deeper reasoning wakes only when it is worth it."; }},
     {p:/(message|msg|whatsapp|text)\s+(\w+)\s+(.+)/i, r:function(m){
       var name=m[2], msg=m[3];
       mobileOpen('https://wa.me/?text=' + encodeURIComponent(msg));
@@ -3439,7 +3862,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       mobileOpen(urls[m[2].toLowerCase()]||'#');
       return 'Opening '+m[2]+' for you.';
     }},
-    {p:/(what can you do|capabilities|help)/i, r:function(){ return 'I can send messages, draft emails, set reminders, make calls, search the web, and open apps. Just tell me.'; }},
+    {p:/(what can you do|capabilities|help)/i, r:function(){ return 'I can define concepts, explain people, route you straight to the right page, prepare actions with Mobile+, and use the deeper reasoning lane when the question really needs it.'; }},
     {p:/(what time|current time)/i, r:function(){ return "It's "+getTime()+'.'; }},
     {p:/(what.?s today|what day|today.?s date)/i, r:function(){ return 'Today is '+new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'.'; }},
     {p:/(joke|make me laugh|funny)/i, r:function(){
@@ -3497,13 +3920,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       mobileOpen('https://www.google.com/search?q=' + encodeURIComponent(target), target);
       return 'Opening search for '+target+'.';
     }
-    if (shouldUseRemoteReasoning()) {
-      try {
-        return await getRemoteReasoningResponse(text);
-      } catch (remoteError) {
-        return getRemoteFailureMessage(remoteError);
-      }
-    }
     if (isReasoningQuery(text)) {
       return await getModelOrSearchResponse(text);
     }
@@ -3518,7 +3934,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   async function handleSend(){
-    if (!appAccessUnlocked) {
+    if (!canUseComposer()) {
       if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
       return;
     }
@@ -3544,6 +3960,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       showDots('Resume Route', { deepPlan: false, phase: 'ai', stepMs: 760 });
       hideDots();
       await showResumeRouteResult(processedText);
+      await consumeGuestPreviewIfNeeded();
       if (!chatIn.value.trim()) {
         showRandomSuggestions();
       }
@@ -3561,6 +3978,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         var revisionAsset = buildRevisionPdfAsset(revisionPack);
         hideDots();
         await showRevisionPdfResult(revisionPack, revisionAsset, processedText);
+        await consumeGuestPreviewIfNeeded();
         if (shouldPromptPremiumAfterReply) {
           maybeShowPremiumPromptAfterFirstAnswer();
         }
@@ -3573,6 +3991,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           revisionFailMessage = "The live revision PDF server is not connected yet, so I can’t build the file right now.";
         }
         await streamReply(revisionFailMessage, 'Revision PDF', processedText);
+        await consumeGuestPreviewIfNeeded();
       }
       if (!chatIn.value.trim()) {
         showRandomSuggestions();
@@ -3581,6 +4000,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
     if (mobileAgentAction) {
       showAgentPreview(mobileAgentAction);
+      await consumeGuestPreviewIfNeeded();
       if (shouldPromptPremiumAfterReply) {
         maybeShowPremiumPromptAfterFirstAnswer();
       }
@@ -3603,6 +4023,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         hideDots();
         await showStaticWorkingThenReply(resp, replyLane, processedText);
       }
+      await consumeGuestPreviewIfNeeded();
       if (shouldPromptPremiumAfterReply) {
         maybeShowPremiumPromptAfterFirstAnswer();
       }
@@ -3615,6 +4036,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         hideDots();
         await showStaticWorkingThenReply(failReply, 'Answer', processedText);
       }
+      await consumeGuestPreviewIfNeeded();
       if (shouldPromptPremiumAfterReply) {
         maybeShowPremiumPromptAfterFirstAnswer();
       }
@@ -3634,10 +4056,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   });
 
   function maybeShowOpeningStory() {
-    if (openingStoryShown || !appAccessUnlocked) return;
     openingStoryShown = true;
-    streamReply(getOpeningStory());
-    if (!chatIn.value.trim()) showRandomSuggestions();
   }
 
   /* ── POPUP / DROPDOWN LOGIC ── */
@@ -3645,7 +4064,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var activeModel = 'Raghav Beta';
   var messagingAllowed = localStorage.getItem('orbiton_msg') === 'yes';
   var premiumUnlocked = localStorage.getItem('raghav_premium_unlocked') === 'yes';
+  var FREE_REASONING_LIMIT = 3;
+  var DEFAULT_PREMIUM_REASONING_CREDITS = 10;
+  var premiumReasoningCredits = 0;
   var currentSignedInUser = null;
+  var guestPreviewUsed = false;
+  try { guestPreviewUsed = sessionStorage.getItem('raghav_guest_preview_used') === 'yes'; } catch (e) {}
   var searchGuideSeen = localStorage.getItem('orbiton_search_guide') === 'yes';
   var modelGuideSeen = localStorage.getItem('orbiton_model_guide') === 'yes';
   var mobileGuideSeen = localStorage.getItem('orbiton_mobile_guide') === 'yes';
@@ -3689,6 +4113,140 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var KAIROS_WARM_INTERVAL_MS = 90000;
   var localPreferenceMemory = null;
 
+  function updateLandingDots(index) {
+    landingDots.forEach(function(dot, dotIndex) {
+      dot.classList.toggle('is-active', dotIndex === index);
+    });
+  }
+
+  function clearWhyReelTimers() {
+    while (whyReelTimers.length) {
+      clearTimeout(whyReelTimers.pop());
+    }
+  }
+
+  function closeWhyReel() {
+    clearWhyReelTimers();
+    if (!whyReel) return;
+    whyReel.classList.remove('is-visible');
+    whyReel.setAttribute('aria-hidden', 'true');
+    whyReel.setAttribute('data-scene', '0');
+    if (landingDeck) {
+      landingDeck.classList.remove('reel-active');
+    }
+  }
+
+  function setWhyReelScene(sceneIndex) {
+    if (!whyReel) return;
+    whyReel.setAttribute('data-scene', String(sceneIndex));
+  }
+
+  function finishWhyReel(options) {
+    closeWhyReel();
+    goToSearchStage(options || {});
+  }
+
+  function playWhyReel() {
+    if (!whyReel) {
+      goToSearchStage();
+      return;
+    }
+    clearWhyReelTimers();
+    if (landingDeck) {
+      landingDeck.classList.add('reel-active');
+    }
+    whyReel.classList.add('is-visible');
+    whyReel.setAttribute('aria-hidden', 'false');
+    setWhyReelScene(0);
+    whyReelTimers.push(setTimeout(function() { setWhyReelScene(1); }, 1200));
+    whyReelTimers.push(setTimeout(function() { setWhyReelScene(2); }, 2550));
+    whyReelTimers.push(setTimeout(function() { finishWhyReel(); }, 4300));
+  }
+
+  function setLandingPage(index, options) {
+    if (!landingTrack) return;
+    var nextIndex = Math.max(0, Math.min(1, Number(index) || 0));
+    currentLandingPage = nextIndex;
+    if (nextIndex !== 0) closeWhyReel();
+    if (options && options.instant) {
+      var previousTransition = landingTrack.style.transition;
+      landingTrack.style.transition = 'none';
+      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 100) + '%,0,0)';
+      landingTrack.offsetHeight;
+      landingTrack.style.transition = previousTransition || '';
+    } else {
+      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 100) + '%,0,0)';
+    }
+    document.body.setAttribute('data-landing-page', String(nextIndex));
+    updateLandingDots(nextIndex);
+  }
+
+  function goToSearchStage(options) {
+    setLandingPage(1, options);
+    if (canUseComposer() && !(options && options.skipFocus)) {
+      setTimeout(function() {
+        if (chatIn && document.activeElement !== chatIn) {
+          chatIn.focus();
+        }
+        showSearchGuideCardOnce();
+        updateSuggestions();
+      }, 180);
+    }
+  }
+
+  function enterConversationStage(options) {
+    if (!chatWrap) return;
+    if (!conversationStageActive) {
+      conversationStageActive = true;
+      chatWrap.classList.add('engaged');
+      document.body.classList.add('chat-engaged');
+    }
+    goToSearchStage(options);
+  }
+
+  function bindLandingNavigation() {
+    if (landingNextWelcome) {
+      landingNextWelcome.addEventListener('click', function() {
+        playWhyReel();
+      });
+    }
+    landingDots.forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        var nextIndex = Number(dot.getAttribute('data-landing-page') || 0);
+        if (conversationStageActive && nextIndex < 1) {
+          setLandingPage(nextIndex);
+          return;
+        }
+        if (nextIndex === 1) {
+          goToSearchStage({ skipFocus: !appAccessUnlocked });
+          return;
+        }
+        setLandingPage(nextIndex);
+      });
+    });
+    if (whyReelSkip) {
+      whyReelSkip.addEventListener('click', function() {
+        finishWhyReel({ skipFocus: !appAccessUnlocked });
+      });
+    }
+  }
+
+  if (chatLog && window.MutationObserver) {
+    new MutationObserver(function(mutations) {
+      var hasMessages = mutations.some(function(mutation) {
+        return mutation.addedNodes && Array.prototype.some.call(mutation.addedNodes, function(node) {
+          return node && node.nodeType === 1 && node.classList && node.classList.contains('msg');
+        });
+      });
+      if (hasMessages) {
+        enterConversationStage({ skipFocus: true });
+      }
+    }).observe(chatLog, { childList: true });
+  }
+
+  bindLandingNavigation();
+  setLandingPage(0, { instant: true });
+
   function closeAllPopups() {
     var modelMenu = document.getElementById('modelMenu');
     if (modelMenu) modelMenu.classList.remove('open');
@@ -3703,9 +4261,20 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   function updateModelUI() {
     var selectedModel = getEffectiveModel();
     var config = modelConfigs[selectedModel] || modelConfigs[defaultAnswerModel];
+    var accessState = getReasoningAccessState();
+    var statusTail = '';
+    if (accessState.mode === 'premium') {
+      statusTail = ' · ' + accessState.remaining + ' premium reasoning passes left';
+    } else if (accessState.mode === 'exhausted') {
+      statusTail = ' · premium reasoning passes used';
+    } else if (accessState.mode === 'free') {
+      statusTail = ' · ' + accessState.remaining + ' free deep asks left';
+    } else {
+      statusTail = ' · unlock the deeper lane';
+    }
     modelBtnLabel.textContent = activeModel || 'Model';
-    runtimePill.textContent = activeModel ? activeModel : 'Auto';
-    chatStatus.textContent = config.status;
+    runtimePill.textContent = messagingAllowed ? ((activeModel ? activeModel : 'Auto') + ' · Mobile+') : (activeModel ? activeModel : 'Auto');
+    chatStatus.textContent = config.status + statusTail;
     syncModelButtons();
   }
 
@@ -3722,11 +4291,13 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (unlocked) {
       raghavBaanBtn.classList.remove('locked');
       raghavBaanIcon.textContent = '✦';
-      raghavBaanMeta.textContent = 'Premium is tied to your account. Mobile+ and the flagship premium lane are ready.';
+      raghavBaanMeta.textContent = premiumReasoningCredits > 0
+        ? 'Premium is tied to your account. Mobile+, the flagship lane, and ' + premiumReasoningCredits + ' premium reasoning passes are ready.'
+        : 'Premium stays tied to your account. Mobile+ is still on, while the premium reasoning passes have been used.';
     } else {
       raghavBaanBtn.classList.add('locked');
       raghavBaanIcon.textContent = '🔒';
-      raghavBaanMeta.textContent = 'Premium membership for the full experimental experience. One pass unlocks both the mobile agent and the flagship model lane.';
+      raghavBaanMeta.textContent = 'Premium membership unlocks Mobile+, the flagship lane, and 10 premium reasoning passes after your first 3 free deep asks.';
     }
   }
 
@@ -3739,15 +4310,96 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     return false;
   }
 
-  function setAppAccess(allowed) {
-    appAccessUnlocked = !!allowed;
+  function getReasoningScopeKey() {
+    if (currentSignedInUser && currentSignedInUser.uid) return 'user_' + currentSignedInUser.uid;
+    return 'guest';
+  }
+
+  function getFreeReasoningUsageKey() {
+    return 'raghav_free_reasoning_used_' + getReasoningScopeKey();
+  }
+
+  function getPremiumCreditsKey() {
+    return 'raghav_premium_reasoning_credits_' + getReasoningScopeKey();
+  }
+
+  function readStoredNumber(key) {
+    try {
+      var value = Number(localStorage.getItem(key) || 0);
+      return Number.isFinite(value) ? Math.max(0, value) : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function writeStoredNumber(key, value) {
+    try {
+      localStorage.setItem(key, String(Math.max(0, Number(value) || 0)));
+    } catch (e) {}
+  }
+
+  function getFreeReasoningUsedCount() {
+    return readStoredNumber(getFreeReasoningUsageKey());
+  }
+
+  function getFreeReasoningRemaining() {
+    return Math.max(0, FREE_REASONING_LIMIT - getFreeReasoningUsedCount());
+  }
+
+  function incrementFreeReasoningUsage() {
+    var nextValue = getFreeReasoningUsedCount() + 1;
+    writeStoredNumber(getFreeReasoningUsageKey(), nextValue);
+    updateModelUI();
+    return Math.max(0, FREE_REASONING_LIMIT - nextValue);
+  }
+
+  function setPremiumReasoningCredits(value) {
+    premiumReasoningCredits = Math.max(0, Number(value) || 0);
+    writeStoredNumber(getPremiumCreditsKey(), premiumReasoningCredits);
+  }
+
+  function hydrateReasoningCreditsFromStorage() {
+    if (!hasStoredPremiumAccess()) {
+      premiumReasoningCredits = 0;
+      return;
+    }
+    var storedCredits = readStoredNumber(getPremiumCreditsKey());
+    premiumReasoningCredits = storedCredits || DEFAULT_PREMIUM_REASONING_CREDITS;
+  }
+
+  function getReasoningAccessState() {
+    if (hasStoredPremiumAccess()) {
+      return premiumReasoningCredits > 0
+        ? { mode: 'premium', remaining: premiumReasoningCredits }
+        : { mode: 'exhausted', remaining: 0 };
+    }
+    return getFreeReasoningRemaining() > 0
+      ? { mode: 'free', remaining: getFreeReasoningRemaining() }
+      : { mode: 'locked', remaining: 0 };
+  }
+
+  function hasGuestPreviewAccess() {
+    return !appAccessUnlocked && !guestPreviewUsed;
+  }
+
+  function canUseComposer() {
+    return appAccessUnlocked || hasGuestPreviewAccess();
+  }
+
+  function refreshComposerAccessUI() {
+    var composerUnlocked = canUseComposer();
     document.body.classList.toggle('auth-locked', false);
     if (chatIn) {
       chatIn.disabled = false;
-      chatIn.readOnly = !appAccessUnlocked;
-      chatIn.placeholder = appAccessUnlocked ? 'Ask Raghav AI anything...' : 'Tap here to continue into Raghav AI...';
+      chatIn.readOnly = !composerUnlocked;
+      chatIn.placeholder = composerUnlocked ? 'Ask Raghav AI anything...' : 'Continue into Raghav AI to keep going...';
     }
     if (sendBtn) sendBtn.disabled = false;
+  }
+
+  function setAppAccess(allowed) {
+    appAccessUnlocked = !!allowed;
+    refreshComposerAccessUI();
     if (appAccessUnlocked) {
       startBackgroundWarmup();
       startKairosLite();
@@ -3759,11 +4411,29 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function handleLockedComposerGate(e) {
-    if (appAccessUnlocked) return false;
+    if (canUseComposer()) return false;
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     if (chatIn) chatIn.blur();
     if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
     return true;
+  }
+
+  function consumeGuestPreviewIfNeeded() {
+    if (appAccessUnlocked || guestPreviewUsed) {
+      return Promise.resolve(false);
+    }
+    guestPreviewUsed = true;
+    try { sessionStorage.setItem('raghav_guest_preview_used', 'yes'); } catch (e) {}
+    refreshComposerAccessUI();
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        try { sessionStorage.removeItem('raghav_auth_sheet_dismissed'); } catch (e) {}
+        if (!currentSignedInUser && typeof window.openRaghavAuthGate === 'function') {
+          window.openRaghavAuthGate();
+        }
+        resolve(true);
+      }, 260);
+    });
   }
 
   function applyPremiumState(options) {
@@ -3771,6 +4441,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     premiumUnlocked = nextPremium;
     messagingAllowed = !!(options && options.messagingAllowed);
     var preserveStoredAccess = !!(options && options.preserveStoredAccess);
+    var hasCreditsUpdate = options && typeof options.premiumReasoningCredits === 'number' && Number.isFinite(options.premiumReasoningCredits);
     if (currentSignedInUser && currentSignedInUser.uid) {
       if (premiumUnlocked) {
         localStorage.setItem('raghav_premium_user_' + currentSignedInUser.uid, 'yes');
@@ -3781,9 +4452,15 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (premiumUnlocked) {
       localStorage.setItem('raghav_premium_unlocked', 'yes');
       if (messagingAllowed) localStorage.setItem('orbiton_msg', 'yes');
+      if (hasCreditsUpdate) {
+        setPremiumReasoningCredits(options.premiumReasoningCredits);
+      } else if (premiumReasoningCredits <= 0) {
+        hydrateReasoningCreditsFromStorage();
+      }
     } else {
       if (!preserveStoredAccess) localStorage.removeItem('raghav_premium_unlocked');
       localStorage.removeItem('orbiton_msg');
+      setPremiumReasoningCredits(0);
       if (activeModel === 'Raghav Baan') activeModel = 'Raghav Beta';
     }
     updatePremiumAccessUI();
@@ -3795,6 +4472,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   window.raghavApplyPremiumState = applyPremiumState;
   window.raghavSetCurrentUser = function(user) {
     currentSignedInUser = user || null;
+    hydrateReasoningCreditsFromStorage();
+    updatePremiumAccessUI();
+    updateModelUI();
   };
 
   function openModelMenu() {
@@ -3832,16 +4512,21 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     experimentalSheetMode = mode;
     experimentalLockedModel = lockedModel || '';
     var alreadyUnlocked = premiumUnlocked || hasStoredPremiumAccess();
-    permKicker.textContent = 'Experimental';
-    permTitle.textContent = 'Experience our experimental features for the price of a pastry 🍰';
-    permBody.textContent = '';
-    permBody.style.display = 'none';
+    permKicker.textContent = mode === 'reasoning-limit' ? 'Deep Reasoning' : 'Exclusive Layer';
+    permTitle.textContent = mode === 'reasoning-limit'
+      ? 'The free deep lane is finished.'
+      : 'Unlock the hidden layer.';
+    permBody.textContent = mode === 'reasoning-limit'
+      ? 'You already used the 3 free deep asks. Static answers, direct routes, and lighter help still stay open.'
+      : 'One unlock opens the mini agent, the flagship lane, and the deeper reasoning passes.';
+    permBody.style.display = 'block';
     renderExperimentalPoints([
-      { title: 'Mini Agent', text: 'Unlock the quick mobile lane that prepares actions and keeps everyday tasks moving faster.' },
-      { title: 'Flagship Model', text: 'Unlock the premium answer lane for broader help, clearer reasoning, and a fuller everyday experience.' }
+      { title: 'Mobile+', text: 'Unlock the hidden mini agent that prepares revision PDFs, action routes, and faster next steps.' },
+      { title: 'Raghav Baan', text: 'Unlock the flagship premium lane for broader reasoning, cleaner structure, and a fuller pass.' },
+      { title: '10 premium reasoning passes', text: 'Deep questions move through the live lane, while definitions and direct routes stay light and open.' }
     ]);
-    permMini.textContent = '';
-    permMini.style.display = 'none';
+    permMini.textContent = 'Rs 39 · 10 deep passes';
+    permMini.style.display = 'block';
     permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39');
     permYes.disabled = !!alreadyUnlocked;
     permNo.textContent = 'Not Now';
@@ -3850,13 +4535,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function maybeShowPremiumPromptAfterFirstAnswer() {
-    if (premiumPromptShown || premiumUnlocked || hasStoredPremiumAccess()) return;
-    premiumPromptShown = true;
-    try { sessionStorage.setItem('raghav_premium_prompt_seen', 'yes'); } catch (e) {}
-    setTimeout(function() {
-      if (permSheet.style.display === 'flex' || guideSheet.style.display === 'flex') return;
-      openExperimentalSheet('post-first-answer', 'Raghav Baan');
-    }, 380);
+    return;
   }
 
   function renderGuidePoints(points) {
@@ -3918,7 +4597,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
   async function markPremiumUnlocked(details) {
     setPendingPremiumGift();
-    applyPremiumState({ premiumUnlocked: true, messagingAllowed: true });
+    var credits = details && typeof details.premiumReasoningCredits === 'number'
+      ? details.premiumReasoningCredits
+      : DEFAULT_PREMIUM_REASONING_CREDITS;
+    applyPremiumState({ premiumUnlocked: true, messagingAllowed: true, premiumReasoningCredits: credits });
     permSheet.style.display = 'none';
     if (typeof window.raghavPersistPremiumUnlock === 'function') {
       try {
@@ -3926,7 +4608,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       } catch (e) {}
     }
     await new Promise(function(resolve) { setTimeout(resolve, 220); });
-    await streamReply('Premium is unlocked on your account. Mobile+ and the premium lane are ready for you now.');
+    await streamReply('Premium is unlocked on your account. Mobile+ is on, Raghav Baan is ready, and 10 premium reasoning passes are waiting for you now.');
     await showPremiumGiftToken();
   }
 
@@ -3967,12 +4649,13 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
               firebase_uid: currentSignedInUser && currentSignedInUser.uid ? currentSignedInUser.uid : '',
               firebase_email: currentSignedInUser && currentSignedInUser.email ? currentSignedInUser.email : ''
             });
-            await markPremiumUnlocked(response);
+            await markPremiumUnlocked(verified && verified.entitlements ? verified.entitlements : response);
             if (verified && verified.entitlements && (verified.entitlements.premiumUnlocked || verified.entitlements.mobilePlusUnlocked || verified.claimsApplied)) {
               applyPremiumState({
                 premiumUnlocked: true,
                 messagingAllowed: true,
-                preserveStoredAccess: true
+                preserveStoredAccess: true,
+                premiumReasoningCredits: Math.max(0, Number(verified.entitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
               });
             }
           } catch (verifyError) {
@@ -4082,8 +4765,24 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           return;
         }
         if (this.dataset.model === 'Raghav Baan' && (premiumUnlocked || hasStoredPremiumAccess())) {
+          if (premiumReasoningCredits <= 0) {
+            showGuideCard({
+              kicker: 'Raghav Baan',
+              title: 'The premium reasoning passes are finished.',
+              body: 'Mobile+ and the lighter lanes still stay unlocked on this account, but the 10 premium reasoning passes have already been used.',
+              points: [
+                { title: 'Still open', text: 'Definitions, direct routes, quick facts, and Mobile+ actions still stay ready.' },
+                { title: 'What is paused', text: 'The deeper premium reasoning lane is out of passes for now.' }
+              ],
+              primaryLabel: 'Use fast lanes',
+              secondaryLabel: 'Later',
+              onPrimary: function() { setActiveModel('Raghav Beta'); }
+            });
+            haptic(10);
+            return;
+          }
           if (!premiumUnlocked) {
-            applyPremiumState({ premiumUnlocked: true, messagingAllowed: false, preserveStoredAccess: true });
+            applyPremiumState({ premiumUnlocked: true, messagingAllowed: false, preserveStoredAccess: true, premiumReasoningCredits: premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS });
           }
           if (!baanGuideSeen) {
             baanGuideSeen = true;
@@ -4091,11 +4790,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
             showGuideCard({
               kicker: 'Raghav Baan',
               title: 'Premium flagship lane is ready.',
-              body: 'Raghav Baan is your deeper premium pass. Use it when you want stronger structure, broader reasoning, and clearer stepwise help.',
+              body: 'Raghav Baan is your deeper premium pass. Use it when you want stronger structure, broader reasoning, and cleaner stepwise help.',
               points: [
                 { title: 'Broader answers', text: 'Better for comparing options, deeper explanations, and decision help.' },
                 { title: 'Cleaner structure', text: 'It prefers answer-first, then practical steps when the question needs it.' },
-                { title: 'Same account unlock', text: 'Your premium lane and Mobile+ belong to the same signed-in account.' }
+                { title: '10 premium reasoning passes', text: 'The deep lane runs on passes, while definitions, static facts, and Mobile+ stay lighter.' }
               ],
               primaryLabel: 'Use Raghav Baan',
               secondaryLabel: 'Later',
@@ -4185,6 +4884,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   // Close popups clicking outside
   document.addEventListener('click', function() { closeAllPopups(); });
 
+  hydrateReasoningCreditsFromStorage();
   updateModelUI();
   updateMobileAgentUI();
   updatePremiumAccessUI();
@@ -4227,29 +4927,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (searchGuideSeen) return;
     searchGuideSeen = true;
     localStorage.setItem('orbiton_search_guide', 'yes');
-    chatIn.blur();
-    showGuideCard({
-      kicker: 'Search',
-      title: 'Search is only the first layer.',
-      body: 'Ask once and watch what lane Raghav AI chooses. Some requests stay in chat, some jump out fast, and Mobile+ unlocks the deeper layer.',
-      points: [
-        { title: 'Ask one clean thing', text: 'Try “what is programming” or “power” and see how tightly it answers in chat.' },
-        { title: 'Ask for the shortcut', text: 'Try “blue jeans” or “best computers” and let it jump to the useful place.' },
-        { title: 'Ask for the result', text: 'Try “how to make biryani” and watch it prepare the next step instead of making you search twice.' },
-        { title: 'Turn on Mobile+ for the hidden layer', text: 'Mini Agent can prep a revision PDF, line up a message, or route a bigger ask to the right tool for you.' }
-      ],
-      primaryLabel: 'Start typing',
-      secondaryLabel: 'Skip',
-      onPrimary: function() {
-        setTimeout(function(){ chatIn.focus(); }, 80);
-      }
-    });
   }
 
   function openSearchGuideFromTouch(e) {
     if (handleLockedComposerGate(e)) return;
     if (!isMobileDevice || searchGuideSeen) return;
-    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     showSearchGuideCardOnce();
   }
 
@@ -4739,13 +5421,13 @@ async function startSignIn() {
   }
 }
 
-async function syncUserPremiumFromClaims(user, forceRefresh) {
-  if (!user) {
-    if (typeof window.raghavApplyPremiumState === 'function') {
-      window.raghavApplyPremiumState({ premiumUnlocked: false, messagingAllowed: false });
+  async function syncUserPremiumFromClaims(user, forceRefresh) {
+    if (!user) {
+      if (typeof window.raghavApplyPremiumState === 'function') {
+        window.raghavApplyPremiumState({ premiumUnlocked: false, messagingAllowed: false, premiumReasoningCredits: 0 });
+      }
+      return { premiumUnlocked: false };
     }
-    return { premiumUnlocked: false };
-  }
   let localPremium = false;
   try {
     localPremium = localStorage.getItem('raghav_premium_user_' + user.uid) === 'yes';
@@ -4754,18 +5436,24 @@ async function syncUserPremiumFromClaims(user, forceRefresh) {
   const claims = result && result.claims ? result.claims : {};
   let premium = claims.premiumUnlocked === true || claims.premiumStatus === 'active' || localPremium;
   let mobilePlusUnlocked = premium;
+  let credits = Math.max(0, Number(claims.premiumReasoningCredits || 0));
+  if (localPremium && credits <= 0) {
+    credits = readStoredNumber('raghav_premium_reasoning_credits_user_' + user.uid) || DEFAULT_PREMIUM_REASONING_CREDITS;
+  }
   try {
     const freshToken = await user.getIdToken(!!forceRefresh);
     const serverStatus = await getRemoteAccountStatus(freshToken);
     if (serverStatus && serverStatus.entitlements) {
       premium = !!serverStatus.entitlements.premiumUnlocked || premium;
       mobilePlusUnlocked = !!serverStatus.entitlements.mobilePlusUnlocked || premium;
+      credits = Math.max(credits, Number(serverStatus.entitlements.premiumReasoningCredits || 0));
     }
   } catch (e) {}
   if (typeof window.raghavApplyPremiumState === 'function') {
     window.raghavApplyPremiumState({
       premiumUnlocked: premium,
-      messagingAllowed: mobilePlusUnlocked
+      messagingAllowed: mobilePlusUnlocked,
+      premiumReasoningCredits: premium ? credits : 0
     });
   }
   if (premium && hasPendingPremiumGift() && !hasSeenPremiumGift()) {
@@ -4806,6 +5494,14 @@ onAuthStateChanged(auth, function(user) {
     lockAuthPill(user);
     if (typeof window.raghavSetAppAccess === 'function') {
       window.raghavSetAppAccess(true);
+    }
+    if (currentLandingPage === 2) {
+      setTimeout(function() {
+        if (chatIn && document.activeElement !== chatIn) {
+          chatIn.focus();
+          updateSuggestions();
+        }
+      }, 140);
     }
     syncUserPremiumFromClaims(user, false).catch(function(error) {
       showAuthFeedback(explainAuthError(error));
