@@ -955,10 +955,14 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var bgCanvas = document.getElementById('bg');
   var backgroundStarted = false;
 
+  window.prefersReducedMotion = function() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  };
+
   function shouldShowBackground() {
     var isMobileBg = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(innerWidth, innerHeight) < 1025);
-    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return !isMobileBg && !prefersReducedMotion;
+    var reducedMotionRequested = window.prefersReducedMotion();
+    return !isMobileBg && !reducedMotionRequested;
   }
 
   function initThreeBackground() {
@@ -1072,8 +1076,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var WORD = 'Raghav AI';
   var titleEl = document.getElementById('heroTitle');
   var launchSplash = document.getElementById('launchSplash');
-  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var launchIntroDuration = prefersReducedMotion ? 700 : (window.innerWidth <= 780 ? 1500 : 1850);
+  var launchReducedMotion = window.prefersReducedMotion();
+  var launchIntroDuration = launchReducedMotion ? 700 : (window.innerWidth <= 780 ? 1500 : 1850);
   var ci = 0;
   titleEl.setAttribute('aria-label', WORD);
   titleEl.textContent = '';
@@ -1504,7 +1508,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     renderSuggestionItems(suggestions);
   }
 
+  window.updateSuggestions = updateSuggestions;
   window.raghavUpdateSuggestions = updateSuggestions;
+  window.chatIn = chatIn;
 
   applyTheme(getInitialTheme(), false);
   if (themeBtn) {
@@ -1540,6 +1546,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var whyReel = document.getElementById('whyReel');
   var whyReelSkip = document.getElementById('whyReelSkip');
   var currentLandingPage = 0;
+  window.currentLandingPage = currentLandingPage;
   var conversationStageActive = false;
   var whyReelTimers = [];
   var localGenerator = null;
@@ -4174,6 +4181,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!landingTrack) return;
     var nextIndex = Math.max(0, Math.min(1, Number(index) || 0));
     currentLandingPage = nextIndex;
+    window.currentLandingPage = nextIndex;
     if (nextIndex !== 0) closeWhyReel();
     if (options && options.instant) {
       var previousTransition = landingTrack.style.transition;
