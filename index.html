@@ -437,8 +437,9 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-kicker{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.24);color:#dbeafe;font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase;margin:0 auto 14px;position:relative;left:50%;transform:translateX(-50%)}
 .perm-box h3{font-size:1.03rem;font-weight:700;margin-bottom:8px;text-align:center;letter-spacing:-.3px;position:relative}
 .perm-box p{font-size:.82rem;color:rgba(255,255,255,.58);text-align:center;line-height:1.52;margin-bottom:14px;position:relative}
-.perm-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;position:relative}
+.perm-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px;position:relative;align-items:stretch}
 .perm-point{padding:12px 12px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.07);min-height:104px}
+.perm-points .perm-point:last-child:nth-child(odd){grid-column:1 / -1;justify-self:center;width:min(72%,228px)}
 .perm-point strong{display:block;font-size:.8rem;font-weight:600;letter-spacing:-.2px}
 .perm-point span{display:block;margin-top:4px;font-size:.73rem;line-height:1.42;color:rgba(255,255,255,.5)}
 .perm-mini{font-size:.72rem;color:rgba(255,255,255,.42);text-align:center;line-height:1.42;margin-bottom:14px;position:relative}
@@ -527,8 +528,9 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
   .launch-wordmark{font-size:2.8rem}
   .chat-frame{height:min(78vh,760px)}
   .chat-log,.chat-hdr,.px-bar{width:100%}
-  .perm-points{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .perm-point{min-height:96px}
+.perm-points{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.perm-point{min-height:96px}
+.perm-points .perm-point:last-child:nth-child(odd){width:min(78%,244px)}
   .auth-points{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
@@ -3775,29 +3777,32 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     return maybeAddPatienceLine(reply, startedAt);
   }
 
-  async function getModelOrSearchResponse(text) {
+  async function getModelOrSearchResponse(text, options) {
     if (isRestrictedAdultQuery(text)) {
       return getRestrictedAdultReply();
     }
-    var reasoningAccess = getReasoningAccessState();
-    if (reasoningAccess.mode === 'locked') {
-      openExperimentalSheet('reasoning-limit', 'Raghav Baan');
-      return 'You used the 3 free deep reasoning asks on this account. Definitions, quick facts, direct routes, and Mobile+ actions can still stay light. Unlock Mobile+ and Raghav Baan to open 10 premium reasoning passes.';
-    }
-    if (reasoningAccess.mode === 'exhausted') {
-      if (activeModel === 'Raghav Baan') {
-        activeModel = 'Raghav Beta';
-        updateModelUI();
+    var deepReasoning = !!(options && options.deepReasoning);
+    var reasoningAccess = deepReasoning ? getReasoningAccessState() : { mode: 'open', remaining: Infinity };
+    if (deepReasoning) {
+      if (reasoningAccess.mode === 'locked') {
+        openExperimentalSheet('reasoning-limit', 'Raghav Baan');
+        return 'You used the 3 free deep reasoning asks on this account. Definitions, quick facts, direct routes, and Mobile+ actions can still stay light. Unlock Mobile+ and Raghav Baan to open 10 premium reasoning passes.';
       }
-      return 'Your 10 premium reasoning passes are finished for now. Mobile+, fast lanes, definitions, and direct routes still stay open on this account.';
+      if (reasoningAccess.mode === 'exhausted') {
+        if (activeModel === 'Raghav Baan') {
+          activeModel = 'Raghav Beta';
+          updateModelUI();
+        }
+        return 'Your 10 premium reasoning passes are finished for now. Mobile+, fast lanes, definitions, and direct routes still stay open on this account.';
+      }
     }
     if (shouldUseRemoteReasoning()) {
       try {
         var remoteReply = await getRemoteReasoningResponse(text, {
-          lane: getEffectiveModel() === 'Raghav Baan' ? 'premium' : 'beta',
-          consumePremiumCredit: reasoningAccess.mode === 'premium'
+          lane: deepReasoning && getEffectiveModel() === 'Raghav Baan' ? 'premium' : 'beta',
+          consumePremiumCredit: deepReasoning && reasoningAccess.mode === 'premium'
         });
-        if (reasoningAccess.mode === 'free') {
+        if (deepReasoning && reasoningAccess.mode === 'free') {
           incrementFreeReasoningUsage();
         }
         return remoteReply;
@@ -3921,10 +3926,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       return 'Opening search for '+target+'.';
     }
     if (isReasoningQuery(text)) {
-      return await getModelOrSearchResponse(text);
+      return await getModelOrSearchResponse(text, { deepReasoning: true });
     }
     if (text.split(' ').length > 1 || /(how|what|why|who|where|when|can you|explain)\b/i.test(text)) {
-      return "Ask that as a definition, strategy, daily improvement question, or direct action and I’ll keep it inside the right lane for you.";
+      return await getModelOrSearchResponse(text, { deepReasoning: false });
     }
     var fb=["Could you be more specific? I can search, message, or set reminders.",
       "I'm listening. Try asking me to look something up or message someone.",
@@ -5495,7 +5500,7 @@ onAuthStateChanged(auth, function(user) {
     if (typeof window.raghavSetAppAccess === 'function') {
       window.raghavSetAppAccess(true);
     }
-    if (currentLandingPage === 2) {
+    if (currentLandingPage === 1) {
       setTimeout(function() {
         if (chatIn && document.activeElement !== chatIn) {
           chatIn.focus();
