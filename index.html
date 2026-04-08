@@ -81,8 +81,8 @@ if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
 <style>
 :root{--bg:#000;--text:#fff;--muted:rgba(255,255,255,.45);--glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--hborder:rgba(255,255,255,.2);--cardhov:rgba(255,255,255,.06);--btnbg:#fff;--btntxt:#000;--app-height:100vh;--composer-safe-bottom:0px;--chat-bottom-clearance:168px}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;height:100%;overflow:hidden}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;min-height:var(--app-height);overscroll-behavior-y:none;transition:background .25s ease,color .25s ease}
+html{scroll-behavior:smooth;height:100%;width:100%;overflow:hidden}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;position:fixed;inset:0;width:100%;height:var(--app-height);min-height:0;overscroll-behavior-y:none;transition:background .25s ease,color .25s ease}
 body.launching{overflow:hidden}
 body::before,body::after{content:'';position:fixed;pointer-events:none;opacity:0;transition:opacity .45s ease;z-index:0}
 body.mobile-live::before{top:-18vh;left:-12vw;width:48vw;height:48vw;min-width:340px;min-height:340px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.18),rgba(124,58,237,.1) 34%,transparent 68%);filter:blur(22px);opacity:.95;animation:mobileAuraDrift 11s ease-in-out infinite}
@@ -293,9 +293,9 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .hidden-file{display:none}
 
 /* LANDING DECK */
-.landing-deck{position:relative;z-index:1;height:var(--app-height);min-height:var(--app-height);overflow:hidden}
-.landing-track{display:flex;width:100%;height:100%;overflow:hidden;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.16,1,.3,1)}
-.landing-page{position:relative;flex:0 0 100%;width:100%;max-width:100%;min-height:var(--app-height);padding:96px 24px 54px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.landing-deck{position:relative;z-index:1;width:100%;height:100%;min-height:100%;overflow:hidden}
+.landing-track{display:flex;width:100%;height:100%;overflow:hidden;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.16,1,.3,1);will-change:transform}
+.landing-page{position:relative;flex:0 0 100%;width:100%;max-width:100%;height:100%;min-height:100%;padding:96px 24px 54px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .landing-deck .rv{opacity:1;transform:none;transition:none}
 .landing-deck.reel-active .landing-page-welcome .landing-panel{opacity:.16;transform:scale(.985);filter:blur(14px);transition:opacity .35s ease,transform .55s cubic-bezier(.16,1,.3,1),filter .55s ease}
 .landing-panel{width:min(1160px,100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
@@ -996,6 +996,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   window.prefersReducedMotion = function() {
     return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   };
+  try {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  } catch (e) {}
 
   function shouldShowBackground() {
     var isMobileBg = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(innerWidth, innerHeight) < 1025);
@@ -4349,6 +4352,50 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
   }
 
+  function hasRenderedConversation() {
+    return !!(chatLog && chatLog.querySelector('.msg'));
+  }
+
+  function resetToSafeLanding(options) {
+    var instant = !options || options.instant !== false;
+    if (!hasRenderedConversation()) {
+      conversationStageActive = false;
+      if (chatWrap) chatWrap.classList.remove('engaged');
+      document.body.classList.remove('chat-engaged');
+      document.body.classList.remove('chat-input-active');
+      document.body.classList.remove('keyboard-open');
+      if (chatIn && document.activeElement === chatIn) {
+        try { chatIn.blur(); } catch (e) {}
+      }
+      hideSuggestions();
+      setLandingPage(0, { instant: instant });
+    }
+    try {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    } catch (e) {}
+  }
+
+  function ensureVisibleShellState(reason) {
+    var hasMessages = hasRenderedConversation();
+    var onSearchStage = currentLandingPage === 1;
+    var composerFocused = document.activeElement === chatIn;
+    var shouldForceWelcome = reason === 'startup' || reason === 'load' || reason === 'pageshow' || reason === 'visible';
+    if (shouldForceWelcome && !hasMessages && (!onSearchStage || !composerFocused)) {
+      resetToSafeLanding({ instant: true });
+    }
+    if (!hasMessages && searchStageCopy) {
+      searchStageCopy.style.opacity = '';
+      searchStageCopy.style.visibility = '';
+      searchStageCopy.style.filter = '';
+      searchStageCopy.style.transform = '';
+    }
+    if (!hasMessages && reason === 'startup' && whyReel) {
+      closeWhyReel();
+    }
+  }
+
   function enterConversationStage(options) {
     if (!chatWrap) return;
     if (!conversationStageActive) {
@@ -4401,6 +4448,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
   bindLandingNavigation();
   setLandingPage(0, { instant: true });
+  ensureVisibleShellState('startup');
 
   function closeAllPopups() {
     var modelMenu = document.getElementById('modelMenu');
@@ -5039,11 +5087,16 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   updateMobileAgentUI();
   updatePremiumAccessUI();
   setAppAccess(isLocalFilePreview);
+  window.addEventListener('load', function() {
+    ensureVisibleShellState('load');
+  }, { once: true });
   window.addEventListener('pageshow', function() {
+    ensureVisibleShellState('pageshow');
     if (appAccessUnlocked) runKairosLite(true);
   });
   document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'visible' && appAccessUnlocked) {
+      ensureVisibleShellState('visible');
       startKairosLite();
       runKairosLite(true);
     } else if (document.visibilityState === 'hidden') {
@@ -5052,6 +5105,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
   });
   window.addEventListener('focus', function() {
+    ensureVisibleShellState('focus');
     if (appAccessUnlocked) {
       startKairosLite();
       runKairosLite(true);
