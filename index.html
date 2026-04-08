@@ -382,19 +382,21 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 @keyframes mobileSweep{0%{transform:translate3d(-6%,0,0) rotate(0deg)}100%{transform:translate3d(6%,0,0) rotate(360deg)}}
 .landing-page-search{padding-top:118px;padding-bottom:max(28px,calc(env(safe-area-inset-bottom) + 16px));overflow:hidden}
 .chat-sec{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:0;height:100%;min-height:calc(var(--app-height) - 118px);display:flex;align-items:stretch;justify-content:center;overflow:hidden}
-.chat-frame{width:min(1040px,100%);height:min(calc(var(--app-height) - 164px),820px);display:grid;grid-template-rows:auto minmax(0,1fr);align-items:stretch;gap:14px;position:relative;background:transparent;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden}
+.chat-shell{width:min(1040px,100%);height:min(calc(var(--app-height) - 164px),820px);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:16px;align-items:stretch;position:relative}
+.chat-frame{position:relative;min-height:0;display:flex;flex-direction:column;gap:14px;background:transparent;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden}
 .chat-frame::before,.chat-frame::after{display:none}
-.search-stage-copy{position:absolute;left:50%;top:50%;transform:translate(-50%,-56%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;width:min(760px,calc(100% - 36px));margin:0 auto;transition:opacity .28s ease,transform .28s ease;pointer-events:none}
+.search-stage-copy{position:absolute;left:50%;top:50%;transform:translate(-50%,-54%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;width:min(760px,calc(100% - 36px));margin:0 auto;transition:opacity .28s ease,transform .28s ease,filter .28s ease;pointer-events:none}
 .search-stage-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.05em;line-height:1}
 .search-stage-sub{font-size:.96rem;line-height:1.72;color:rgba(255,255,255,.5)}
-.chat-hdr{width:min(860px,100%);margin:0 auto;opacity:0;max-height:0;padding:0 4px;overflow:hidden;border:none;background:transparent;transition:opacity .35s ease,max-height .35s ease,padding .35s ease}
-.chat-log{display:flex;flex-direction:column;min-height:0;width:min(860px,100%);height:100%;margin:0 auto;padding:0 6px calc(var(--chat-bottom-clearance) + 22px) 6px;opacity:0;pointer-events:none;transition:opacity .24s ease,transform .24s ease;transform:translateY(8px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.px-bar{width:min(860px,100%);margin:0 auto;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.28);position:absolute;left:50%;transform:translateX(-50%);bottom:max(10px,calc(env(safe-area-inset-bottom) + 4px + var(--composer-safe-bottom,0px)));z-index:12;overflow:visible}
+.chat-hdr{display:flex;align-items:center;gap:12px;flex:0 0 auto;width:min(860px,100%);margin:0 auto;opacity:0;max-height:0;padding:0 4px;overflow:hidden;border:none;background:transparent;transition:opacity .35s ease,max-height .35s ease,padding .35s ease}
+.chat-log{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:min(860px,100%);margin:0 auto;padding:0 6px 8px 6px;opacity:0;pointer-events:none;transition:opacity .24s ease,transform .24s ease;transform:translateY(8px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chat-compose{position:relative;z-index:12;display:flex;justify-content:center;align-items:flex-end}
+.px-bar{width:min(860px,100%);margin:0 auto;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.28);position:relative;overflow:visible}
 .chat-frame.engaged .search-stage-copy{opacity:0;transform:translate(-50%,-60%);visibility:hidden}
 .chat-frame.engaged .chat-hdr{opacity:1;max-height:84px;padding:0 4px 8px}
 .chat-frame.engaged .chat-log{opacity:1;pointer-events:auto;transform:none}
 .chat-frame.engaged .chat-log .msg.a .bbl,.chat-frame.engaged .chat-log .msg.u .bbl{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-body.chat-input-active.keyboard-open .search-stage-copy{opacity:.14;transform:translate(-50%,-64%) scale(.985);visibility:visible;filter:blur(1px)}
+body.chat-input-active.keyboard-open .search-stage-copy{opacity:.14;transform:translate(-50%,-62%) scale(.985);visibility:visible;filter:blur(1px)}
 .foot{display:none}
 
 /* FOOTER */
@@ -545,15 +547,16 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
   .launch-wordmark{font-size:2.8rem}
   .landing-page-search{padding-top:92px;padding-bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px))}
   .chat-sec{min-height:calc(var(--app-height) - 92px)}
-  .chat-frame{height:calc(var(--app-height) - 124px);gap:12px}
+  .chat-shell{height:calc(var(--app-height) - 124px);gap:12px}
   .chat-log,.chat-hdr,.px-bar,.suggest-row{width:100%}
   .search-stage-copy{top:max(104px,calc(env(safe-area-inset-top) + 74px));transform:translateX(-50%);width:min(340px,calc(100% - 28px));gap:10px}
   .search-stage-title{max-width:11ch;font-size:clamp(1.72rem,9vw,2.3rem);line-height:1.02}
   .search-stage-sub{max-width:300px;font-size:.8rem;line-height:1.5}
   .chat-hdr{padding-left:2px;padding-right:2px}
-  .px-bar{bottom:max(8px,calc(env(safe-area-inset-bottom) + 2px + var(--composer-safe-bottom,0px)));border-radius:24px}
+  .chat-compose{padding-bottom:max(0px,var(--composer-safe-bottom,0px))}
+  .px-bar{border-radius:24px}
   .suggest-row{bottom:calc(100% + 10px);max-height:min(132px,24vh);padding:0 2px}
-  .chat-log{padding:0 2px calc(var(--chat-bottom-clearance) + 12px) 2px}
+  .chat-log{padding:0 2px 8px 2px}
   body[data-landing-page="1"] .ib{bottom:max(104px,calc(env(safe-area-inset-bottom) + 94px))}
 .perm-points{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .perm-point{min-height:96px}
@@ -773,56 +776,60 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     </section>
     <section class="landing-page landing-page-search" id="chat">
       <div class="chat-sec">
-        <div class="chat-frame rv" id="chatStage">
-          <div class="search-stage-copy" id="searchStageCopy">
-            <div class="landing-kicker">Raghav AI</div>
-            <h2 class="search-stage-title">Ask once. Let the right lane handle the rest.</h2>
-            <p class="search-stage-sub">Search stays simple, Mobile+ stays hidden until you want it, and deeper reasoning only wakes when the question truly deserves it.</p>
-          </div>
-          <div class="chat-hdr">
-            <div class="orb-av" id="orbAv" aria-label="Raghav AI">Raghav AI</div>
-            <div>
-              <div class="chat-nm">Raghav AI</div>
-              <div class="chat-meta">
-                <div class="chat-st" id="chatStatus">Ready on your phone</div>
-                <div class="chat-pill" id="runtimePill">Auto</div>
+        <div class="chat-shell">
+          <div class="chat-frame rv" id="chatStage">
+            <div class="search-stage-copy" id="searchStageCopy">
+              <div class="landing-kicker">Raghav AI</div>
+              <h2 class="search-stage-title">Ask once. Let the right lane handle the rest.</h2>
+              <p class="search-stage-sub">Search stays simple, Mobile+ stays hidden until you want it, and deeper reasoning only wakes when the question truly deserves it.</p>
+            </div>
+            <div class="chat-hdr">
+              <div class="orb-av" id="orbAv" aria-label="Raghav AI">Raghav AI</div>
+              <div>
+                <div class="chat-nm">Raghav AI</div>
+                <div class="chat-meta">
+                  <div class="chat-st" id="chatStatus">Ready on your phone</div>
+                  <div class="chat-pill" id="runtimePill">Auto</div>
+                </div>
               </div>
             </div>
+            <div class="chat-log" id="chatLog"></div>
           </div>
-          <div class="chat-log" id="chatLog"></div>
-          <div class="px-bar" id="pxBar">
-            <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1" aria-label="Ask Raghav AI anything" enterkeyhint="send"></textarea>
-            <div class="suggest-row" id="suggestRow" hidden></div>
-            <div class="px-controls">
-              <div class="px-left">
-                <button class="px-btn px-badge" id="mobileBtn">
-                  <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
-                </button>
-              </div>
-              <div class="px-right">
-                <div class="model-wrap">
-                  <button class="px-btn model-trigger" id="modelBtn">
-                    <span id="modelBtnLabel">Raghav Beta</span>
-                    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          <div class="chat-compose rv">
+            <div class="px-bar" id="pxBar">
+              <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1" aria-label="Ask Raghav AI anything" enterkeyhint="send"></textarea>
+              <div class="suggest-row" id="suggestRow" hidden></div>
+              <div class="px-controls">
+                <div class="px-left">
+                  <button class="px-btn px-badge" id="mobileBtn">
+                    <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
                   </button>
-                  <div class="model-menu" id="modelMenu">
-                    <button class="pop-item model-choice" data-model="Raghav Beta">
-                      <span>◎</span>
-                      <span class="pop-body">
-                        <span class="pop-title">Raghav Beta</span>
-                        <span class="pop-meta">Open everyday model. Fast, respectful, and built for common questions, explanations, and practical help.</span>
-                      </span>
-                    </button>
-                    <button class="pop-item model-choice locked" data-model="Raghav Baan">
-                      <span>🔒</span>
-                      <span class="pop-body">
-                        <span class="pop-title">Raghav Baan</span>
-                        <span class="pop-meta">Premium flagship lane for fuller reasoning, stepwise guidance, and the full experimental experience.</span>
-                      </span>
-                    </button>
-                  </div>
                 </div>
-                <button class="px-send" id="sendBtn" aria-label="Send message"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                <div class="px-right">
+                  <div class="model-wrap">
+                    <button class="px-btn model-trigger" id="modelBtn">
+                      <span id="modelBtnLabel">Raghav Beta</span>
+                      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div class="model-menu" id="modelMenu">
+                      <button class="pop-item model-choice" data-model="Raghav Beta">
+                        <span>◎</span>
+                        <span class="pop-body">
+                          <span class="pop-title">Raghav Beta</span>
+                          <span class="pop-meta">Open everyday model. Fast, respectful, and built for common questions, explanations, and practical help.</span>
+                        </span>
+                      </button>
+                      <button class="pop-item model-choice locked" data-model="Raghav Baan">
+                        <span>🔒</span>
+                        <span class="pop-body">
+                          <span class="pop-title">Raghav Baan</span>
+                          <span class="pop-meta">Premium flagship lane for fuller reasoning, stepwise guidance, and the full experimental experience.</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <button class="px-send" id="sendBtn" aria-label="Send message"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                </div>
               </div>
             </div>
           </div>
