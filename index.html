@@ -1590,6 +1590,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var currentLandingPage = 0;
   window.currentLandingPage = currentLandingPage;
   var conversationStageActive = false;
+  var rootScrollLockTimer = null;
   var whyReelTimers = [];
   var localGenerator = null;
   var localGeneratorPromise = null;
@@ -1990,6 +1991,25 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var keyboardOpen = keyboardOffset > 140;
     document.documentElement.style.setProperty('--composer-safe-bottom', (keyboardOpen ? Math.min(keyboardOffset, 320) : 0) + 'px');
     document.body.classList.toggle('keyboard-open', keyboardOpen);
+    if (keyboardOpen) lockRootScrollPosition(260);
+  }
+
+  function lockRootScrollPosition(durationMs) {
+    if (!isMobileDevice) return;
+    var until = Date.now() + Math.max(180, Number(durationMs) || 0);
+    function tick() {
+      try { window.scrollTo(0, 0); } catch (e) {}
+      if (Date.now() < until) {
+        rootScrollLockTimer = requestAnimationFrame(tick);
+      } else {
+        rootScrollLockTimer = null;
+      }
+    }
+    if (rootScrollLockTimer) {
+      try { cancelAnimationFrame(rootScrollLockTimer); } catch (e) {}
+      rootScrollLockTimer = null;
+    }
+    tick();
   }
 
   function focusComposerWithoutScroll() {
@@ -2007,6 +2027,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     setTimeout(function() {
       try { window.scrollTo(prevX, prevY); } catch (e) {}
     }, 90);
+    lockRootScrollPosition(320);
   }
 
   function scrollChatToLatest(forceInstant) {
@@ -5006,10 +5027,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   });
 
   chatIn.addEventListener('focus', function() {
-    if (isStandaloneAppShell && !conversationStageActive) {
+    if (isMobileDevice && !conversationStageActive) {
       requestAnimationFrame(function() {
         try { window.scrollTo(0, 0); } catch (e) {}
       });
+      lockRootScrollPosition(320);
     }
     if (searchGuideSeen) updateSuggestions();
   });
@@ -5035,7 +5057,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   chatIn.addEventListener('pointerdown', function(e) {
-    if (isStandaloneAppShell && !conversationStageActive && document.activeElement !== chatIn) {
+    if (isMobileDevice && !conversationStageActive && document.activeElement !== chatIn) {
       e.preventDefault();
       focusComposerWithoutScroll();
     }
@@ -5043,7 +5065,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   });
 
   chatIn.addEventListener('touchstart', function(e) {
-    if (isStandaloneAppShell && !conversationStageActive && document.activeElement !== chatIn) {
+    if (isMobileDevice && !conversationStageActive && document.activeElement !== chatIn) {
       e.preventDefault();
       focusComposerWithoutScroll();
     }
@@ -5051,7 +5073,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }, { passive: false });
 
   chatIn.addEventListener('click', function(e) {
-    if (isStandaloneAppShell && !conversationStageActive && document.activeElement !== chatIn) {
+    if (isMobileDevice && !conversationStageActive && document.activeElement !== chatIn) {
       e.preventDefault();
       focusComposerWithoutScroll();
     }
