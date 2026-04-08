@@ -1,4 +1,4 @@
-const CACHE_NAME = 'orbiton-static-v5';
+const CACHE_NAME = 'orbiton-static-v6';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -30,12 +30,37 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  const requestUrl = new URL(e.request.url);
+  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const isNavigate = e.request.mode === 'navigate';
+  const isHtmlShell = isNavigate || (isSameOrigin && (requestUrl.pathname === '/' || requestUrl.pathname.endsWith('/index.html')));
+
   e.respondWith(
-    caches.match(e.request).then((cached) => {
+    (async () => {
+      if (isHtmlShell) {
+        try {
+          const networkResponse = await fetch(e.request);
+          const cache = await caches.open(CACHE_NAME);
+          cache.put('./index.html', networkResponse.clone());
+          return networkResponse;
+        } catch (error) {
+          const cachedShell = await caches.match('./index.html');
+          if (cachedShell) return cachedShell;
+          throw error;
+        }
+      }
+
+      const cached = await caches.match(e.request);
       if (cached) return cached;
-      return fetch(e.request);
-    }).catch(() => {
-      if (e.request.mode === 'navigate') return caches.match('./index.html');
+
+      const networkResponse = await fetch(e.request);
+      if (isSameOrigin || /^https:\/\/(fonts\.googleapis\.com|cdnjs\.cloudflare\.com)\//.test(e.request.url)) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(e.request, networkResponse.clone());
+      }
+      return networkResponse;
+    })().catch(() => {
+      if (isNavigate) return caches.match('./index.html');
       return Response.error();
     })
   );
