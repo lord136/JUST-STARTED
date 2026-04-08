@@ -386,7 +386,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .chat-frame.engaged .chat-hdr{opacity:1;max-height:84px;padding:0 4px 8px}
 .chat-frame.engaged .chat-log{opacity:1;pointer-events:auto;transform:none}
 .chat-frame.engaged .chat-log .msg.a .bbl,.chat-frame.engaged .chat-log .msg.u .bbl{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-body.keyboard-open .search-stage-copy{opacity:0;transform:translate(-50%,-60%);visibility:hidden}
+body.chat-input-active.keyboard-open .search-stage-copy{opacity:0;transform:translate(-50%,-60%);visibility:hidden}
 .foot{display:none}
 
 /* FOOTER */
@@ -2002,7 +2002,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var height = Math.max(420, Math.round(viewport ? viewport.height : window.innerHeight || 0));
     document.documentElement.style.setProperty('--app-height', height + 'px');
     var keyboardOffset = viewport ? Math.max(0, Math.round((window.innerHeight || height) - viewport.height - viewport.offsetTop)) : 0;
-    var keyboardOpen = keyboardOffset > 140;
+    var composerFocused = document.activeElement === chatIn;
+    var keyboardOpen = composerFocused && keyboardOffset > 70;
     document.documentElement.style.setProperty('--composer-safe-bottom', (keyboardOpen ? Math.min(keyboardOffset, 320) : 0) + 'px');
     document.body.classList.toggle('keyboard-open', keyboardOpen);
     updateComposerMetrics();
@@ -5048,6 +5049,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   });
 
   chatIn.addEventListener('focus', function() {
+    document.body.classList.add('chat-input-active');
     if (isMobileDevice && !conversationStageActive) {
       requestAnimationFrame(function() {
         try { window.scrollTo(0, 0); } catch (e) {}
@@ -5057,8 +5059,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (searchGuideSeen) updateSuggestions();
   });
   chatIn.addEventListener('blur', function() {
+    document.body.classList.remove('chat-input-active');
     setTimeout(function() {
       if (document.activeElement !== chatIn) hideSuggestions();
+      syncAppViewportMetrics();
     }, 120);
   });
   chatIn.addEventListener('focus', function() {
