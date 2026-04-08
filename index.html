@@ -28,7 +28,15 @@
 <link rel="shortcut icon" href="icon-192.svg">
 <link rel="apple-touch-icon" href="icon-512.svg">
 <title>Raghav AI | Phone-First AI Assistant</title>
-<link rel="manifest" href="manifest.json">
+<script>
+window.__RAGHAV_LOCAL_FILE_PREVIEW__ = window.location.protocol === 'file:';
+if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
+  var manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = 'manifest.json';
+  document.head.appendChild(manifestLink);
+}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -386,7 +394,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .chat-frame.engaged .chat-hdr{opacity:1;max-height:84px;padding:0 4px 8px}
 .chat-frame.engaged .chat-log{opacity:1;pointer-events:auto;transform:none}
 .chat-frame.engaged .chat-log .msg.a .bbl,.chat-frame.engaged .chat-log .msg.u .bbl{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-body.chat-input-active.keyboard-open .search-stage-copy{opacity:0;transform:translate(-50%,-60%);visibility:hidden}
+body.chat-input-active.keyboard-open .search-stage-copy{opacity:.14;transform:translate(-50%,-64%) scale(.985);visibility:visible;filter:blur(1px)}
 .foot{display:none}
 
 /* FOOTER */
@@ -1654,6 +1662,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!hasUserInteraction || !navigator.vibrate) return;
     try { navigator.vibrate(ms); } catch(e){}
   }
+  var isLocalFilePreview = !!window.__RAGHAV_LOCAL_FILE_PREVIEW__ || window.location.protocol === 'file:';
   var isMobileDevice = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
   var isLowMemoryMobile = isMobileDevice && typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 2;
 
@@ -1765,6 +1774,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function getRemoteFailureMessage(error) {
+    if (isLocalFilePreview) {
+      return "This local file preview can show the UI, but the live AI needs the site opened through http or https. Open it from your deployed URL or a local web server to get full replies.";
+    }
     var message = error && error.message ? String(error.message) : '';
     if (/PREMIUM_REASONING_EXHAUSTED/i.test(message)) {
       return "Your premium reasoning passes are finished for now. Mobile+, definitions, and quick routes still stay open.";
@@ -4321,7 +4333,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
   function goToSearchStage(options) {
     setLandingPage(1, options);
-    if (canUseComposer() && !(options && options.skipFocus)) {
+    var shouldAutoFocus = canUseComposer() && !(options && options.skipFocus) && (!isMobileDevice || !!(options && options.forceFocus));
+    if (shouldAutoFocus) {
       setTimeout(function() {
         if (chatIn && document.activeElement !== chatIn) {
           if (isMobileDevice) {
@@ -5025,7 +5038,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   updateModelUI();
   updateMobileAgentUI();
   updatePremiumAccessUI();
-  setAppAccess(false);
+  setAppAccess(isLocalFilePreview);
   window.addEventListener('pageshow', function() {
     if (appAccessUnlocked) runKairosLite(true);
   });
@@ -5300,7 +5313,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   /* ── PWA ── */
-  if ('serviceWorker' in navigator) {
+  if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__ && 'serviceWorker' in navigator) {
     if (isMobileDevice) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         registrations.forEach(function(registration) {
@@ -5325,6 +5338,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 
   function syncInstallAction(){
     if(!installTopBtn) return;
+    if (window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
+      installTopBtn.hidden = true;
+      return;
+    }
     installTopBtn.hidden = !!isStandalone || (!deferredPrompt && !isIOS);
   }
 
@@ -5392,6 +5409,7 @@ const firebaseConfig = {
   measurementId: 'G-RQBL65YWWB'
 };
 
+const isLocalFilePreviewAuth = !!window.__RAGHAV_LOCAL_FILE_PREVIEW__ || window.location.protocol === 'file:';
 const app = initializeApp(firebaseConfig);
 function bootAnalyticsWhenIdle() {
   function startAnalytics() {
@@ -5420,11 +5438,15 @@ function bootAnalyticsWhenIdle() {
   }, { once: true });
 }
 
-bootAnalyticsWhenIdle();
+if (!isLocalFilePreviewAuth) {
+  bootAnalyticsWhenIdle();
+}
 
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
+const auth = isLocalFilePreviewAuth ? null : getAuth(app);
+const provider = isLocalFilePreviewAuth ? null : new GoogleAuthProvider();
+if (provider) {
+  provider.setCustomParameters({ prompt: 'select_account' });
+}
 let currentFirebaseUser = null;
 let signInWatchdog = null;
 const isStandaloneAuth = window.matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
@@ -5432,9 +5454,9 @@ const isIOSAuth = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isMobileAuth = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
 const isStandaloneWidgetAuth = isStandaloneAuth && isIOSAuth;
 const preferRedirectAuth = false;
-const persistenceReady = setPersistence(auth, browserLocalPersistence).catch(function() {});
+const persistenceReady = auth ? setPersistence(auth, browserLocalPersistence).catch(function() {}) : Promise.resolve();
 persistenceReady.finally(function() {
-  if (!auth.currentUser && !hasRedirectPending()) {
+  if ((!auth || !auth.currentUser) && !hasRedirectPending()) {
     resetAuthPill();
   }
 });
@@ -5565,6 +5587,11 @@ function explainAuthError(error) {
 }
 
 async function startSignIn() {
+  if (!auth || isLocalFilePreviewAuth) {
+    hideAuthSheet(false);
+    showAuthFeedback('This local preview is view-only. Open Raghav AI through https to use Google sign-in and the live backend.');
+    return;
+  }
   clearSignInWatchdog();
   setAuthConnectingState();
   signInWatchdog = setTimeout(function() {
@@ -5647,78 +5674,93 @@ async function startSignIn() {
 }
 
 window.raghavPersistPremiumUnlock = async function(details) {
+  if (!auth || isLocalFilePreviewAuth) throw new Error('LOCAL_PREVIEW_AUTH_DISABLED');
   if (!currentFirebaseUser) throw new Error('AUTH_REQUIRED_FOR_PREMIUM_SAVE');
   await currentFirebaseUser.getIdToken(true);
   await syncUserPremiumFromClaims(currentFirebaseUser, true);
 };
 
-if (hasRedirectPending()) {
+if (auth && hasRedirectPending()) {
   setAuthConnectingState();
 }
 
-getRedirectResult(auth).then(function() {
-  clearRedirectPending();
-}).catch(function(error) {
-  clearRedirectPending();
-  resetAuthPill();
-  showAuthFeedback(explainAuthError(error));
-});
-
-onAuthStateChanged(auth, function(user) {
-  clearSignInWatchdog();
-  if (user) {
+if (auth) {
+  getRedirectResult(auth).then(function() {
     clearRedirectPending();
-    try { localStorage.setItem('raghav_last_signed_in_uid', user.uid); } catch (e) {}
-    currentFirebaseUser = user;
-    if (typeof window.raghavSetCurrentUser === 'function') {
-      window.raghavSetCurrentUser(user);
-    }
-    lockAuthPill(user);
-    if (typeof window.raghavSetAppAccess === 'function') {
-      window.raghavSetAppAccess(true);
-    }
-    if (document.body.getAttribute('data-landing-page') === '1') {
-      setTimeout(function() {
-        const composer = document.getElementById('chatIn');
-        if (composer && document.activeElement !== composer) {
-          composer.focus();
-        }
-        if (typeof window.raghavUpdateSuggestions === 'function') {
-          window.raghavUpdateSuggestions();
-        }
-      }, 140);
-    }
-    syncUserPremiumFromClaims(user, false).catch(function(error) {
-      showAuthFeedback(explainAuthError(error));
-    });
-  } else {
-    currentFirebaseUser = null;
-    if (typeof window.raghavSetCurrentUser === 'function') {
-      window.raghavSetCurrentUser(null);
-    }
-    if (hasRedirectPending()) {
-      setAuthConnectingState();
-      setTimeout(function() {
-        if (!auth.currentUser && hasRedirectPending()) {
-          clearRedirectPending();
-          resetAuthPill();
-          showAuthFeedback('Sign-in did not finish. Try once more and make sure the Google sign-in flow completes.');
-        }
-      }, 7000);
-      return;
-    }
+  }).catch(function(error) {
+    clearRedirectPending();
     resetAuthPill();
-    if (typeof window.raghavApplyPremiumState === 'function') {
-      window.raghavApplyPremiumState({ premiumUnlocked: false, messagingAllowed: false, preserveStoredAccess: true });
+    showAuthFeedback(explainAuthError(error));
+  });
+
+  onAuthStateChanged(auth, function(user) {
+    clearSignInWatchdog();
+    if (user) {
+      clearRedirectPending();
+      try { localStorage.setItem('raghav_last_signed_in_uid', user.uid); } catch (e) {}
+      currentFirebaseUser = user;
+      if (typeof window.raghavSetCurrentUser === 'function') {
+        window.raghavSetCurrentUser(user);
+      }
+      lockAuthPill(user);
+      if (typeof window.raghavSetAppAccess === 'function') {
+        window.raghavSetAppAccess(true);
+      }
+      if (document.body.getAttribute('data-landing-page') === '1') {
+        setTimeout(function() {
+          const composer = document.getElementById('chatIn');
+          if (composer && document.activeElement !== composer) {
+            composer.focus();
+          }
+          if (typeof window.raghavUpdateSuggestions === 'function') {
+            window.raghavUpdateSuggestions();
+          }
+        }, 140);
+      }
+      syncUserPremiumFromClaims(user, false).catch(function(error) {
+        showAuthFeedback(explainAuthError(error));
+      });
+    } else {
+      currentFirebaseUser = null;
+      if (typeof window.raghavSetCurrentUser === 'function') {
+        window.raghavSetCurrentUser(null);
+      }
+      if (hasRedirectPending()) {
+        setAuthConnectingState();
+        setTimeout(function() {
+          if (!auth.currentUser && hasRedirectPending()) {
+            clearRedirectPending();
+            resetAuthPill();
+            showAuthFeedback('Sign-in did not finish. Try once more and make sure the Google sign-in flow completes.');
+          }
+        }, 7000);
+        return;
+      }
+      resetAuthPill();
+      if (typeof window.raghavApplyPremiumState === 'function') {
+        window.raghavApplyPremiumState({ premiumUnlocked: false, messagingAllowed: false, preserveStoredAccess: true });
+      }
+      if (typeof window.raghavSetAppAccess === 'function') {
+        window.raghavSetAppAccess(false);
+      }
     }
-    if (typeof window.raghavSetAppAccess === 'function') {
-      window.raghavSetAppAccess(false);
-    }
+  });
+} else {
+  resetAuthPill();
+  if (typeof window.raghavSetCurrentUser === 'function') {
+    window.raghavSetCurrentUser(null);
   }
-});
+  if (typeof window.raghavSetAppAccess === 'function') {
+    window.raghavSetAppAccess(true);
+  }
+}
 
 authBtn.addEventListener('click', function() {
   if (authBtn.disabled) return;
+  if (isLocalFilePreviewAuth) {
+    showAuthFeedback('This file preview keeps the UI open only. Use https://www.raghavam.in for sign-in, premium, and live backend behavior.');
+    return;
+  }
   showAuthSheet(false);
 });
 
