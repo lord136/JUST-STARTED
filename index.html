@@ -118,10 +118,14 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 @keyframes orbitDotThree{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(8px,-8px,0)}100%{transform:translate3d(0,0,0)}}
 
 /* NAV */
-.nav{position:fixed;top:16px;right:20px;z-index:200}
+.nav{position:fixed;top:16px;right:20px;z-index:200;display:flex;align-items:center;gap:10px}
 .nav-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px)}
 .nav-btn:hover{background:rgba(255,255,255,.08);transform:scale(1.05)}
 .nav-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.install-pill-top{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(124,58,237,.34);background:linear-gradient(135deg,rgba(37,99,235,.2),rgba(124,58,237,.24));color:#eef4ff;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s;backdrop-filter:blur(14px);font-family:inherit;font-size:.78rem;font-weight:600;letter-spacing:-.2px;box-shadow:0 12px 30px rgba(37,99,235,.14),0 10px 24px rgba(124,58,237,.12)}
+.install-pill-top:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(59,130,246,.26),rgba(139,92,246,.3));border-color:rgba(167,139,250,.48);box-shadow:0 18px 36px rgba(37,99,235,.18),0 12px 28px rgba(124,58,237,.16)}
+.install-pill-top[hidden]{display:none}
+.install-pill-top svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .auth-corner{position:fixed;top:16px;left:20px;z-index:200}
 .auth-pill{min-height:38px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px);font-family:inherit;font-size:.82rem;font-weight:600;letter-spacing:-.2px}
 .auth-pill:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
@@ -388,10 +392,8 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .foot{position:relative;z-index:1;text-align:center;padding:32px 24px 60px;border-top:1px solid rgba(255,255,255,.08)}
 .foot p{font-size:.72rem;color:rgba(255,255,255,.25);letter-spacing:.5px}
 
-/* INSTALL BANNERS */
-.ib{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);z-index:998;opacity:0;transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .6s;width:calc(100% - 40px);max-width:400px;background:rgba(20,20,22,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 24px 48px rgba(0,0,0,.4)}
-.ib.show{transform:translateX(-50%) translateY(0);opacity:1}
-body.keyboard-open .ib{transform:translateX(-50%) translateY(120px);opacity:0;pointer-events:none}
+/* INSTALL */
+.ib{display:none!important}
 .ib-ico{width:44px;height:44px;border-radius:12px;background:conic-gradient(from 0deg,#2563eb,#7c3aed,#2563eb);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;font-weight:700}
 .ib-txt{flex:1}
 .ib-txt strong{font-size:.9rem;display:block}
@@ -502,6 +504,12 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
 }
 
 @media (max-width: 780px){
+  .nav{top:max(14px,calc(env(safe-area-inset-top) + 6px));right:14px;gap:8px}
+  .install-pill-top{min-height:36px;padding:0 11px;font-size:.72rem;gap:6px}
+  .install-pill-top span{max-width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nav-btn{width:36px;height:36px}
+  .auth-corner{top:max(14px,calc(env(safe-area-inset-top) + 6px));left:14px}
+  .auth-pill{min-height:36px;padding:0 12px;font-size:.78rem}
   .landing-page{padding:92px 18px 54px}
   .landing-title{font-size:1.82rem}
   .landing-subcopy,.landing-copy,.search-stage-sub{font-size:.88rem;line-height:1.62}
@@ -541,6 +549,11 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
 .perm-point{min-height:96px}
 .perm-points .perm-point:last-child:nth-child(odd){width:min(78%,244px)}
   .auth-points{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width: 420px){
+  .install-pill-top{padding:0 10px;font-size:.7rem}
+  .install-pill-top span{max-width:74px}
 }
 
 body[data-theme="light"]{--bg:#eef3ff;--text:#08111f}
@@ -584,6 +597,8 @@ body[data-theme="light"] .fline{color:#1d4ed8}
 body[data-theme="light"] .fline i{background:rgba(37,99,235,.1);color:#1d4ed8}
 body[data-theme="light"] .auth-point strong{color:#08111f}
 body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
+body[data-theme="light"] .install-pill-top{background:linear-gradient(135deg,rgba(59,130,246,.14),rgba(124,58,237,.14));border-color:rgba(59,130,246,.22);color:#1d4ed8;box-shadow:0 14px 28px rgba(37,99,235,.08),0 10px 22px rgba(124,58,237,.08)}
+body[data-theme="light"] .install-pill-top:hover{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(124,58,237,.18));border-color:rgba(99,102,241,.28)}
 body[data-theme="light"] .auth-pill{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .auth-pill:hover{background:#fff}
 body[data-theme="light"] .auth-pill:disabled{background:rgba(255,255,255,.88);border-color:rgba(15,23,42,.12);color:#08111f}
@@ -637,6 +652,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 </div>
 
 <nav class="nav">
+  <button class="install-pill-top" id="installTopBtn" hidden aria-label="Install Raghav AI on your phone">
+    <svg viewBox="0 0 24 24"><path d="M12 3v11"/><path d="M8 10l4 4 4-4"/><path d="M5 17v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"/></svg>
+    <span>Install on phone</span>
+  </button>
   <button class="nav-btn" id="themeBtn" aria-label="Toggle theme">
     <svg id="themeIco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
   </button>
@@ -1148,6 +1167,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var chatIn = document.getElementById('chatIn');
   var suggestRow = document.getElementById('suggestRow');
   var themeBtn = document.getElementById('themeBtn');
+  var installTopBtn = document.getElementById('installTopBtn');
   var themeIco = document.getElementById('themeIco');
   var themeMeta = document.querySelector('meta[name="theme-color"]');
   var systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
@@ -5240,7 +5260,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           registration.unregister();
         });
       }).catch(function(){});
-      if (window.caches && caches.keys) {
+  if (window.caches && caches.keys) {
         caches.keys().then(function(keys) {
           return Promise.all(keys.map(function(key) {
             return caches.delete(key);
@@ -5254,19 +5274,42 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   var isStandalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   var deferredPrompt=null;
+  var installTopBtn=document.getElementById('installTopBtn');
+
+  function syncInstallAction(){
+    if(!installTopBtn) return;
+    installTopBtn.hidden = !!isStandalone || (!deferredPrompt && !isIOS);
+  }
+
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault(); deferredPrompt=e;
-    if(!isStandalone) setTimeout(function(){ document.getElementById('androidBar').classList.add('show'); }, 4000);
+    syncInstallAction();
   });
-  document.getElementById('androidBtn').addEventListener('click', function(){
-    if(!deferredPrompt) return;
-    document.getElementById('androidBar').classList.remove('show');
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function(){ deferredPrompt=null; });
-  });
-  if(isIOS && !isStandalone) setTimeout(function(){ document.getElementById('iosBar').classList.add('show'); }, 4000);
+  if(installTopBtn){
+    installTopBtn.addEventListener('click', function(){
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(){ deferredPrompt=null; syncInstallAction(); });
+        return;
+      }
+      if(isIOS && !isStandalone && typeof showGuideCard === 'function'){
+        showGuideCard({
+          kicker: 'Install Raghav AI',
+          title: 'Add it to your phone.',
+          body: 'Install Raghav AI on your iPhone for a cleaner, app-like experience.',
+          points: [
+            { title: 'Open Share', text: 'Tap the Share button in Safari.' },
+            { title: 'Add to Home Screen', text: 'Choose Add to Home Screen to place Raghav AI on your phone.' }
+          ],
+          primaryLabel: 'Got it',
+          secondaryLabel: 'Later'
+        });
+      }
+    });
+  }
   window.addEventListener('appinstalled', function(){
-    document.getElementById('androidBar').classList.remove('show');
+    deferredPrompt=null;
+    syncInstallAction();
     startBackgroundWarmup();
     haptic([20,50,20,50,60]);
     ensureConfettiRuntime().then(function(confettiFn) {
@@ -5275,6 +5318,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       }
     }).catch(function(){});
   });
+  syncInstallAction();
 })();
 </script>
 <script type="module">
