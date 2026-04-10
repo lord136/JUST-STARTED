@@ -1765,6 +1765,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       suggestRow.appendChild(chip);
     });
     updateComposerMetrics();
+    if (isMobileDevice) scrollChatToLatest(true);
   }
 
   function pickRandomSuggestion(items) {
@@ -1809,19 +1810,17 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function showRandomSuggestions() {
-    if (isMobileDevice && document.body.classList.contains('keyboard-open')) {
-      hideSuggestions();
-      return;
-    }
     renderSuggestionItems(messagingAllowed ? getMobilePlusSuggestionSet() : getRandomSuggestionSet());
   }
 
   function applySuggestion(item) {
     chatIn.value = item;
     resizeComposer();
+    try { chatIn.blur(); } catch (e) {}
     hideSuggestions();
     requestAnimationFrame(function() {
       handleSend();
+      scrollChatToLatest(true);
     });
   }
 
@@ -1844,11 +1843,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       hideSuggestions();
       return;
     }
-    if (isMobileDevice && document.body.classList.contains('keyboard-open')) {
-      hideSuggestions();
-      return;
-    }
-
     var raw = chatIn.value.trim();
     var suggestions = [];
     var corrected = normalizeUserText(raw);
