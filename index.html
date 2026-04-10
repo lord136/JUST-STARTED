@@ -987,7 +987,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
       </div>
     </div>
-    <div class="perm-mini" id="permMini">Rs 39 · 10 deep passes</div>
+      <div class="perm-mini" id="permMini">Rs 39 · Full hidden layer access</div>
     <div class="perm-actions">
       <button class="perm-yes" id="permYes">Unlock for Rs 39</button>
       <button class="perm-no" id="permNo">Not Now</button>
@@ -4368,7 +4368,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           activeModel = 'Raghav Beta';
           updateModelUI();
         }
-        return 'Your 10 premium reasoning passes are finished for now. Mobile+, fast lanes, definitions, and direct routes still stay open on this account.';
+      return 'Your deep reasoning session is complete for now. Mobile+, fast lanes, and direct routes still stay open on this account.';
       }
     }
     if (shouldUseRemoteReasoning()) {
@@ -4955,7 +4955,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     } else {
       raghavBaanBtn.classList.add('locked');
       raghavBaanIcon.textContent = '🔒';
-      raghavBaanMeta.textContent = 'Premium membership unlocks Mobile+, the flagship lane, and 10 premium reasoning passes whenever you choose to enter the premium layer.';
+  raghavBaanMeta.textContent = 'Premium membership unlocks Mobile+, the flagship lane, and the full hidden layer whenever you choose to enter the premium path.';
     }
   }
 
@@ -5239,9 +5239,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     renderExperimentalPoints([
       { title: 'Mobile+', text: 'Unlock the hidden mini agent that prepares revision PDFs, action routes, and faster next steps.' },
       { title: 'Raghav Baan', text: 'Unlock the flagship premium lane for broader reasoning, cleaner structure, and a fuller pass.' },
-      { title: '10 premium reasoning passes', text: 'Deep questions move through the live lane, while definitions and direct routes stay light and open.' }
+      { title: 'Deep reasoning access', text: 'Deep questions move through the live lane, while lighter routes stay clean and fast.' }
     ]);
-    permMini.textContent = 'Rs 39 · 10 deep passes';
+      permMini.textContent = 'Rs 39 · Full hidden layer access';
     permMini.style.display = 'block';
     permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (mode === 'reasoning-limit' ? 'Upgrade Now' : (lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39'));
     permYes.classList.toggle('perm-upgrade', mode === 'reasoning-limit' && !alreadyUnlocked);
@@ -5344,7 +5344,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       } catch (e) {}
     }
     await new Promise(function(resolve) { setTimeout(resolve, 220); });
-    await streamReply('Premium is unlocked on your account. Mobile+ is on, Raghav Baan is ready, and 10 premium reasoning passes are waiting for you now.');
+      await streamReply('Premium is unlocked on your account. Mobile+ is on, Raghav Baan is ready, and the hidden layer is now open for you.');
     await showPremiumGiftToken();
   }
 
@@ -5505,7 +5505,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
             showGuideCard({
               kicker: 'Raghav Baan',
               title: 'The premium reasoning passes are finished.',
-              body: 'Mobile+ and the lighter lanes still stay unlocked on this account, but the 10 premium reasoning passes have already been used.',
+      body: 'Mobile+ and the lighter lanes still stay unlocked on this account, but the deep reasoning session has already been used.',
               points: [
                 { title: 'Still open', text: 'Definitions, direct routes, quick facts, and Mobile+ actions still stay ready.' },
                 { title: 'What is paused', text: 'The deeper premium reasoning lane is out of passes for now.' }
@@ -5530,7 +5530,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
               points: [
                 { title: 'Broader answers', text: 'Better for comparing options, deeper explanations, and decision help.' },
                 { title: 'Cleaner structure', text: 'It prefers answer-first, then practical steps when the question needs it.' },
-                { title: '10 premium reasoning passes', text: 'The deep lane runs on passes, while definitions, static facts, and Mobile+ stay lighter.' }
+      { title: 'Deep reasoning access', text: 'The deep lane opens when needed, while lighter routes and Mobile+ stay faster.' }
               ],
               primaryLabel: 'Use Raghav Baan',
               secondaryLabel: 'Later',
