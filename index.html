@@ -985,23 +985,23 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     <div class="perm-hero">
       <div class="perm-hero-wordmark">Raghav AI</div>
     </div>
-    <div class="perm-kicker" id="permKicker">Experimental</div>
-    <h3 id="permTitle">Unlock the hidden layer.</h3>
-    <p id="permBody" style="display:none"></p>
+    <div class="perm-kicker" id="permKicker">Exclusive Layer</div>
+    <h3 id="permTitle">Access, defined with precision.</h3>
+    <p id="permBody" style="display:none">Built for control, security, and uninterrupted continuity.</p>
     <div class="perm-points" id="permPoints">
       <div class="perm-point">
-        <strong>Mini Agent</strong>
-        <span>Unlock the quick mobile lane that prepares actions and cuts extra tapping.</span>
+        <strong>Raghav Mobile+</strong>
+        <span>Optimized for fast, everyday interactions with consistent clarity.</span>
       </div>
       <div class="perm-point">
-        <strong>Flagship Model</strong>
-        <span>Unlock the premium answer lane built for fuller help, clearer thinking, and everyday use.</span>
+        <strong>Raghav Baan</strong>
+        <span>Extended intelligence for deeper reasoning and complex queries.</span>
       </div>
     </div>
       <div class="perm-mini" id="permMini">Rs 39 · Full hidden layer access</div>
     <div class="perm-actions">
       <button class="perm-yes" id="permYes">Unlock for Rs 39</button>
-      <button class="perm-no" id="permNo">Not Now</button>
+      <button class="perm-no" id="permNo">Maybe later</button>
     </div>
   </div>
 </div>
@@ -5246,14 +5246,14 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     permKicker.textContent = mode === 'reasoning-limit' ? 'Deep Reasoning' : 'Exclusive Layer';
     permTitle.textContent = mode === 'reasoning-limit'
       ? 'Deep reasoning session is completed.'
-      : 'Unlock the hidden layer.';
+      : 'Access, defined with precision.';
     permBody.textContent = mode === 'reasoning-limit'
       ? 'Continue with the standard intelligence or upgrade for the extended path.'
-      : 'One unlock opens the mini agent and the flagship lane in one clean step.';
+      : 'Built for control, security, and uninterrupted continuity.';
     permBody.style.display = 'block';
     renderExperimentalPoints([
-      { title: 'Mobile+', text: 'Unlock the hidden mini agent that prepares revision PDFs, action routes, and faster next steps.' },
-      { title: 'Raghav Baan', text: 'Unlock the flagship premium lane for broader reasoning, cleaner structure, and a fuller pass.' }
+      { title: 'Raghav Mobile+', text: 'Optimized for fast, everyday interactions with consistent clarity.' },
+      { title: 'Raghav Baan', text: 'Extended intelligence for deeper reasoning and complex queries.' }
     ]);
     permMini.textContent = 'Rs 39 · Full hidden layer access';
     permMini.style.display = 'block';
@@ -5507,12 +5507,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       localStorage.setItem('orbiton_model_guide', 'yes');
       showGuideCard({
         kicker: 'Model',
-        title: 'Choose the lane you want',
-        body: 'Raghav AI does not use one lane for everything. Beta stays quick, Baan goes deeper, and the app shortcuts when that is the smarter move.',
+        title: 'Designed for clarity and depth.',
+        body: 'Choose how the system responds.',
         points: [
-          { title: 'Raghav Beta', text: 'Open everyday lane for fast answers, clean definitions, and practical help.' },
-          { title: 'Raghav Baan', text: 'Premium flagship lane when you want stronger structure and a fuller pass.' },
-          { title: 'Shortcuts still win', text: 'Search, maps, shopping, and direct actions can jump straight to the useful place.' }
+          { title: 'Raghav Beta', text: 'Fast, reliable responses for everyday queries and clear understanding.' },
+          { title: 'Raghav Baan', text: 'Deeper reasoning for complex questions, structured thinking, and precision.' },
+          { title: 'Shortcuts still win', text: 'Search, maps, shopping, and direct actions can still jump straight to the useful place.' }
         ],
         primaryLabel: 'Open model',
         secondaryLabel: 'Later',
