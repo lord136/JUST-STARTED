@@ -2948,11 +2948,24 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!book || !book.id) return null;
     if (libraryBookAssets[book.id]) return libraryBookAssets[book.id];
     libraryBookAssets[book.id] = (async function() {
-      return resolvePdfAssetFromUrl(book.url, book.filename, {
+      var meta = {
         title: book.title,
         shareTitle: book.shareTitle || book.title,
         shareText: book.shareText || book.title
-      });
+      };
+      var tried = [];
+      var sources = [];
+      if (book.publicUrl) sources.push(book.publicUrl);
+      if (book.filename && /\.pdf$/i.test(book.filename)) sources.push(book.filename);
+      if (book.url) sources.push(book.url);
+      for (var i = 0; i < sources.length; i++) {
+        var source = sources[i];
+        if (!source || tried.indexOf(source) !== -1) continue;
+        tried.push(source);
+        var asset = await resolvePdfAssetFromUrl(source, book.filename, meta);
+        if (asset && asset.blob) return asset;
+      }
+      return resolvePdfAssetFromUrl(book.url, book.filename, meta);
     })();
     return libraryBookAssets[book.id];
   }
