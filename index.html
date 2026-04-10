@@ -2705,6 +2705,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   function buildPdfUrlCandidates(url) {
     var raw = String(url || '').trim().replace(/^\.\/+/, '');
     if (!raw) return [];
+    var rawFile = raw.split('/').pop() || raw;
     var bases = [];
     var docBase = document.baseURI || window.location.href;
     var originBase = window.location.origin ? (window.location.origin.replace(/\/+$/, '') + '/') : '';
@@ -2733,6 +2734,18 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       } catch (e) {}
       try {
         candidates.push(new URL('orbitron/' + raw.replace(/^\/+/, ''), base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL(rawFile, base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('./' + rawFile, base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('../' + rawFile, base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('orbitron/' + rawFile, base).href);
       } catch (e) {}
     });
     return Array.from(new Set(candidates.filter(Boolean)));
