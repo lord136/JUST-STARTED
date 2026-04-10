@@ -2056,7 +2056,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
     var message = error && error.message ? String(error.message) : '';
     if (/PREMIUM_REASONING_EXHAUSTED/i.test(message)) {
-      return "Your premium reasoning passes are finished for now. Mobile+, definitions, and quick routes still stay open.";
+      return "Deep reasoning session complete. Switching to alternate intelligence.";
     }
     if (/PREMIUM_REASONING_LOCKED/i.test(message)) {
       return "The deeper reasoning lane is paused after 10 free asks. Lighter help still stays open, and you can enter the premium layer later through Mobile+ or Raghav Baan if you want it.";
@@ -2070,7 +2070,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (/REMOTE_REASONING_NOT_CONFIGURED/i.test(message)) {
       return "The live AI server is not connected yet. Once the server URL is set, replies will come through here.";
     }
-    return "The live AI server is waking up right now. Keep this page open for a moment and ask again here.";
+    return "Calibrating response environment. Keep this session active and ask again shortly.";
   }
 
   async function getPremiumPaymentConfig() {
@@ -2702,6 +2702,77 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }, 420);
   }
 
+  function buildPdfUrlCandidates(url) {
+    var raw = String(url || '').trim().replace(/^\.\/+/, '');
+    if (!raw) return [];
+    var bases = [];
+    var docBase = document.baseURI || window.location.href;
+    var originBase = window.location.origin ? (window.location.origin.replace(/\/+$/, '') + '/') : '';
+    var pathBase = '';
+    try {
+      var path = window.location.pathname || '/';
+      pathBase = window.location.origin ? (window.location.origin.replace(/\/+$/, '') + path.replace(/[^/]*$/, '')) : '';
+    } catch (e) {}
+    [docBase, window.location.href, originBase, pathBase].forEach(function(base) {
+      if (base && bases.indexOf(base) === -1) bases.push(base);
+    });
+    var candidates = [];
+    bases.forEach(function(base) {
+      try {
+        candidates.push(new URL(raw, base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('./' + raw.replace(/^\/+/, ''), base).href);
+      } catch (e) {}
+    });
+    return Array.from(new Set(candidates.filter(Boolean)));
+  }
+
+  async function resolvePdfAssetFromUrl(url, filename, meta) {
+    var candidates = buildPdfUrlCandidates(url);
+    var lastError = null;
+    for (var i = 0; i < candidates.length; i++) {
+      var candidate = candidates[i];
+      try {
+        var response = await fetch(candidate, { cache: 'no-store' });
+        if (!response.ok) {
+          lastError = new Error('HTTP_' + response.status);
+          continue;
+        }
+        var blob = await response.blob();
+        var file = null;
+        try {
+          if (typeof File === 'function') {
+            file = new File([blob], filename, { type: 'application/pdf' });
+          }
+        } catch (e) {}
+        return {
+          blob: blob,
+          file: file,
+          filename: filename,
+          url: URL.createObjectURL(blob),
+          sourceUrl: candidate,
+          title: meta && meta.title ? meta.title : '',
+          shareTitle: meta && meta.shareTitle ? meta.shareTitle : '',
+          shareText: meta && meta.shareText ? meta.shareText : ''
+        };
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    return {
+      blob: null,
+      file: null,
+      filename: filename,
+      url: candidates[0] || url || '',
+      sourceUrl: candidates[0] || url || '',
+      title: meta && meta.title ? meta.title : '',
+      shareTitle: meta && meta.shareTitle ? meta.shareTitle : '',
+      shareText: meta && meta.shareText ? meta.shareText : '',
+      error: lastError ? lastError.message : 'PDF_NOT_FOUND'
+    };
+  }
+
   async function sharePdfAsset(asset, button, statusEl) {
     if (!asset || !asset.file || !navigator.share || !navigator.canShare || !navigator.canShare({ files: [asset.file] })) {
       if (statusEl) statusEl.textContent = 'Sharing is not supported here, so Raghav AI is saving the PDF instead.';
@@ -2716,8 +2787,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (statusEl) statusEl.textContent = 'Opening the share sheet...';
     try {
       await navigator.share({
-        title: asset.filename || 'Revision PDF',
-        text: 'Revision PDF from Raghav AI',
+        title: asset.shareTitle || asset.title || asset.filename || 'Raghav AI PDF',
+        text: asset.shareText || asset.title || 'Shared from Raghav AI',
         files: [asset.file]
       });
       if (statusEl) statusEl.textContent = 'Share sheet opened successfully.';
@@ -2739,7 +2810,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       return;
     }
     activePdfAsset = asset;
-    pdfTitle.textContent = (pack && pack.title) || 'Revision PDF preview';
+    pdfTitle.textContent = (pack && pack.title) || asset.title || 'PDF preview';
     pdfMeta.textContent = (asset.filename || 'Revision-Pack.pdf') + ' • preview inside Raghav AI';
     pdfPreviewFrame.src = asset.url + '#toolbar=0&navpanes=0&view=FitH';
     pdfSheet.style.display = 'flex';
@@ -2841,31 +2912,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   async function loadGiftBookAsset() {
     if (giftBookAssetPromise) return giftBookAssetPromise;
     giftBookAssetPromise = (async function() {
-      var absoluteUrl = new URL(GIFT_BOOK_URL, window.location.href).href;
-      try {
-        var response = await fetch(absoluteUrl, { cache: 'no-store' });
-        if (!response.ok) throw new Error('GIFT_BOOK_FETCH_FAILED');
-        var blob = await response.blob();
-        var file = null;
-        try {
-          if (typeof File === 'function') {
-            file = new File([blob], GIFT_BOOK_FILENAME, { type: 'application/pdf' });
-          }
-        } catch (e) {}
-        return {
-          blob: blob,
-          file: file,
-          filename: GIFT_BOOK_FILENAME,
-          url: URL.createObjectURL(blob)
-        };
-      } catch (e) {
-        return {
-          blob: null,
-          file: null,
-          filename: GIFT_BOOK_FILENAME,
-          url: absoluteUrl
-        };
-      }
+      return resolvePdfAssetFromUrl(GIFT_BOOK_URL, GIFT_BOOK_FILENAME, {
+        title: 'AI Mini Book by Prem',
+        shareTitle: 'AI Mini Book by Prem',
+        shareText: 'AI Mini Book by Prem'
+      });
     })();
     return giftBookAssetPromise;
   }
@@ -2874,31 +2925,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!book || !book.id) return null;
     if (libraryBookAssets[book.id]) return libraryBookAssets[book.id];
     libraryBookAssets[book.id] = (async function() {
-      var absoluteUrl = new URL(book.url, window.location.href).href;
-      try {
-        var response = await fetch(absoluteUrl, { cache: 'no-store' });
-        if (!response.ok) throw new Error('LIBRARY_BOOK_FETCH_FAILED');
-        var blob = await response.blob();
-        var file = null;
-        try {
-          if (typeof File === 'function') {
-            file = new File([blob], book.filename, { type: 'application/pdf' });
-          }
-        } catch (e) {}
-        return {
-          blob: blob,
-          file: file,
-          filename: book.filename,
-          url: URL.createObjectURL(blob)
-        };
-      } catch (e) {
-        return {
-          blob: null,
-          file: null,
-          filename: book.filename,
-          url: absoluteUrl
-        };
-      }
+      return resolvePdfAssetFromUrl(book.url, book.filename, {
+        title: book.title,
+        shareTitle: book.shareTitle || book.title,
+        shareText: book.shareText || book.title
+      });
     })();
     return libraryBookAssets[book.id];
   }
@@ -5825,7 +5856,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function getResumeRouteReply() {
-    return '**Resume Route**\nFor a serious resume, it is better to use the right lane for the outcome you want.\n\nTry one of these:\n1. Antigravity for a design-first resume\n2. Claude AI for balanced polish\n3. Codex for deeper detailed drafting';
+    return '**Resume Route**\nThis system is optimized for revision and study workflows.\n\nTry one of these:\n1. Antigravity for a design-first resume\n2. Claude AI for balanced polish\n3. Codex for deeper detailed drafting';
   }
 
   intents = intents.map(function(intent) {
