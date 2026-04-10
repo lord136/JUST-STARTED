@@ -515,10 +515,25 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .pdf-meta{font-size:.76rem;color:rgba(255,255,255,.55)}
 .pdf-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .pdf-btn{padding:11px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;font-size:.82rem;font-family:inherit;cursor:pointer}
-.pdf-btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:rgba(96,165,250,.4)}
+.pdf-btn.primary{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:rgba(96,165,250,.4);box-shadow:0 12px 26px rgba(59,130,246,.22),0 0 0 1px rgba(255,255,255,.06) inset}
+.pdf-btn.primary.shine{background:linear-gradient(90deg,#60a5fa 0%,#dbeafe 20%,#93c5fd 50%,#eff6ff 78%,#60a5fa 100%);background-size:220% 100%;animation:pdfShine 3s linear infinite;color:#0b1020}
 .pdf-btn:disabled{opacity:.6;cursor:default}
-.pdf-frame{flex:1;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:#111;overflow:hidden}
-.pdf-frame iframe{width:100%;height:100%;border:none;background:#fff}
+.pdf-frame{position:relative;flex:1;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:#111;overflow:hidden}
+.pdf-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:none;background:#fff}
+.pdf-fallback{display:none;position:absolute;inset:0;align-items:center;justify-content:center;padding:22px;background:radial-gradient(circle at top,rgba(96,165,250,.15),transparent 40%),linear-gradient(180deg,#19181d,#101014)}
+.pdf-fallback-card{width:min(100%,420px);padding:22px;border-radius:22px;border:1px solid rgba(255,255,255,.1);background:rgba(17,17,22,.92);box-shadow:0 25px 60px rgba(0,0,0,.35)}
+.pdf-fallback-kicker{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.3);color:#dbeafe;font-size:.68rem;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:14px}
+.pdf-fallback-title{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.25;margin-bottom:8px}
+.pdf-fallback-copy{font-size:.82rem;line-height:1.5;color:rgba(255,255,255,.62);margin-bottom:18px}
+.pdf-fallback-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pdf-fallback-chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.74);font-size:.72rem}
+.pdf-fallback-chip strong{color:#fff}
+.pdf-fallback-actions{display:flex;gap:10px}
+.pdf-fallback-open{flex:1;padding:13px 16px;border:0;border-radius:16px;background:linear-gradient(180deg,#93c5fd,#60a5fa);color:#0b1020;font-size:.86rem;font-weight:800;cursor:pointer;box-shadow:0 12px 26px rgba(96,165,250,.35),0 0 0 1px rgba(255,255,255,.12) inset}
+.pdf-fallback-open:hover{filter:brightness(1.03)}
+.pdf-fallback-open.shine{background:linear-gradient(90deg,#7dd3fc 0%,#dbeafe 22%,#93c5fd 50%,#e0f2fe 78%,#7dd3fc 100%);background-size:200% 100%;animation:pdfShine 2.8s linear infinite}
+.pdf-fallback-close{padding:13px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;cursor:pointer}
+@keyframes pdfShine{0%{background-position:0 50%}100%{background-position:200% 50%}}
 .pdf-note{font-size:.74rem;color:rgba(255,255,255,.5)}
 .pdf-status{font-size:.72rem;color:#c4b5fd}
 .library-sheet{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
@@ -1033,8 +1048,23 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     </div>
     <div class="pdf-frame">
       <iframe id="pdfPreviewFrame" title="Revision PDF preview"></iframe>
+      <div class="pdf-fallback" id="pdfFallback">
+        <div class="pdf-fallback-card">
+          <div class="pdf-fallback-kicker">Open via Share</div>
+          <div class="pdf-fallback-title" id="pdfFallbackTitle">Preview not available on your device</div>
+          <div class="pdf-fallback-copy" id="pdfFallbackCopy">Use the Share button to open the PDF in your browser or pass it to another app when preview support is limited.</div>
+          <div class="pdf-fallback-meta">
+            <div class="pdf-fallback-chip" id="pdfFallbackMeta">Share-first access</div>
+            <div class="pdf-fallback-chip">Best on mobile</div>
+          </div>
+          <div class="pdf-fallback-actions">
+            <button class="pdf-fallback-open shine" id="pdfFallbackOpen">Open via Share</button>
+            <button class="pdf-fallback-close" id="pdfFallbackClose">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="pdf-note" id="pdfNote">If sharing is limited on your browser, Raghav AI will fall back to a file download.</div>
+    <div class="pdf-note" id="pdfNote">If your device cannot show a preview, Raghav AI will switch to a clean share-first view.</div>
     <div class="pdf-status" id="pdfStatus"></div>
   </div>
 </div>
@@ -2846,16 +2876,37 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function openPdfPreview(asset, pack) {
-    if (!pdfSheet || !pdfPreviewFrame || !asset || !asset.url) {
+    if (!pdfSheet || !asset || !asset.url) {
       mobileOpen(asset && asset.url ? asset.url : '');
       return;
     }
     activePdfAsset = asset;
     pdfTitle.textContent = (pack && pack.title) || asset.title || 'PDF preview';
-    pdfMeta.textContent = (asset.filename || 'Revision-Pack.pdf') + ' • preview inside Raghav AI';
-    pdfPreviewFrame.src = asset.url + '#toolbar=0&navpanes=0&view=FitH';
+    pdfMeta.textContent = (asset.filename || 'Revision-Pack.pdf') + ' • open via share inside Raghav AI';
     pdfSheet.style.display = 'flex';
-    updatePdfStatus('Preview ready. Share it when you want.');
+    var fallbackMode = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && Math.min(window.innerWidth, window.innerHeight) < 1025);
+    if (fallbackMode) {
+      if (pdfPreviewFrame) pdfPreviewFrame.src = 'about:blank';
+      if (pdfFallback) pdfFallback.style.display = 'flex';
+      if (pdfDownloadBtn) {
+        pdfDownloadBtn.textContent = 'Open via Share';
+        pdfDownloadBtn.classList.add('shine');
+      }
+      if (pdfFallbackTitle) pdfFallbackTitle.textContent = 'Preview not available on your device';
+      if (pdfFallbackCopy) pdfFallbackCopy.textContent = 'Use the Share button to open the PDF or pass it to another app when preview support is limited.';
+      if (pdfFallbackMeta) pdfFallbackMeta.innerHTML = '<strong>' + ((asset.filename || asset.title || 'PDF').replace(/\.pdf$/i, '')) + '</strong> · Share-first access';
+      if (pdfFallbackOpen) pdfFallbackOpen.onclick = function() { sharePdfAsset(asset, pdfFallbackOpen, pdfStatus); };
+      if (pdfFallbackClose) pdfFallbackClose.onclick = function() { closePdfPreview(); };
+      updatePdfStatus('Share-first view opened.');
+    } else {
+      if (pdfFallback) pdfFallback.style.display = 'none';
+      if (pdfDownloadBtn) {
+        pdfDownloadBtn.textContent = 'Share it';
+        pdfDownloadBtn.classList.remove('shine');
+      }
+      if (pdfPreviewFrame) pdfPreviewFrame.src = asset.url + '#toolbar=0&navpanes=0&view=FitH';
+      updatePdfStatus('Preview ready. Share it when you want.');
+    }
   }
 
   var giftBookAssetPromise = null;
@@ -4702,6 +4753,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var pdfTitle = document.getElementById('pdfTitle');
   var pdfMeta = document.getElementById('pdfMeta');
   var pdfPreviewFrame = document.getElementById('pdfPreviewFrame');
+  var pdfFallback = document.getElementById('pdfFallback');
+  var pdfFallbackTitle = document.getElementById('pdfFallbackTitle');
+  var pdfFallbackCopy = document.getElementById('pdfFallbackCopy');
+  var pdfFallbackMeta = document.getElementById('pdfFallbackMeta');
+  var pdfFallbackOpen = document.getElementById('pdfFallbackOpen');
+  var pdfFallbackClose = document.getElementById('pdfFallbackClose');
   var pdfDownloadBtn = document.getElementById('pdfDownloadBtn');
   var pdfShareBtn = document.getElementById('pdfShareBtn');
   var pdfCloseBtn = document.getElementById('pdfCloseBtn');
@@ -5223,6 +5280,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (!pdfSheet) return;
     pdfSheet.style.display = 'none';
     if (pdfPreviewFrame) pdfPreviewFrame.src = 'about:blank';
+    if (pdfFallback) pdfFallback.style.display = 'none';
   }
 
   function updatePdfStatus(message) {
