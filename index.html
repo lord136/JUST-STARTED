@@ -632,20 +632,20 @@ body[data-theme="light"] .lane-item.upload{border-color:rgba(245,158,11,.18);bac
   .chat-frame.engaged{padding-top:8px}
   .chat-frame.engaged::before{display:block;content:'';position:absolute;top:0;left:0;right:0;height:24px;background:linear-gradient(180deg,rgba(0,0,0,.92),rgba(0,0,0,.4) 48%,rgba(0,0,0,0));filter:blur(12px);opacity:.95;pointer-events:none;z-index:1}
   .chat-frame.engaged .chat-hdr{margin-top:-2px;padding:0 2px 10px}
-  .chat-compose{padding-bottom:max(0px,var(--composer-safe-bottom,0px))}
+  .chat-compose{padding-bottom:max(0px,env(safe-area-inset-bottom))}
   .px-bar{border-radius:24px}
   .suggest-row{bottom:calc(100% + 12px);max-height:min(132px,24vh);padding:10px}
   body.chat-input-active.keyboard-open .chat-compose{
     position:fixed;
     left:50%;
     transform:translateX(-50%);
-    bottom:calc(var(--composer-safe-bottom,0px) + 6px);
+    bottom:max(6px,env(safe-area-inset-bottom));
     width:min(860px,calc(100vw - 24px));
     padding-bottom:0;
     z-index:60;
   }
   body.chat-input-active.keyboard-open .chat-shell{
-    padding-bottom:calc(var(--composer-safe-bottom,0px) + 136px);
+    padding-bottom:136px;
   }
   .lane-menu{width:min(292px,calc(100vw - 36px));left:-10px}
   .chat-log{padding:0 2px 8px 2px}
@@ -2347,7 +2347,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var keyboardOffset = viewport ? Math.max(0, Math.round((window.innerHeight || height) - viewport.height - viewport.offsetTop)) : 0;
     var composerFocused = document.activeElement === chatIn;
     var keyboardOpen = composerFocused && keyboardOffset > 70;
-    document.documentElement.style.setProperty('--composer-safe-bottom', (keyboardOpen ? Math.min(keyboardOffset, 320) : 0) + 'px');
+    document.documentElement.style.setProperty('--composer-safe-bottom', '0px');
     document.body.classList.toggle('keyboard-open', keyboardOpen);
     updateComposerMetrics();
     if (keyboardOpen) lockRootScrollPosition(260);
