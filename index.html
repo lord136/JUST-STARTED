@@ -2709,11 +2709,15 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var docBase = document.baseURI || window.location.href;
     var originBase = window.location.origin ? (window.location.origin.replace(/\/+$/, '') + '/') : '';
     var pathBase = '';
+    var nestedBase = '';
     try {
       var path = window.location.pathname || '/';
       pathBase = window.location.origin ? (window.location.origin.replace(/\/+$/, '') + path.replace(/[^/]*$/, '')) : '';
+      if (window.location.origin) {
+        nestedBase = window.location.origin.replace(/\/+$/, '') + '/orbitron/';
+      }
     } catch (e) {}
-    [docBase, window.location.href, originBase, pathBase].forEach(function(base) {
+    [docBase, window.location.href, originBase, pathBase, nestedBase].forEach(function(base) {
       if (base && bases.indexOf(base) === -1) bases.push(base);
     });
     var candidates = [];
@@ -2723,6 +2727,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       } catch (e) {}
       try {
         candidates.push(new URL('./' + raw.replace(/^\/+/, ''), base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('../' + raw.replace(/^\/+/, ''), base).href);
+      } catch (e) {}
+      try {
+        candidates.push(new URL('orbitron/' + raw.replace(/^\/+/, ''), base).href);
       } catch (e) {}
     });
     return Array.from(new Set(candidates.filter(Boolean)));
