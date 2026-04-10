@@ -5370,7 +5370,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       return;
     }
     if (!currentSignedInUser) {
-      if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
+      if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate(false, true);
       return;
     }
     premiumUnlockInFlight = true;
@@ -5523,7 +5523,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       if (this.classList.contains('locked') || this.dataset.model === 'Raghav Baan') {
         closeAllPopups();
         if (!currentSignedInUser) {
-          if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
+          if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate(false, true);
           return;
         }
         if (this.dataset.model === 'Raghav Baan' && (premiumUnlocked || hasStoredPremiumAccess())) {
@@ -5602,7 +5602,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     e.stopPropagation();
     closeAllPopups();
     if (!currentSignedInUser) {
-      if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
+      if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate(false, true);
       return;
     }
     if (messagingAllowed) {
@@ -6123,22 +6123,22 @@ function hideAuthSheet(rememberDismissal) {
   authSheet.classList.remove('show');
 }
 
-function showAuthSheet(forceLocked) {
+function showAuthSheet(forceLocked, bypassDismissal) {
   if (forceLocked) {
     authSheet.classList.add('must-login');
   } else {
     authSheet.classList.remove('must-login');
   }
   let dismissed = false;
-  if (!forceLocked) {
+  if (!forceLocked && !bypassDismissal) {
     try { dismissed = sessionStorage.getItem('raghav_auth_sheet_dismissed') === 'yes'; } catch (e) {}
     if (dismissed) return;
   }
   authSheet.classList.add('show');
 }
 
-window.openRaghavAuthGate = function() {
-  showAuthSheet(false);
+window.openRaghavAuthGate = function(forceLocked, bypassDismissal) {
+  showAuthSheet(!!forceLocked, !!bypassDismissal);
 };
 
 try {
@@ -6411,7 +6411,7 @@ authBtn.addEventListener('click', function() {
     showAuthFeedback('This file preview keeps the UI open only. Use https://www.raghavam.in for sign-in, premium, and live backend behavior.');
     return;
   }
-  showAuthSheet(false);
+  showAuthSheet(false, true);
 });
 
 authSheetPrimary.addEventListener('click', function() {
