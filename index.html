@@ -4955,7 +4955,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       if (nextLane === 'default') {
         streamReply('You are back to the default lane. I will keep responses broad, clean, and fast.');
       } else {
-        streamReply('Switched to the ' + nextLane + ' lane. Suggestions are now tuned for that domain.');
+        streamReply('Switched to the ' + nextLane + ' domain. Suggestions are now tuned for that domain.');
       }
     }
     updateSuggestions();
@@ -5408,9 +5408,18 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
               } catch (accountError) {}
             }
             if (!accountAttached) {
-              permYes.disabled = false;
-              permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39';
-              streamReply('Payment was received, but premium is not attached to this signed-in account yet. It will not follow the same email to another phone until account sync is enabled on the server.');
+              var localEntitlements = syncedEntitlements || (verified && verified.entitlements) || {};
+              await markPremiumUnlocked({
+                premiumUnlocked: true,
+                mobilePlusUnlocked: true,
+                premiumReasoningCredits: Math.max(0, Number(localEntitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
+              });
+              applyPremiumState({
+                premiumUnlocked: true,
+                messagingAllowed: true,
+                preserveStoredAccess: true,
+                premiumReasoningCredits: Math.max(0, Number(localEntitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
+              });
               return;
             }
             await markPremiumUnlocked(syncedEntitlements || verified || response);
