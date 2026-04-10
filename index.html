@@ -453,7 +453,8 @@ body.chat-input-active.keyboard-open .search-stage-copy{opacity:.14;transform:tr
 
 /* PERMISSION SHEET (iOS style) */
 .perm-sheet{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.56);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .2s ease}
-.perm-box{width:min(100%,390px);background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(15,15,18,.94));border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:18px 18px 18px;animation:popIn .28s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);position:relative;overflow:hidden}
+.perm-box{width:min(100%,390px);max-height:min(88vh,760px);background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(15,15,18,.94));border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:18px 18px 18px;animation:popIn .28s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);position:relative;overflow:auto;scrollbar-width:none}
+.perm-box::-webkit-scrollbar{display:none}
 .perm-box::before{content:'';position:absolute;inset:-80px auto auto -60px;width:180px;height:180px;background:radial-gradient(circle,rgba(59,130,246,.18),transparent 70%);pointer-events:none}
 .perm-hero{height:112px;border-radius:22px;margin:-2px -2px 16px;background:
 radial-gradient(circle at 22% 16%,rgba(255,255,255,.95),transparent 20%),
@@ -468,7 +469,6 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-box p{font-size:.82rem;color:rgba(255,255,255,.58);text-align:center;line-height:1.52;margin-bottom:14px;position:relative}
 .perm-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px;position:relative;align-items:stretch}
 .perm-point{padding:12px 12px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.07);min-height:104px}
-.perm-points .perm-point:last-child:nth-child(odd){grid-column:1 / -1;justify-self:center;width:min(72%,228px)}
 .perm-point strong{display:block;font-size:.8rem;font-weight:600;letter-spacing:-.2px}
 .perm-point span{display:block;margin-top:4px;font-size:.73rem;line-height:1.42;color:rgba(255,255,255,.5)}
 .perm-mini{font-size:.72rem;color:rgba(255,255,255,.42);text-align:center;line-height:1.42;margin-bottom:14px;position:relative}
@@ -478,7 +478,7 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-yes:active{transform:scale(.97)}
 .perm-yes.perm-upgrade{background:linear-gradient(180deg,#f8e7a1,#d4a43a 42%,#9a6a11);color:#241700;box-shadow:0 18px 38px rgba(212,164,58,.28),inset 0 1px 0 rgba(255,255,255,.34)}
 .perm-yes.perm-upgrade:hover{box-shadow:0 22px 42px rgba(212,164,58,.38),inset 0 1px 0 rgba(255,255,255,.42)}
-.perm-no{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.6);font-weight:500;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:pointer}
+.perm-no{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.7);font-weight:600;font-size:.85rem;border:1px solid rgba(255,255,255,.08);cursor:pointer}
 .auth-sheet{position:fixed;inset:0;z-index:9997;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:fadeIn .2s ease}
 .auth-sheet.show{display:flex}
 .auth-sheet.must-login .auth-secondary{display:none}
@@ -637,11 +637,22 @@ body[data-theme="light"] .lane-item.upload{border-color:rgba(245,158,11,.18);bac
   body[data-landing-page="1"] .ib{bottom:max(104px,calc(env(safe-area-inset-bottom) + 94px))}
 .perm-points{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .perm-point{min-height:96px}
-.perm-points .perm-point:last-child:nth-child(odd){width:min(78%,244px)}
   .auth-points{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 @media (max-width: 420px){
+  .perm-sheet{padding:14px}
+  .perm-box{max-height:min(90vh,720px);padding:16px 14px 14px;border-radius:24px}
+  .perm-hero{height:96px;margin:-2px -2px 14px}
+  .perm-box h3{font-size:.98rem}
+  .perm-box p{font-size:.78rem;margin-bottom:12px}
+  .perm-points{gap:8px}
+  .perm-point{padding:11px 10px;min-height:88px}
+  .perm-point strong{font-size:.76rem}
+  .perm-point span{font-size:.7rem;line-height:1.36}
+  .perm-mini{margin-bottom:12px}
+  .perm-actions{position:sticky;bottom:0;padding-top:6px;background:linear-gradient(180deg,rgba(15,15,18,0),rgba(15,15,18,.94) 22%)}
+  .perm-no{padding:11px}
   .install-pill-top{padding:0 10px;font-size:.7rem}
   .install-pill-top span{max-width:74px}
 }
@@ -2129,6 +2140,13 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       throw new Error(data && (data.error || data.details) ? (data.error || data.details) : 'ACCOUNT_STATUS_FAILED');
     }
     return data;
+  }
+
+  async function getVerifiedAccountEntitlements(user, forceRefresh) {
+    if (!user || typeof user.getIdToken !== 'function') return null;
+    var idToken = await user.getIdToken(!!forceRefresh);
+    var serverStatus = await getRemoteAccountStatus(idToken);
+    return serverStatus && serverStatus.entitlements ? serverStatus.entitlements : null;
   }
 
   async function requestRevisionPack(text) {
@@ -4963,7 +4981,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     try {
       if (premiumUnlocked) return true;
       if (currentSignedInUser && currentSignedInUser.uid && localStorage.getItem('raghav_premium_user_' + currentSignedInUser.uid) === 'yes') return true;
-      if (localStorage.getItem('raghav_premium_unlocked') === 'yes') return true;
     } catch (e) {}
     return false;
   }
@@ -5100,7 +5117,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       }
     }
     if (premiumUnlocked) {
-      localStorage.setItem('raghav_premium_unlocked', 'yes');
       if (messagingAllowed) localStorage.setItem('orbiton_msg', 'yes');
       if (hasCreditsUpdate) {
         setPremiumReasoningCredits(options.premiumReasoningCredits);
@@ -5108,7 +5124,6 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         hydrateReasoningCreditsFromStorage();
       }
     } else {
-      if (!preserveStoredAccess) localStorage.removeItem('raghav_premium_unlocked');
       localStorage.removeItem('orbiton_msg');
       setPremiumReasoningCredits(0);
       if (activeModel === 'Raghav Baan') activeModel = 'Raghav Beta';
@@ -5234,19 +5249,18 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       : 'Unlock the hidden layer.';
     permBody.textContent = mode === 'reasoning-limit'
       ? 'Continue with the standard intelligence or upgrade for the extended path.'
-      : 'One unlock opens the mini agent, the flagship lane, and the deeper reasoning passes.';
+      : 'One unlock opens the mini agent and the flagship lane in one clean step.';
     permBody.style.display = 'block';
     renderExperimentalPoints([
       { title: 'Mobile+', text: 'Unlock the hidden mini agent that prepares revision PDFs, action routes, and faster next steps.' },
-      { title: 'Raghav Baan', text: 'Unlock the flagship premium lane for broader reasoning, cleaner structure, and a fuller pass.' },
-      { title: 'Deep reasoning access', text: 'Deep questions move through the live lane, while lighter routes stay clean and fast.' }
+      { title: 'Raghav Baan', text: 'Unlock the flagship premium lane for broader reasoning, cleaner structure, and a fuller pass.' }
     ]);
-      permMini.textContent = 'Rs 39 · Full hidden layer access';
+    permMini.textContent = 'Rs 39 · Full hidden layer access';
     permMini.style.display = 'block';
     permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (mode === 'reasoning-limit' ? 'Upgrade Now' : (lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39'));
     permYes.classList.toggle('perm-upgrade', mode === 'reasoning-limit' && !alreadyUnlocked);
     permYes.disabled = !!alreadyUnlocked;
-    permNo.textContent = 'Not Now';
+    permNo.textContent = mode === 'reasoning-limit' ? 'Stay on standard' : 'Maybe later';
 
     permSheet.style.display = 'flex';
   }
@@ -5385,15 +5399,27 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
               firebase_uid: currentSignedInUser && currentSignedInUser.uid ? currentSignedInUser.uid : '',
               firebase_email: currentSignedInUser && currentSignedInUser.email ? currentSignedInUser.email : ''
             });
-            await markPremiumUnlocked(verified && verified.entitlements ? verified.entitlements : response);
-            if (verified && verified.entitlements && (verified.entitlements.premiumUnlocked || verified.entitlements.mobilePlusUnlocked || verified.claimsApplied)) {
-              applyPremiumState({
-                premiumUnlocked: true,
-                messagingAllowed: true,
-                preserveStoredAccess: true,
-                premiumReasoningCredits: Math.max(0, Number(verified.entitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
-              });
+            var syncedEntitlements = verified && verified.entitlements ? verified.entitlements : null;
+            var accountAttached = !!(verified && verified.claimsApplied && syncedEntitlements && syncedEntitlements.premiumUnlocked);
+            if (!accountAttached && currentFirebaseUser) {
+              try {
+                syncedEntitlements = await getVerifiedAccountEntitlements(currentFirebaseUser, true);
+                accountAttached = !!(syncedEntitlements && syncedEntitlements.premiumUnlocked);
+              } catch (accountError) {}
             }
+            if (!accountAttached) {
+              permYes.disabled = false;
+              permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39';
+              streamReply('Payment was received, but premium is not attached to this signed-in account yet. It will not follow the same email to another phone until account sync is enabled on the server.');
+              return;
+            }
+            await markPremiumUnlocked(syncedEntitlements || verified || response);
+            applyPremiumState({
+              premiumUnlocked: true,
+              messagingAllowed: true,
+              preserveStoredAccess: true,
+              premiumReasoningCredits: Math.max(0, Number((syncedEntitlements && syncedEntitlements.premiumReasoningCredits) || DEFAULT_PREMIUM_REASONING_CREDITS))
+            });
           } catch (verifyError) {
             streamReply('Payment came through, but verification did not complete yet. Please try once more in a moment.');
           } finally {
