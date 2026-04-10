@@ -11,23 +11,23 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Raghav AI">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="Raghav AI is a phone-first AI assistant with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
+<meta name="description" content="Raghav AI is an intelligent knowledge system with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://www.raghavam.in/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Raghav AI | Phone-First AI Assistant">
-<meta property="og:description" content="Phone-first AI with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
+<meta property="og:title" content="Raghav AI | An Intelligent Knowledge System">
+<meta property="og:description" content="Intelligent knowledge system with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta property="og:url" content="https://www.raghavam.in/">
 <meta property="og:site_name" content="Raghav AI">
 <meta property="og:image" content="https://www.raghavam.in/icon-512.svg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Raghav AI | Phone-First AI Assistant">
-<meta name="twitter:description" content="Phone-first AI with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
+<meta name="twitter:title" content="Raghav AI | An Intelligent Knowledge System">
+<meta name="twitter:description" content="Intelligent knowledge system with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta name="twitter:image" content="https://www.raghavam.in/icon-512.svg">
 <link rel="icon" type="image/svg+xml" sizes="any" href="icon-192.svg">
 <link rel="shortcut icon" href="icon-192.svg">
 <link rel="apple-touch-icon" href="icon-512.svg">
-<title>Raghav AI | Phone-First AI Assistant</title>
+<title>Raghav AI | An Intelligent Knowledge System</title>
 <script>
 window.__RAGHAV_LOCAL_FILE_PREVIEW__ = window.location.protocol === 'file:';
 if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
@@ -70,7 +70,7 @@ if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
         "@type": "Person",
         "name": "Prem Peswani"
       },
-      "description": "Phone-first AI assistant with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane."
+        "description": "Intelligent knowledge system with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane."
     }
   ]
 }
@@ -79,10 +79,12 @@ if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#000;--text:#fff;--muted:rgba(255,255,255,.45);--glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--hborder:rgba(255,255,255,.2);--cardhov:rgba(255,255,255,.06);--btnbg:#fff;--btntxt:#000;--app-height:100vh;--composer-safe-bottom:0px;--chat-bottom-clearance:168px}
+:root{--bg:#000;--text:#fff;--muted:rgba(255,255,255,.45);--glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--hborder:rgba(255,255,255,.2);--cardhov:rgba(255,255,255,.06);--btnbg:#fff;--btntxt:#000;--app-height:100dvh;--composer-safe-bottom:0px;--chat-bottom-clearance:168px}
+@supports not (height: 100dvh){:root{--app-height:100svh}}
+@supports not (height: 100svh){:root{--app-height:100vh}}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;height:100%;width:100%;overflow:hidden}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;position:fixed;inset:0;width:100%;height:var(--app-height);min-height:0;overscroll-behavior-y:none;transition:background .25s ease,color .25s ease}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;position:relative;width:100%;height:var(--app-height);min-height:var(--app-height);overscroll-behavior:none;transition:background .25s ease,color .25s ease}
 body.launching{overflow:hidden}
 body::before,body::after{content:'';position:fixed;pointer-events:none;opacity:0;transition:opacity .45s ease;z-index:0}
 body.mobile-live::before{top:-18vh;left:-12vw;width:48vw;height:48vw;min-width:340px;min-height:340px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.18),rgba(124,58,237,.1) 34%,transparent 68%);filter:blur(22px);opacity:.95;animation:mobileAuraDrift 11s ease-in-out infinite}
@@ -130,8 +132,10 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .nav-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px)}
 .nav-btn:hover{background:rgba(255,255,255,.08);transform:scale(1.05)}
 .nav-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.install-pill-top{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(124,58,237,.34);background:linear-gradient(135deg,rgba(37,99,235,.2),rgba(124,58,237,.24));color:#eef4ff;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s;backdrop-filter:blur(14px);font-family:inherit;font-size:.78rem;font-weight:600;letter-spacing:-.2px;box-shadow:0 12px 30px rgba(37,99,235,.14),0 10px 24px rgba(124,58,237,.12)}
-.install-pill-top:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(59,130,246,.26),rgba(139,92,246,.3));border-color:rgba(167,139,250,.48);box-shadow:0 18px 36px rgba(37,99,235,.18),0 12px 28px rgba(124,58,237,.16)}
+.install-pill-top{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(245,191,36,.42);background:linear-gradient(135deg,rgba(245,158,11,.28),rgba(250,204,21,.18) 46%,rgba(180,83,9,.18));color:#fff8dd;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s,filter .25s;backdrop-filter:blur(14px);font-family:inherit;font-size:.78rem;font-weight:700;letter-spacing:-.15px;box-shadow:0 14px 32px rgba(245,158,11,.22),0 10px 24px rgba(161,98,7,.16),inset 0 1px 0 rgba(255,244,200,.34);position:relative;overflow:hidden}
+.install-pill-top::before{content:'';position:absolute;inset:1px;border-radius:inherit;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.18) 22%,transparent 44%);transform:translateX(-135%);transition:transform .7s ease;pointer-events:none}
+.install-pill-top:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(251,191,36,.34),rgba(250,204,21,.22) 46%,rgba(180,83,9,.2));border-color:rgba(252,211,77,.58);box-shadow:0 18px 36px rgba(245,158,11,.28),0 12px 28px rgba(161,98,7,.18),inset 0 1px 0 rgba(255,251,220,.4);filter:saturate(1.04)}
+.install-pill-top:hover::before{transform:translateX(135%)}
 .install-pill-top[hidden]{display:none}
 .install-pill-top svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .auth-corner{position:fixed;top:16px;left:20px;z-index:200}
@@ -256,7 +260,7 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .px-bar:focus-within{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.05));box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
 .px-input{width:100%;background:transparent;border:none;color:#fff;font-family:inherit;font-size:.95rem;resize:none;outline:none;min-height:44px;padding:4px 4px}
 .px-input::placeholder{color:rgba(255,255,255,.25)}
-.suggest-row{display:flex;flex-wrap:wrap;gap:10px;padding:0;position:absolute;left:0;right:0;bottom:calc(100% + 12px);max-height:min(156px,28vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.suggest-row{display:flex;flex-wrap:wrap;gap:10px;padding:12px;position:absolute;left:0;right:0;bottom:calc(100% + 12px);max-height:min(156px,28vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(8,12,22,.84),rgba(5,8,16,.72));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 20px 50px rgba(0,0,0,.32);z-index:20}
 .suggest-row::-webkit-scrollbar{display:none}
 .suggest-row[hidden]{display:none!important}
 .suggest-chip{--chip-bg:rgba(255,255,255,.05);--chip-border:rgba(255,255,255,.08);--chip-text:rgba(255,255,255,.78);--chip-shadow:inset 0 1px 0 rgba(255,255,255,.04);--chip-hover-bg:rgba(255,255,255,.1);padding:8px 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-text);font-size:.74rem;line-height:1;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease;font-family:inherit;box-shadow:var(--chip-shadow)}
@@ -270,6 +274,17 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .suggest-chip.premium.tone-emerald{--chip-bg:linear-gradient(135deg,rgba(16,185,129,.24),rgba(14,165,233,.14));--chip-border:rgba(110,231,183,.32);--chip-shadow:0 12px 26px rgba(5,150,105,.18),inset 0 1px 0 rgba(255,255,255,.1);--chip-hover-bg:linear-gradient(135deg,rgba(16,185,129,.32),rgba(14,165,233,.2))}
 .px-controls{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
 .px-left,.px-right{display:flex;align-items:center;gap:6px}
+.lane-launch{position:relative;display:flex;align-items:center}
+.px-btn-lane{min-width:84px;padding:0 14px;border:1px solid rgba(196,181,253,.22);background:linear-gradient(180deg,rgba(168,85,247,.22),rgba(88,28,135,.18));color:#f5edff;font-family:'Space Grotesk','Inter',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.02em;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(124,58,237,.14),inset 0 1px 0 rgba(255,255,255,.06)}
+.px-btn-lane:hover{background:linear-gradient(180deg,rgba(168,85,247,.32),rgba(88,28,135,.24));border-color:rgba(196,181,253,.38);color:#fff}
+.lane-menu{position:absolute;left:0;bottom:calc(100% + 12px);width:min(320px,calc(100vw - 48px));padding:10px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(9,12,20,.95),rgba(6,9,16,.9));box-shadow:0 22px 54px rgba(0,0,0,.34);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:none;flex-direction:column;gap:8px;z-index:44}
+.lane-menu.open{display:flex}
+.lane-item{padding:10px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));color:#fff;text-align:left;font:inherit;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.lane-item:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03))}
+.lane-item strong{display:block;font-size:.8rem;font-weight:700;letter-spacing:-.02em}
+.lane-item span{display:block;margin-top:4px;font-size:.69rem;line-height:1.38;color:rgba(255,255,255,.58)}
+.lane-item.active{border-color:rgba(96,165,250,.28);background:linear-gradient(180deg,rgba(37,99,235,.18),rgba(255,255,255,.03))}
+.lane-item.upload{border-color:rgba(245,158,11,.18);background:linear-gradient(180deg,rgba(245,158,11,.14),rgba(255,255,255,.03))}
 .px-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 10px;border-radius:15px;background:transparent;border:none;color:rgba(255,255,255,.5);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
 .px-btn:hover{background:rgba(255,255,255,.08);color:#fff}
 .px-btn svg{width:14px;height:14px;fill:currentColor}
@@ -293,10 +308,10 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .hidden-file{display:none}
 
 /* LANDING DECK */
-.landing-deck{position:relative;z-index:1;width:100%;height:100%;min-height:100%;overflow:hidden}
-.landing-track{display:flex;width:100%;height:100%;overflow:hidden;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.16,1,.3,1);will-change:transform}
-.landing-page{position:relative;flex:0 0 100%;width:100%;max-width:100%;height:100%;min-height:100%;padding:96px 24px 54px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.landing-deck .rv{opacity:1;transform:none;transition:none}
+.landing-deck{position:fixed;inset:0;z-index:1;width:100%;height:var(--app-height);min-height:var(--app-height);overflow:hidden}
+.landing-track{display:flex;width:200%;height:100%;overflow:hidden;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.16,1,.3,1);will-change:transform}
+.landing-page{position:relative;flex:0 0 50%;width:50%;max-width:50%;height:var(--app-height);min-height:var(--app-height);padding:96px 24px 54px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.landing-deck .rv{opacity:1!important;transform:none!important;transition:none!important}
 .landing-deck.reel-active .landing-page-welcome .landing-panel{opacity:.16;transform:scale(.985);filter:blur(14px);transition:opacity .35s ease,transform .55s cubic-bezier(.16,1,.3,1),filter .55s ease}
 .landing-panel{width:min(1160px,100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .landing-panel-wide{gap:28px}
@@ -381,17 +396,18 @@ canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 @keyframes knowledgePulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
 @keyframes mobileSweep{0%{transform:translate3d(-6%,0,0) rotate(0deg)}100%{transform:translate3d(6%,0,0) rotate(360deg)}}
 .landing-page-search{padding-top:118px;padding-bottom:max(28px,calc(env(safe-area-inset-bottom) + 16px));overflow:hidden}
-.chat-sec{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:0;height:100%;min-height:calc(var(--app-height) - 118px);display:flex;align-items:stretch;justify-content:center;overflow:hidden}
-.chat-shell{width:min(1040px,100%);height:min(calc(var(--app-height) - 164px),820px);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:16px;align-items:stretch;position:relative}
+.chat-sec{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:0;height:100%;min-height:100%;display:flex;align-items:stretch;justify-content:center;overflow:hidden}
+.chat-shell{width:min(1040px,100%);height:100%;max-height:calc(var(--app-height) - 146px);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:16px;align-items:stretch;position:relative}
 .chat-frame{position:relative;min-height:0;display:flex;flex-direction:column;gap:14px;background:transparent;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden}
 .chat-frame::before,.chat-frame::after{display:none}
-.search-stage-copy{position:absolute;left:50%;top:50%;transform:translate(-50%,-54%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;width:min(760px,calc(100% - 36px));margin:0 auto;transition:opacity .28s ease,transform .28s ease,filter .28s ease;pointer-events:none}
+.chat-hdr,.chat-log{position:relative;z-index:2}
+.search-stage-copy{position:absolute;left:50%;top:50%;z-index:2;transform:translate(-50%,-54%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;width:min(760px,calc(100% - 36px));margin:0 auto;transition:opacity .28s ease,transform .28s ease,filter .28s ease;pointer-events:none}
 .search-stage-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.05em;line-height:1}
 .search-stage-sub{font-size:.96rem;line-height:1.72;color:rgba(255,255,255,.5)}
 .chat-hdr{display:flex;align-items:center;gap:12px;flex:0 0 auto;width:min(860px,100%);margin:0 auto;opacity:0;max-height:0;padding:0 4px;overflow:hidden;border:none;background:transparent;transition:opacity .35s ease,max-height .35s ease,padding .35s ease}
 .chat-log{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:min(860px,100%);margin:0 auto;padding:0 6px 8px 6px;opacity:0;pointer-events:none;transition:opacity .24s ease,transform .24s ease;transform:translateY(8px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .chat-compose{position:relative;z-index:12;display:flex;justify-content:center;align-items:flex-end}
-.px-bar{width:min(860px,100%);margin:0 auto;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.28);position:relative;overflow:visible}
+.px-bar{width:min(860px,100%);margin:0 auto;border:1px solid rgba(255,255,255,.08);border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));box-shadow:0 24px 70px rgba(0,0,0,.28);position:relative;visibility:visible;opacity:1;overflow:visible}
 .chat-frame.engaged .search-stage-copy{opacity:0;transform:translate(-50%,-60%);visibility:hidden}
 .chat-frame.engaged .chat-hdr{opacity:1;max-height:84px;padding:0 4px 8px}
 .chat-frame.engaged .chat-log{opacity:1;pointer-events:auto;transform:none}
@@ -460,6 +476,8 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .perm-yes{padding:14px;border-radius:14px;background:linear-gradient(180deg,#3b82f6,#2563eb);color:#fff;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:transform .1s,box-shadow .2s}
 .perm-yes:hover{box-shadow:0 18px 36px rgba(37,99,235,.28)}
 .perm-yes:active{transform:scale(.97)}
+.perm-yes.perm-upgrade{background:linear-gradient(180deg,#f8e7a1,#d4a43a 42%,#9a6a11);color:#241700;box-shadow:0 18px 38px rgba(212,164,58,.28),inset 0 1px 0 rgba(255,255,255,.34)}
+.perm-yes.perm-upgrade:hover{box-shadow:0 22px 42px rgba(212,164,58,.38),inset 0 1px 0 rgba(255,255,255,.42)}
 .perm-no{padding:12px;border-radius:14px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.6);font-weight:500;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:pointer}
 .auth-sheet{position:fixed;inset:0;z-index:9997;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:fadeIn .2s ease}
 .auth-sheet.show{display:flex}
@@ -503,12 +521,55 @@ border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
 .pdf-frame iframe{width:100%;height:100%;border:none;background:#fff}
 .pdf-note{font-size:.74rem;color:rgba(255,255,255,.5)}
 .pdf-status{font-size:.72rem;color:#c4b5fd}
+.library-sheet{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.library-box{width:min(100%,980px);height:min(100%,88vh);display:flex;flex-direction:column;gap:18px;padding:22px;border-radius:30px;border:1px solid rgba(251,191,36,.22);background:radial-gradient(circle at top right,rgba(245,158,11,.14),transparent 24%),radial-gradient(circle at top left,rgba(251,191,36,.1),transparent 26%),linear-gradient(180deg,rgba(27,16,4,.98),rgba(15,9,2,.96));box-shadow:0 34px 100px rgba(0,0,0,.58),0 0 0 1px rgba(255,214,102,.05) inset}
+.library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.library-kicker{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid rgba(251,191,36,.22);background:rgba(245,158,11,.08);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#fde68a}
+.library-title{margin-top:12px;font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(1.8rem,4vw,2.7rem);font-weight:700;letter-spacing:-.05em;line-height:1}
+.library-copy{margin-top:8px;max-width:580px;font-size:.92rem;line-height:1.65;color:rgba(255,244,214,.7)}
+.library-close{padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#fff;font:inherit;cursor:pointer}
+.library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;overflow-y:auto;padding-right:4px}
+.library-grid::-webkit-scrollbar{width:8px}
+.library-grid::-webkit-scrollbar-thumb{background:rgba(251,191,36,.24);border-radius:999px}
+.library-card{display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-height:220px;padding:18px;border-radius:24px;border:1px solid rgba(251,191,36,.16);background:linear-gradient(180deg,rgba(255,214,102,.08),rgba(255,255,255,.03));box-shadow:0 16px 34px rgba(0,0,0,.24);cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.library-card:hover{transform:translateY(-2px);border-color:rgba(252,211,77,.34);box-shadow:0 22px 40px rgba(0,0,0,.28)}
+.library-card-cover{display:flex;align-items:flex-end;min-height:112px;padding:14px;border-radius:20px;background:linear-gradient(145deg,rgba(245,158,11,.28),rgba(180,83,9,.18) 40%,rgba(120,53,15,.28));border:1px solid rgba(255,244,214,.12);position:relative;overflow:hidden}
+.library-card-cover::after{content:'';position:absolute;inset:auto -30% -36% auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 62%)}
+.library-card.library-card-warm-red{border-color:rgba(251,113,133,.2);background:linear-gradient(180deg,rgba(127,29,29,.16),rgba(255,255,255,.03));box-shadow:0 16px 34px rgba(69,10,10,.26)}
+.library-card.library-card-warm-red:hover{border-color:rgba(252,165,165,.36);box-shadow:0 22px 40px rgba(69,10,10,.3)}
+.library-card-warm-red .library-card-cover{background:linear-gradient(145deg,rgba(190,24,93,.26),rgba(153,27,27,.22) 42%,rgba(127,29,29,.34));border-color:rgba(254,226,226,.12)}
+.library-card-warm-red .library-card-tag{background:rgba(69,10,10,.24);border-color:rgba(254,226,226,.12);color:#ffe4e6}
+.library-card-warm-red .library-open{background:linear-gradient(180deg,#fb7185,#e11d48);box-shadow:0 10px 24px rgba(225,29,72,.24)}
+.library-card-tag{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:rgba(17,12,3,.24);border:1px solid rgba(255,244,214,.12);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:#fff5d6}
+.library-card-cover strong{position:relative;z-index:1;font-family:'Space Grotesk','Inter',sans-serif;font-size:1rem;line-height:1.08;letter-spacing:-.03em;color:#fff8e6}
+.library-card-body{display:flex;flex-direction:column;gap:8px}
+.library-card-body h4{font-size:.96rem;font-weight:700;letter-spacing:-.02em;color:#fff7e0}
+.library-card-body p{font-size:.76rem;line-height:1.5;color:rgba(255,244,214,.62);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.library-card-actions{display:none}
+.library-open{position:absolute;top:10px;right:10px;z-index:2;padding:8px 12px;border-radius:14px;border:none;background:linear-gradient(180deg,#f59e0b,#d97706);color:#fff;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(217,119,6,.22)}
+.library-empty{padding:18px;border-radius:20px;border:1px dashed rgba(251,191,36,.2);text-align:center;color:rgba(255,244,214,.64)}
+.px-btn-plus{width:32px;min-width:32px;padding:0;border:1px solid rgba(251,191,36,.22);background:linear-gradient(180deg,rgba(245,158,11,.12),rgba(255,255,255,.03));color:#fde68a;font-family:'Space Grotesk','Inter',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:-.02em;display:inline-flex;align-items:center;justify-content:center;text-transform:lowercase}
+.px-btn-plus span{display:block;line-height:1;transform:translateY(-1px);text-shadow:0 0 12px rgba(251,191,36,.22)}
+.px-btn-plus:hover{background:linear-gradient(180deg,rgba(245,158,11,.2),rgba(255,255,255,.06));color:#fff4cf;border-color:rgba(252,211,77,.3)}
 .reply-rich{display:flex;flex-direction:column;gap:8px}
 .reply-rich p{margin:0}
 .reply-rich strong{font-weight:700;color:inherit}
 body[data-theme="light"] .pdf-box{background:rgba(255,255,255,.94);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .pdf-meta,body[data-theme="light"] .pdf-note{color:rgba(8,17,31,.6)}
 body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba(15,23,42,.08);color:#08111f}
+body[data-theme="light"] .library-box{background:radial-gradient(circle at top right,rgba(245,158,11,.16),transparent 24%),radial-gradient(circle at top left,rgba(251,191,36,.12),transparent 26%),linear-gradient(180deg,rgba(255,251,235,.98),rgba(255,247,237,.96));border-color:rgba(245,158,11,.16)}
+body[data-theme="light"] .library-title{color:#7c2d12}
+body[data-theme="light"] .library-copy,body[data-theme="light"] .library-card-body p{color:rgba(124,45,18,.7)}
+body[data-theme="light"] .library-card{background:linear-gradient(180deg,rgba(255,251,235,.96),rgba(255,247,237,.92));border-color:rgba(245,158,11,.14)}
+body[data-theme="light"] .library-card-body h4{color:#7c2d12}
+body[data-theme="light"] .library-close{background:rgba(124,45,18,.04);border-color:rgba(124,45,18,.08);color:#7c2d12}
+body[data-theme="light"] .px-btn-plus{background:linear-gradient(180deg,rgba(251,191,36,.16),rgba(124,45,18,.04));border-color:rgba(245,158,11,.18);color:#b45309}
+ body[data-theme="light"] .px-btn-lane{background:linear-gradient(180deg,rgba(168,85,247,.18),rgba(255,255,255,.82));border-color:rgba(168,85,247,.24);color:#6b21a8}
+body[data-theme="light"] .lane-menu{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(246,249,255,.9));border-color:rgba(15,23,42,.08);box-shadow:0 22px 54px rgba(15,23,42,.16)}
+body[data-theme="light"] .lane-item{background:linear-gradient(180deg,rgba(8,17,31,.03),rgba(8,17,31,.015));border-color:rgba(15,23,42,.06);color:#08111f}
+body[data-theme="light"] .lane-item span{color:rgba(8,17,31,.58)}
+body[data-theme="light"] .lane-item.active{border-color:rgba(59,130,246,.22);background:linear-gradient(180deg,rgba(59,130,246,.12),rgba(255,255,255,.62))}
+body[data-theme="light"] .lane-item.upload{border-color:rgba(245,158,11,.18);background:linear-gradient(180deg,rgba(251,191,36,.14),rgba(255,255,255,.72))}
 
 @media (pointer:coarse){
   .msg-copy{opacity:.78;transform:none}
@@ -516,7 +577,7 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
 
 @media (max-width: 780px){
   .nav{top:max(14px,calc(env(safe-area-inset-top) + 6px));right:14px;gap:8px}
-  .install-pill-top{min-height:36px;padding:0 11px;font-size:.72rem;gap:6px}
+  .install-pill-top{min-height:36px;padding:0 12px;font-size:.72rem;gap:6px}
   .install-pill-top span{max-width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .nav-btn{width:36px;height:36px}
   .auth-corner{top:max(14px,calc(env(safe-area-inset-top) + 6px));left:14px}
@@ -546,17 +607,33 @@ body[data-theme="light"] .pdf-btn{background:rgba(8,17,31,.05);border-color:rgba
   .launch-core-logo{width:78px;height:78px;font-size:1.8rem}
   .launch-wordmark{font-size:2.8rem}
   .landing-page-search{padding-top:92px;padding-bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px))}
-  .chat-sec{min-height:calc(var(--app-height) - 92px)}
-  .chat-shell{height:calc(var(--app-height) - 124px);gap:12px}
+  .chat-sec{min-height:100%}
+  .chat-shell{height:100%;max-height:calc(var(--app-height) - 120px);gap:12px}
   .chat-log,.chat-hdr,.px-bar,.suggest-row{width:100%}
   .search-stage-copy{top:max(104px,calc(env(safe-area-inset-top) + 74px));transform:translateX(-50%);width:min(340px,calc(100% - 28px));gap:10px}
   .search-stage-title{max-width:11ch;font-size:clamp(1.72rem,9vw,2.3rem);line-height:1.02}
   .search-stage-sub{max-width:300px;font-size:.8rem;line-height:1.5}
   .chat-hdr{padding-left:2px;padding-right:2px}
+  .chat-frame.engaged{padding-top:8px}
+  .chat-frame.engaged::before{display:block;content:'';position:absolute;top:0;left:0;right:0;height:24px;background:linear-gradient(180deg,rgba(0,0,0,.92),rgba(0,0,0,.4) 48%,rgba(0,0,0,0));filter:blur(12px);opacity:.95;pointer-events:none;z-index:1}
+  .chat-frame.engaged .chat-hdr{margin-top:-2px;padding:0 2px 10px}
   .chat-compose{padding-bottom:max(0px,var(--composer-safe-bottom,0px))}
   .px-bar{border-radius:24px}
-  .suggest-row{bottom:calc(100% + 10px);max-height:min(132px,24vh);padding:0 2px}
+  .suggest-row{bottom:calc(100% + 12px);max-height:min(132px,24vh);padding:10px}
+  .lane-menu{width:min(292px,calc(100vw - 36px));left:-10px}
   .chat-log{padding:0 2px 8px 2px}
+  .library-box{padding:18px;border-radius:24px;height:min(100%,90vh)}
+  .library-head{flex-direction:column;align-items:stretch}
+  .library-close{align-self:flex-end}
+  .library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .library-card{min-height:176px;padding:14px;border-radius:20px;gap:10px}
+  .library-card-cover{min-height:88px;padding:12px;border-radius:16px}
+  .library-card-tag{top:10px;left:10px;padding:5px 8px;font-size:.52rem}
+  .library-card-cover strong{font-size:.84rem}
+  .library-card-body{gap:6px}
+  .library-card-body h4{font-size:.84rem;line-height:1.18}
+  .library-card-body p{font-size:.67rem;line-height:1.34}
+  .library-open{top:9px;right:9px;padding:7px 10px;font-size:.68rem;border-radius:12px}
   body[data-landing-page="1"] .ib{bottom:max(104px,calc(env(safe-area-inset-bottom) + 94px))}
 .perm-points{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .perm-point{min-height:96px}
@@ -610,8 +687,9 @@ body[data-theme="light"] .fline{color:#1d4ed8}
 body[data-theme="light"] .fline i{background:rgba(37,99,235,.1);color:#1d4ed8}
 body[data-theme="light"] .auth-point strong{color:#08111f}
 body[data-theme="light"] .btn-g,body[data-theme="light"] .px-btn,body[data-theme="light"] .model-trigger,body[data-theme="light"] .nav-btn{color:rgba(8,17,31,.62)}
-body[data-theme="light"] .install-pill-top{background:linear-gradient(135deg,rgba(59,130,246,.14),rgba(124,58,237,.14));border-color:rgba(59,130,246,.22);color:#1d4ed8;box-shadow:0 14px 28px rgba(37,99,235,.08),0 10px 22px rgba(124,58,237,.08)}
-body[data-theme="light"] .install-pill-top:hover{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(124,58,237,.18));border-color:rgba(99,102,241,.28)}
+body[data-theme="light"] .install-pill-top{background:linear-gradient(135deg,rgba(251,191,36,.28),rgba(250,204,21,.18),rgba(217,119,6,.16));border-color:rgba(245,158,11,.32);color:#92400e;box-shadow:0 14px 28px rgba(245,158,11,.12),0 10px 22px rgba(217,119,6,.08),inset 0 1px 0 rgba(255,255,255,.48)}
+body[data-theme="light"] .install-pill-top:hover{background:linear-gradient(135deg,rgba(251,191,36,.34),rgba(250,204,21,.22),rgba(217,119,6,.18));border-color:rgba(245,158,11,.4)}
+body[data-theme="light"] .suggest-row{background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(244,247,255,.8));border-color:rgba(15,23,42,.08);box-shadow:0 18px 42px rgba(15,23,42,.12)}
 body[data-theme="light"] .auth-pill{background:rgba(255,255,255,.78);border-color:rgba(15,23,42,.08);color:#08111f}
 body[data-theme="light"] .auth-pill:hover{background:#fff}
 body[data-theme="light"] .auth-pill:disabled{background:rgba(255,255,255,.88);border-color:rgba(15,23,42,.12);color:#08111f}
@@ -665,9 +743,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
 </div>
 
 <nav class="nav">
-  <button class="install-pill-top" id="installTopBtn" hidden aria-label="Install Raghav AI on your phone">
+<button class="install-pill-top" id="installTopBtn" hidden aria-label="Access Raghav AI on your phone">
     <svg viewBox="0 0 24 24"><path d="M12 3v11"/><path d="M8 10l4 4 4-4"/><path d="M5 17v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"/></svg>
-    <span>Install on phone</span>
+    <span>Access on Your Phone</span>
   </button>
   <button class="nav-btn" id="themeBtn" aria-label="Toggle theme">
     <svg id="themeIco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -768,7 +846,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       <div class="landing-panel rv">
         <div class="landing-kicker">Welcome</div>
         <h1 class="landing-title-lg hero-title" id="heroTitle"></h1>
-        <p class="landing-copy">A phone-first AI assistant that knows when to stay fast, when to go deeper, and when to move you straight to the useful place.</p>
+        <p class="landing-copy">An intelligent knowledge system that knows when to stay fast, when to go deeper, and when to move you straight to the useful place.</p>
         <div class="landing-actions">
           <button class="landing-btn" id="landingNextWelcome">See why it feels different</button>
         </div>
@@ -780,7 +858,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           <div class="chat-frame rv" id="chatStage">
             <div class="search-stage-copy" id="searchStageCopy">
               <div class="landing-kicker">Raghav AI</div>
-              <h2 class="search-stage-title">Ask once. Let the right lane handle the rest.</h2>
+        <h2 class="search-stage-title">Ask once. Let the right intelligence handle the rest.</h2>
               <p class="search-stage-sub">Search stays simple, Mobile+ stays hidden until you want it, and deeper reasoning only wakes when the question truly deserves it.</p>
             </div>
             <div class="chat-hdr">
@@ -798,12 +876,39 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           <div class="chat-compose rv">
             <div class="px-bar" id="pxBar">
               <textarea class="px-input" id="chatIn" placeholder="Ask Raghav AI anything..." rows="1" aria-label="Ask Raghav AI anything" enterkeyhint="send"></textarea>
+              
               <div class="suggest-row" id="suggestRow" hidden></div>
               <div class="px-controls">
                 <div class="px-left">
                   <button class="px-btn px-badge" id="mobileBtn">
                     <svg viewBox="0 0 24 24" style="width:12px;height:12px;margin-right:3px"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Mobile +
                   </button>
+                  <div class="lane-launch">
+                    <button class="px-btn px-btn-lane" id="laneBtn" aria-label="Open domains">Domains</button>
+                    <div class="lane-menu" id="laneMenu">
+                      <button class="lane-item" data-lane="business">
+                        <strong>Business</strong>
+                        <span>Indian founders, investors, and practical decisions.</span>
+                      </button>
+                      <button class="lane-item" data-lane="health">
+                        <strong>Health (Ayurveda)</strong>
+                        <span>Foundational Ayurvedic perspective in simple language.</span>
+                      </button>
+                      <button class="lane-item" data-lane="history">
+                        <strong>History</strong>
+                        <span>Indian context with short story-driven guidance.</span>
+                      </button>
+                      <button class="lane-item" data-lane="mindset">
+                        <strong>Mindset</strong>
+                        <span>Discipline, confidence, and strategic self-growth.</span>
+                      </button>
+                      <button class="lane-item" data-lane="science">
+                        <strong>Science</strong>
+                        <span>Indian scientific legacy with practical modern links.</span>
+                      </button>
+                    </div>
+                  </div>
+ <button class="px-btn px-btn-plus" id="libraryBtn" aria-label="Open mini book library"><span>ॐ</span></button>
                 </div>
                 <div class="px-right">
                   <div class="model-wrap">
@@ -920,6 +1025,20 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     </div>
     <div class="pdf-note" id="pdfNote">If sharing is limited on your browser, Raghav AI will fall back to a file download.</div>
     <div class="pdf-status" id="pdfStatus"></div>
+  </div>
+</div>
+
+<div class="library-sheet" id="librarySheet">
+  <div class="library-box">
+    <div class="library-head">
+      <div>
+      <div class="library-kicker">Mini Books by Prem</div>
+        <div class="library-title">Study, read, and share your books.</div>
+        <div class="library-copy">Open any mini book in a clean preview, then share it directly from your phone or browser.</div>
+      </div>
+      <button class="library-close" id="libraryCloseBtn" type="button">Close</button>
+    </div>
+    <div class="library-grid" id="libraryGrid"></div>
   </div>
 </div>
 
@@ -1235,11 +1354,43 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       'mini revision PDF for physics electricity'
     ]
   };
-  var suggestionCatalog = [].concat(
+  var laneSuggestionBuckets = {
+    business: [
+      'how did dhirubhai ambani scale reliance',
+      'what made ratan tata trusted in business',
+      'how can i start a business in india with low risk'
+    ],
+    health: [
+      'ayurveda morning routine for stable energy',
+      'simple ayurvedic digestion tips after heavy food',
+      'how to reduce stress with ayurveda basics'
+    ],
+    history: [
+      'what made chanakya strategy timeless',
+      'how did chhatrapati shivaji maharaj build smart defense',
+      'why was nalanda important for indian knowledge'
+    ],
+    mindset: [
+      'how to build discipline when motivation is low',
+      'how to stop overthinking and act daily',
+      'how to build self respect with clear boundaries'
+    ],
+    science: [
+      'what made c v raman a scientific legend',
+      'how did vikram sarabhai shape india space vision',
+      'what made aryabhata ahead of his time'
+    ]
+  };
+  var activeKnowledgeLane = 'default';
+  var baseSuggestionCatalog = [].concat(
     suggestionBuckets.mythology,
     suggestionBuckets.geniuses,
     suggestionBuckets.india
   );
+  var laneSuggestionCatalog = Object.keys(laneSuggestionBuckets).reduce(function(list, laneKey) {
+    return list.concat(laneSuggestionBuckets[laneKey] || []);
+  }, []);
+  var suggestionCatalog = baseSuggestionCatalog.concat(laneSuggestionCatalog);
   var suggestionDisplayCount = 3;
   var localKnowledgeSeeds = [
     { term: 'python', meaning: 'Python is a programming language known for simple syntax and wide use in automation, web work, data, and AI.', why: 'It matters because it is one of the easiest powerful languages to learn and use.', example: 'A simple example is using Python to start a local server or automate repetitive tasks.' },
@@ -1301,7 +1452,17 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     { term: 'node js', meaning: 'Node.js is a runtime that lets JavaScript run outside the browser, often on servers and tools.', why: 'It matters because it helps developers build full-stack apps using one main language.', example: 'Running a local development server with JavaScript often uses Node.js.' },
     { term: 'typescript', meaning: 'TypeScript is JavaScript with added type checking to make code safer and easier to maintain.', why: 'It matters because it reduces bugs and improves large project clarity.', example: 'A function expecting a number can be checked clearly with TypeScript.' },
     { term: 'prompt engineering', meaning: 'Prompt engineering is the practice of designing prompts that guide AI toward better outputs.', why: 'It matters because better instructions can make small models feel much more useful.', example: 'Asking for a short definition followed by steps is a prompt engineering choice.' },
-    { term: 'search engine', meaning: 'A search engine is a system that finds and ranks information from the web based on queries.', why: 'It matters because it helps people reach useful information quickly.', example: 'Google is a search engine.' }
+    { term: 'search engine', meaning: 'A search engine is a system that finds and ranks information from the web based on queries.', why: 'It matters because it helps people reach useful information quickly.', example: 'Google is a search engine.' },
+    { term: 'blood pressure', meaning: 'Blood pressure is the force of blood pushing against the walls of your arteries.', why: 'It matters because very high or very low blood pressure can affect heart, brain, and overall health.', example: 'A reading like 120 over 80 is a blood pressure measurement.' },
+    { term: 'diabetes', meaning: 'Diabetes is a condition in which the body has trouble managing blood sugar properly.', why: 'It matters because long-term uncontrolled blood sugar can affect the eyes, nerves, kidneys, and heart.', example: 'A person with diabetes may need diet control, exercise, medicine, or insulin depending on the type.' },
+    { term: 'fever', meaning: 'Fever is a rise in body temperature, usually because the body is reacting to infection or inflammation.', why: 'It matters because it can signal that the immune system is actively responding to a problem.', example: 'A person feeling hot with chills and a temperature above normal may have a fever.' },
+    { term: 'dehydration', meaning: 'Dehydration happens when the body loses more fluid than it takes in.', why: 'It matters because it can affect energy, focus, blood pressure, and normal body function.', example: 'Heavy sweating without enough water can lead to dehydration.' },
+    { term: 'inflation', meaning: 'Inflation is the general rise in prices over time, which reduces the buying power of money.', why: 'It matters because it affects savings, spending, salaries, and the cost of daily life.', example: 'If groceries cost more this year than last year, inflation is part of the reason.' },
+    { term: 'interest rate', meaning: 'An interest rate is the cost of borrowing money or the reward for saving it.', why: 'It matters because it affects loans, EMIs, savings returns, and broader economic activity.', example: 'A home loan with a higher interest rate usually means a higher monthly payment.' },
+    { term: 'credit score', meaning: 'A credit score is a number that reflects how reliably a person has handled borrowed money.', why: 'It matters because lenders often use it to judge loan eligibility and interest rates.', example: 'Paying bills and EMIs on time can support a stronger credit score.' },
+    { term: 'stock market', meaning: 'The stock market is a system where shares of companies are bought and sold.', why: 'It matters because it helps businesses raise capital and gives investors a way to participate in company growth.', example: 'Buying a company share on an exchange is stock market participation.' },
+    { term: 'infection', meaning: 'An infection happens when harmful microorganisms like bacteria, viruses, or fungi enter the body and multiply.', why: 'It matters because infections can range from mild to serious depending on the cause and the body part affected.', example: 'A throat infection may cause pain, swelling, and fever.' },
+    { term: 'immunity', meaning: 'Immunity is the body’s ability to recognize and defend itself against harmful organisms or substances.', why: 'It matters because a stronger immune response can help the body respond better to infections.', example: 'Recovering from some illnesses or taking certain vaccines can strengthen immunity.' }
   ];
   var localStrategySeeds = [
     { key: 'how to improve daily', answer: 'Pick one small action you can repeat every day, track it, and keep the bar low enough that you do not skip it. Improvement comes faster from consistency than intensity.' },
@@ -1329,8 +1490,92 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     { key: 'what makes varanasi special', answer: 'Varanasi is special because it is one of India’s oldest and most sacred cities, deeply linked with Lord Shiva, the Ganga, spiritual learning, and living Hindu tradition. People know it for its ghats, temples, ritual life, and timeless cultural atmosphere.' },
     { key: 'what makes isro special', answer: 'ISRO is special because it built a powerful space reputation with disciplined engineering, cost-effective missions, and major achievements like Chandrayaan and Mangalyaan. It represents Indian scientific ambition with practical results.' },
     { key: 'why is jaipur famous', answer: 'Jaipur is famous for its royal history, forts, palaces, crafts, and pink-city identity. Many people know it for architecture, tourism, jewelry, and its strong connection to Rajasthan’s heritage.' },
-    { key: 'why is indian classical music special', answer: 'Indian classical music is special because it combines deep emotion, disciplined tradition, improvisation, and spiritual depth through ragas and rhythm systems. It is respected for both technical richness and inner feeling.' }
+    { key: 'why is indian classical music special', answer: 'Indian classical music is special because it combines deep emotion, disciplined tradition, improvisation, and spiritual depth through ragas and rhythm systems. It is respected for both technical richness and inner feeling.' },
+    { key: 'what is blood pressure', answer: 'Blood pressure is the force of blood pushing against artery walls. It matters because persistently high or low pressure can affect the heart, brain, and overall circulation.' },
+    { key: 'what is diabetes', answer: 'Diabetes is a condition where the body cannot manage blood sugar properly. It matters because long-term imbalance can affect energy, organs, and overall health.' },
+    { key: 'what is fever', answer: 'Fever is a rise in body temperature, usually because the body is reacting to infection or inflammation. It is a signal, not a disease by itself.' },
+    { key: 'what is dehydration', answer: 'Dehydration means the body has lost more fluid than it has taken in. It can affect energy, concentration, temperature control, and normal body function.' },
+    { key: 'what is inflation', answer: 'Inflation is the general rise in prices over time. It matters because the same amount of money buys less when inflation stays high.' },
+    { key: 'what is interest rate', answer: 'An interest rate is the cost of borrowing money or the reward for saving it. It affects EMIs, loans, savings returns, and business activity.' },
+    { key: 'what is a credit score', answer: 'A credit score is a number that shows how reliably someone has handled borrowed money. Lenders often use it to judge loan approval and pricing.' },
+    { key: 'what is stock market', answer: 'The stock market is where shares of companies are bought and sold. It gives companies access to capital and investors a way to participate in business growth.' },
+    { key: 'basic steps to reduce stress', answer: 'Reduce stress by slowing your breathing, lowering overload, sleeping better, moving your body, and cutting one source of mental noise first. Stress usually becomes easier when the system around you becomes simpler.' },
+    { key: 'how to recover from burnout', answer: 'Burnout recovery starts with rest, lower expectations for a while, and removing unnecessary pressure. Recovery is usually faster when sleep, food, quiet time, and boundaries improve together.' },
+    { key: 'how to improve digestion', answer: 'Improve digestion by eating a little slower, staying hydrated, adding fiber carefully, and noticing which foods make you feel heavy or irritated. Simple habits often matter more than complicated hacks.' },
+    { key: 'how to lower anxiety naturally', answer: 'Natural anxiety relief often starts with slower breathing, less caffeine, more sleep, regular movement, and fewer simultaneous worries. Anxiety gets weaker when the body feels safer and the next step is clear.' }
   ];
+  var localLaneKnowledgeSeeds = {
+    business: [
+      {
+        prompts: ['how did dhirubhai ambani scale reliance', 'dhirubhai ambani business strategy', 'how did reliance grow so fast'],
+        answer: 'Dhirubhai Ambani built Reliance like a long game, not a shortcut. He started with trading, understood Indian demand deeply, then moved step by step into manufacturing and scale. The big lesson is strategic integration: control key layers, keep execution speed high, and think in decades, not weeks.'
+      },
+      {
+        prompts: ['what made ratan tata trusted in business', 'why do people trust ratan tata', 'ratan tata leadership style'],
+        answer: 'Ratan Tata’s trust came from a rare combination: values plus execution. He made bold moves, but without losing dignity in decision-making. In Indian business culture, that matters deeply. The practical takeaway is simple: protect reputation like capital, because in the long run trust compounds faster than hype.'
+      },
+      {
+        prompts: ['how can i start a business in india with low risk', 'low risk business start in india', 'business start plan for beginners in india'],
+        answer: 'Use a three-stage Indian startup path: first validate demand in one local niche, then sell manually to learn real objections, then systemize only what customers already pay for. This keeps risk controlled. Start lean, stay cash-aware, and let customer truth decide where to expand.'
+      }
+    ],
+    health: [
+      {
+        prompts: ['ayurveda morning routine for stable energy', 'simple ayurveda morning routine', 'how to start day in ayurvedic way'],
+        answer: 'Ayurveda starts with rhythm. A practical morning flow is: wake at a consistent time, drink warm water, keep a short movement-breathing block, then eat a light, warm, digestible breakfast. The core idea is balance, not extremism. Small daily regularity gives more stable energy than random intensity.'
+      },
+      {
+        prompts: ['simple ayurvedic digestion tips after heavy food', 'ayurveda digestion support', 'how to improve digestion with ayurveda'],
+        answer: 'From an Ayurveda lens, digestion improves when meals are calmer, warmer, and less rushed. After heavy food, slow down, keep hydration warm, and avoid stacking another dense meal too quickly. The real principle is protecting agni, your digestive fire, with consistency and moderation.'
+      },
+      {
+        prompts: ['how to reduce stress with ayurveda basics', 'ayurveda for stress', 'ayurvedic stress relief basics'],
+        answer: 'Ayurveda handles stress by restoring nervous-system steadiness through routine, breath, warm grounding food, and quality sleep timing. Think of it as reducing internal noise. Daily calming rituals beat one-time hacks. The goal is not perfect calm, but a system that returns you to balance quickly.'
+      }
+    ],
+    history: [
+      {
+        prompts: ['what made chanakya strategy timeless', 'chanakya strategy lessons', 'why chanakya is still relevant'],
+        answer: 'Chanakya’s strategy feels timeless because it mixes realism with long-range planning. He focused on intelligence, timing, alliances, and state stability over ego moves. In modern terms: think two moves ahead, protect fundamentals, and do not confuse noise with power.'
+      },
+      {
+        prompts: ['how did chhatrapati shivaji maharaj build smart defense', 'shivaji maharaj strategy', 'shivaji defense and expansion approach'],
+        answer: 'Shivaji Maharaj built advantage through agility, terrain understanding, local trust, and disciplined fort strategy. He did not depend only on size; he depended on preparation and smart positioning. The strategic lesson is clear: clarity plus mobility can defeat heavier but slower systems.'
+      },
+      {
+        prompts: ['why was nalanda important for indian knowledge', 'nalanda history importance', 'what made nalanda special'],
+        answer: 'Nalanda represented India as a global knowledge civilization. Scholars from many regions came to study philosophy, medicine, logic, and science. Its legacy reminds us that India’s strength has long included structured learning ecosystems, not just isolated genius.'
+      }
+    ],
+    mindset: [
+      {
+        prompts: ['how to build discipline when motivation is low', 'discipline without motivation', 'how to stay consistent daily'],
+        answer: 'Build discipline like training, not emotion. Set one non-negotiable action, keep it small enough to execute daily, and track streak integrity. Motivation can fluctuate, but identity grows through repeatable action. In Indian wisdom terms: do your karma daily, without drama.'
+      },
+      {
+        prompts: ['how to stop overthinking and act daily', 'overthinking solution practical', 'how to take action instead of overthinking'],
+        answer: 'Use a two-step rule: define the smallest executable move, then start before your mind negotiates. Overthinking expands in uncertainty, so shrink uncertainty with action. Think less about perfect timing and more about daily motion with feedback.'
+      },
+      {
+        prompts: ['how to build self respect with clear boundaries', 'self respect and boundaries', 'how to increase self respect'],
+        answer: 'Self-respect grows when your standards become visible in behavior. Say no where needed, keep promises to yourself, and stop trading peace for approval. Boundaries are not arrogance; they are structure. People read your standards from your actions, not your words.'
+      }
+    ],
+    science: [
+      {
+        prompts: ['what made c v raman a scientific legend', 'c v raman contribution', 'why c v raman is important'],
+        answer: 'C. V. Raman showed that Indian science can lead globally with original discovery. His work on light scattering, known as the Raman Effect, changed physics discussions worldwide. The lesson: deep curiosity plus rigorous experimentation can create world-level impact from Indian labs.'
+      },
+      {
+        prompts: ['how did vikram sarabhai shape india space vision', 'vikram sarabhai contribution', 'why sarabhai matters in science'],
+        answer: 'Vikram Sarabhai treated space as national capability, not prestige theater. He linked scientific ambition to practical public value, which later shaped India’s space institutions and mission discipline. Strategic science works best when vision and institution-building move together.'
+      },
+      {
+        prompts: ['what made aryabhata ahead of his time', 'aryabhata achievements', 'why aryabhata is famous'],
+        answer: 'Aryabhata was ahead because he converted observation into mathematical structure. His work in astronomy and mathematics signaled an early scientific mindset rooted in precision and abstraction. He represents India’s long tradition of analytical intelligence.'
+      }
+    ]
+  };
   var localPersonalitySeeds = [
     { aliases: ['lord krishna', 'krishna', 'shri krishna', 'sri krishna'], name: 'Lord Krishna', role: 'One of the central deities in Hindu tradition and a major figure in the Mahabharata and the Bhagavad Gita.', work: ['guides Arjuna in the Bhagavad Gita', 'is associated with wisdom, devotion, and dharma', 'remains one of the most deeply loved figures in Hindu spiritual life'], legacy: 'He is revered for divine wisdom, compassion, courage, and guidance through difficult duty.' },
     { aliases: ['a p j abdul kalam', 'apj abdul kalam', 'abdul kalam', 'a p j kalam'], name: 'A. P. J. Abdul Kalam', role: 'Indian aerospace scientist and former President of India.', work: ['led missile and space efforts', 'earned the name Missile Man of India', 'inspired students through science and public service'], legacy: 'He is remembered for combining science, humility, and national service.' },
@@ -1485,7 +1730,22 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     return items[Math.floor(Math.random() * items.length)];
   }
 
+  function getSuggestionCatalogForQuery() {
+    if (activeKnowledgeLane !== 'default' && laneSuggestionBuckets[activeKnowledgeLane]) {
+      return (laneSuggestionBuckets[activeKnowledgeLane] || []).concat(baseSuggestionCatalog);
+    }
+    return suggestionCatalog;
+  }
+
+  function getLaneSuggestionSet(laneKey) {
+    var bucket = laneSuggestionBuckets[laneKey];
+    if (!bucket || !bucket.length) return null;
+    return bucket.slice(0, suggestionDisplayCount);
+  }
+
   function getRandomSuggestionSet() {
+    var laneSet = getLaneSuggestionSet(activeKnowledgeLane);
+    if (laneSet) return laneSet;
     return [
       suggestionBuckets.mythology[0],
       suggestionBuckets.geniuses[0],
@@ -1494,6 +1754,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   }
 
   function getMobilePlusSuggestionSet() {
+    var laneSet = getLaneSuggestionSet(activeKnowledgeLane);
+    if (laneSet) {
+      return laneSet.map(function(value) {
+        return { value: value, premium: true };
+      });
+    }
     return [
       { value: mobilePlusSuggestionBuckets.mythology[0], premium: true },
       { value: mobilePlusSuggestionBuckets.geniuses[0], premium: true },
@@ -1556,7 +1822,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       suggestions.push(corrected);
     }
 
-    var ranked = suggestionCatalog
+    var activeCatalog = getSuggestionCatalogForQuery();
+    var ranked = activeCatalog
       .map(function(item) {
         return { value: item, score: raw ? getSuggestionScore(raw, item) : 1 };
       })
@@ -1568,7 +1835,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       if (suggestions.indexOf(item) === -1) suggestions.push(item);
     });
 
-    shuffleList(suggestionCatalog).forEach(function(item) {
+    shuffleList(activeCatalog).forEach(function(item) {
       if (suggestions.length >= suggestionDisplayCount) return;
       if (suggestions.indexOf(item) === -1) suggestions.push(item);
     });
@@ -1792,7 +2059,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       return "Your premium reasoning passes are finished for now. Mobile+, definitions, and quick routes still stay open.";
     }
     if (/PREMIUM_REASONING_LOCKED/i.test(message)) {
-      return "Unlock Mobile+ and Raghav Baan to keep the deeper reasoning lane going.";
+      return "The deeper reasoning lane is paused after 10 free asks. Lighter help still stays open, and you can enter the premium layer later through Mobile+ or Raghav Baan if you want it.";
     }
     if (/OPENROUTER_API_KEY/i.test(message)) {
       return "The live AI server is missing its OpenRouter API key right now. Add OPENROUTER_API_KEY in Render and the replies will start working.";
@@ -2118,9 +2385,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var normalized = normalizeIntentText(sourceText || '');
     if (lane === 'Definition' && term) {
       return [
-        'Explain this simply',
-        'Give a real example',
-        'Search deeper on Google'
+      'Elevate this answer',
+      'Stress-test this idea',
+      'Expand the intelligence'
       ];
     }
     if (lane === 'Reference') {
@@ -2172,7 +2439,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       chip.className = 'follow-chip';
       chip.textContent = prompt;
       chip.addEventListener('click', function() {
-        if (prompt === 'Search deeper on Google' || prompt === 'Search this on Google' || prompt === 'Search examples') {
+    if (prompt === 'Expand the intelligence' || prompt === 'Search deeper on Google' || prompt === 'Search this on Google' || prompt === 'Search examples') {
           triggerGoogleSearch(sourceText);
           return;
         }
@@ -2188,11 +2455,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
           triggerGoogleSearch('weather ' + sourceText);
           return;
         }
-        if (prompt === 'Explain this simply') {
+    if (prompt === 'Elevate this answer' || prompt === 'Explain this simply') {
           submitFollowupPrompt('Explain ' + (extractDefinitionTerm(sourceText || '') || sourceText || '') + ' in simple words');
           return;
         }
-        if (prompt === 'Give a real example') {
+    if (prompt === 'Stress-test this idea' || prompt === 'Give a real example') {
           submitFollowupPrompt('Give me a real example of ' + (extractDefinitionTerm(sourceText || '') || sourceText || 'this'));
           return;
         }
@@ -2482,6 +2749,52 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var giftBookAssetPromise = null;
   var GIFT_BOOK_URL = 'ai-mini-book-prem-peswani.pdf';
   var GIFT_BOOK_FILENAME = 'Understanding_AI_MiniBook_PremPeswani.pdf';
+  var libraryBookAssets = Object.create(null);
+  var MINI_BOOK_LIBRARY = [
+    { id: 'ai-mini-book-prem', title: 'AI Mini Book by Prem', description: 'A compact personal guide to understanding AI in a clear and friendly way.', tag: 'Featured', url: 'ai-mini-book-prem-peswani.pdf', filename: 'Understanding_AI_MiniBook_PremPeswani.pdf' },
+    { id: 'bhagavad-gita', title: 'Bhagavad Gita', description: 'A focused mini book on the Gita and its practical spiritual guidance.', tag: 'Wisdom', url: 'generated-mini-books/bhagavad-gita.pdf', filename: 'bhagavad-gita.pdf' },
+    { id: 'dharma-karma-moksha-yoga', title: 'Dharma, Karma, Moksha, Yoga', description: 'Core Indian philosophical ideas gathered into one concise reading path.', tag: 'Philosophy', url: 'generated-mini-books/dharma-karma-moksha-yoga.pdf', filename: 'dharma-karma-moksha-yoga.pdf' },
+    { id: 'durga-and-the-divine-feminine', title: 'Durga and the Divine Feminine', description: 'A compact look at Durga, Shakti, and feminine spiritual power.', tag: 'Devi', url: 'generated-mini-books/durga-and-the-divine-feminine.pdf', filename: 'durga-and-the-divine-feminine.pdf' },
+    { id: 'krishna-rasleela', title: 'Krishna Rasleela', description: 'A short reading on Krishna, devotion, and the meaning behind Rasleela.', tag: 'Krishna', url: 'generated-mini-books/krishna-rasleela.pdf', filename: 'krishna-rasleela.pdf' },
+    { id: 'mahabharata', title: 'Mahabharata', description: 'A mini book that captures the spirit, duty, and scale of the Mahabharata.', tag: 'Epic', url: 'generated-mini-books/mahabharata.pdf', filename: 'mahabharata.pdf' },
+    { id: 'ramayana', title: 'Ramayana', description: 'A concise retelling of the Ramayana through values, characters, and purpose.', tag: 'Epic', url: 'generated-mini-books/ramayana.pdf', filename: 'ramayana.pdf' },
+    { id: 'saints-and-philosophies-of-india', title: 'Saints and Philosophies of India', description: 'A broad mini book on Indian thinkers, saints, and spiritual traditions.', tag: 'India', url: 'generated-mini-books/saints-and-philosophies-of-india.pdf', filename: 'saints-and-philosophies-of-india.pdf' },
+    { id: 'shiva-the-ascetic-cosmos', title: 'Shiva, the Ascetic Cosmos', description: 'A short study of Shiva through stillness, power, and cosmic symbolism.', tag: 'Shiva', url: 'generated-mini-books/shiva-the-ascetic-cosmos.pdf', filename: 'shiva-the-ascetic-cosmos.pdf' },
+    { id: 'vedas-and-upanishads', title: 'Vedas and Upanishads', description: 'A clean, compact entry point into foundational Indian scriptures.', tag: 'Scripture', url: 'generated-mini-books/vedas-and-upanishads.pdf', filename: 'vedas-and-upanishads.pdf' },
+    { id: 'vishnu-and-dashavatara', title: 'Vishnu and Dashavatara', description: 'A short guide to Vishnu and the ten avatars across tradition.', tag: 'Vishnu', url: 'generated-mini-books/vishnu-and-dashavatara.pdf', filename: 'vishnu-and-dashavatara.pdf' }
+  ];
+  var GLOBAL_MINDS_LIBRARY = [
+    { id: 'ajay-bhatt', title: 'Ajay Bhatt', description: 'Known for co-creating USB and helping simplify how the modern world connects devices.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/ajay-bhatt.pdf', filename: 'ajay-bhatt.pdf' },
+    { id: 'amartya-sen', title: 'Amartya Sen', description: 'Known for reshaping welfare economics and explaining development through human freedom.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/amartya-sen.pdf', filename: 'amartya-sen.pdf' },
+    { id: 'aryabhata', title: 'Aryabhata', description: 'Known for early breakthroughs in mathematics and astronomy, including place value and planetary thinking.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/aryabhata.pdf', filename: 'aryabhata.pdf' },
+    { id: 'baudhayana', title: 'Baudhayana', description: 'Known for ancient geometric ideas that anticipated the Pythagorean relationship centuries early.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/baudhayana.pdf', filename: 'baudhayana.pdf' },
+    { id: 'bhaskara-ii', title: 'Bhaskara II', description: 'Known for advanced work in algebra, calculus-like ideas, and elegant mathematical reasoning.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/bhaskara-ii.pdf', filename: 'bhaskara-ii.pdf' },
+    { id: 'brahmagupta', title: 'Brahmagupta', description: 'Known for formal rules on zero and negative numbers that shaped later mathematics.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/brahmagupta.pdf', filename: 'brahmagupta.pdf' },
+    { id: 'charaka', title: 'Charaka', description: 'Known for building one of India’s foundational systems of medicine through the Charaka Samhita.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/charaka.pdf', filename: 'charaka.pdf' },
+    { id: 'cv-raman', title: 'C. V. Raman', description: 'Known for discovering the Raman Effect and placing Indian science on the global map.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/cv-raman.pdf', filename: 'cv-raman.pdf' },
+    { id: 'gd-naidu', title: 'G. D. Naidu', description: 'Known for practical invention, engineering curiosity, and a fearless maker mindset from India.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/gd-naidu.pdf', filename: 'gd-naidu.pdf' },
+    { id: 'homi-j-bhabha', title: 'Homi J. Bhabha', description: 'Known for laying the foundation of India’s nuclear science and research institutions.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/homi-j-bhabha.pdf', filename: 'homi-j-bhabha.pdf' },
+    { id: 'jagadish-chandra-bose', title: 'Jagadish Chandra Bose', description: 'Known for pioneering radio science and revealing surprising life-like responses in plants.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/jagadish-chandra-bose.pdf', filename: 'jagadish-chandra-bose.pdf' },
+    { id: 'kanad', title: 'Kanad', description: 'Known for proposing early atomic ideas and a bold philosophical model of matter.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/kanad.pdf', filename: 'kanad.pdf' },
+    { id: 'kautilya', title: 'Kautilya', description: 'Known for statecraft, strategy, and the Arthashastra’s sharp view of power and governance.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/kautilya.pdf', filename: 'kautilya.pdf' },
+    { id: 'madhava-of-sangamagrama', title: 'Madhava of Sangamagrama', description: 'Known for infinite series work that pushed mathematics toward later calculus.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/madhava-of-sangamagrama.pdf', filename: 'madhava-of-sangamagrama.pdf' },
+    { id: 'meghnad-saha', title: 'Meghnad Saha', description: 'Known for the Saha ionization equation that transformed astrophysics and stellar study.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/meghnad-saha.pdf', filename: 'meghnad-saha.pdf' },
+    { id: 'nagarjuna', title: 'Nagarjuna', description: 'Known for profound philosophical inquiry and a radical analysis of emptiness and reality.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/nagarjuna.pdf', filename: 'nagarjuna.pdf' },
+    { id: 'narinder-singh-kapany', title: 'Narinder Singh Kapany', description: 'Known as a father of fiber optics, helping shape the future of global communication.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/narinder-singh-kapany.pdf', filename: 'narinder-singh-kapany.pdf' },
+    { id: 'panini', title: 'Panini', description: 'Known for a remarkably precise grammar system that still amazes linguists and coders alike.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/panini.pdf', filename: 'panini.pdf' },
+    { id: 'satya-nadella', title: 'Satya Nadella', description: 'Known for renewing Microsoft through cloud thinking, empathy, and strategic leadership.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/satya-nadella.pdf', filename: 'satya-nadella.pdf' },
+    { id: 'satyendra-nath-bose', title: 'Satyendra Nath Bose', description: 'Known for the quantum work behind bosons and Bose-Einstein statistics.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/satyendra-nath-bose.pdf', filename: 'satyendra-nath-bose.pdf' },
+    { id: 'shankar-abaji-bhisey', title: 'Shankar Abaji Bhisey', description: 'Known for prolific invention and an inventive spirit that reached far beyond his era.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/shankar-abaji-bhisey.pdf', filename: 'shankar-abaji-bhisey.pdf' },
+    { id: 'srinivasa-ramanujan', title: 'Srinivasa Ramanujan', description: 'Known for astonishing mathematical intuition that continues to inspire researchers worldwide.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/srinivasa-ramanujan.pdf', filename: 'srinivasa-ramanujan.pdf' },
+    { id: 'subrahmanyan-chandrasekhar', title: 'Subrahmanyan Chandrasekhar', description: 'Known for explaining stellar evolution and the Chandrasekhar limit in astrophysics.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/subrahmanyan-chandrasekhar.pdf', filename: 'subrahmanyan-chandrasekhar.pdf' },
+    { id: 'sundar-pichai', title: 'Sundar Pichai', description: 'Known for guiding Google through product scale, AI, and a calm global leadership style.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/sundar-pichai.pdf', filename: 'sundar-pichai.pdf' },
+    { id: 'sushruta', title: 'Sushruta', description: 'Known for surgical knowledge and medical methods preserved in the Sushruta Samhita.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/sushruta.pdf', filename: 'sushruta.pdf' },
+    { id: 'upendranath-brahmachari', title: 'Upendranath Brahmachari', description: 'Known for developing a life-saving treatment for kala-azar and advancing medical science in India.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/upendranath-brahmachari.pdf', filename: 'upendranath-brahmachari.pdf' },
+    { id: 'vikram-sarabhai', title: 'Vikram Sarabhai', description: 'Known for founding India’s space vision and shaping science for national development.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/vikram-sarabhai.pdf', filename: 'vikram-sarabhai.pdf' },
+    { id: 'vinod-dham', title: 'Vinod Dham', description: 'Known as the father of the Pentium chip and a key force in modern computing hardware.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/vinod-dham.pdf', filename: 'vinod-dham.pdf' },
+    { id: 'yellapragada-subbarow', title: 'Yellapragada Subbarow', description: 'Known for medical discoveries that helped save lives through major drug development.', tag: 'Global Minds', tone: 'warm-red', url: 'generated-global-minds-books/yellapragada-subbarow.pdf', filename: 'yellapragada-subbarow.pdf' }
+  ];
+  MINI_BOOK_LIBRARY = MINI_BOOK_LIBRARY.concat(GLOBAL_MINDS_LIBRARY);
 
   function getPremiumGiftStorageKey(type) {
     if (currentSignedInUser && currentSignedInUser.uid) {
@@ -2555,6 +2868,39 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       }
     })();
     return giftBookAssetPromise;
+  }
+
+  async function loadLibraryBookAsset(book) {
+    if (!book || !book.id) return null;
+    if (libraryBookAssets[book.id]) return libraryBookAssets[book.id];
+    libraryBookAssets[book.id] = (async function() {
+      var absoluteUrl = new URL(book.url, window.location.href).href;
+      try {
+        var response = await fetch(absoluteUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error('LIBRARY_BOOK_FETCH_FAILED');
+        var blob = await response.blob();
+        var file = null;
+        try {
+          if (typeof File === 'function') {
+            file = new File([blob], book.filename, { type: 'application/pdf' });
+          }
+        } catch (e) {}
+        return {
+          blob: blob,
+          file: file,
+          filename: book.filename,
+          url: URL.createObjectURL(blob)
+        };
+      } catch (e) {
+        return {
+          blob: null,
+          file: null,
+          filename: book.filename,
+          url: absoluteUrl
+        };
+      }
+    })();
+    return libraryBookAssets[book.id];
   }
 
   function appendGiftBookCard(row, asset) {
@@ -3467,6 +3813,15 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       });
     });
 
+    Object.keys(localLaneKnowledgeSeeds).forEach(function(laneKey) {
+      (localLaneKnowledgeSeeds[laneKey] || []).forEach(function(entry) {
+        if (!entry || !entry.answer) return;
+        (entry.prompts || []).forEach(function(prompt) {
+          setEntry(prompt, entry.answer);
+        });
+      });
+    });
+
     return map;
   }
 
@@ -3939,8 +4294,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var reasoningAccess = deepReasoning ? getReasoningAccessState() : { mode: 'open', remaining: Infinity };
     if (deepReasoning) {
       if (reasoningAccess.mode === 'locked') {
-        openExperimentalSheet('reasoning-limit', 'Raghav Baan');
-        return 'You used the 3 free deep reasoning asks on this account. Definitions, quick facts, direct routes, and Mobile+ actions can still stay light. Unlock Mobile+ and Raghav Baan to open 10 premium reasoning passes.';
+        return 'You used the 10 free deep reasoning asks on this account. Quick answers, definitions, direct routes, and lighter help still stay open. If you want the premium layer, you can enter through Mobile+ or Raghav Baan.';
       }
       if (reasoningAccess.mode === 'exhausted') {
         if (activeModel === 'Raghav Baan') {
@@ -4223,7 +4577,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var activeModel = 'Raghav Beta';
   var messagingAllowed = localStorage.getItem('orbiton_msg') === 'yes';
   var premiumUnlocked = localStorage.getItem('raghav_premium_unlocked') === 'yes';
-  var FREE_REASONING_LIMIT = 3;
+  var FREE_REASONING_LIMIT = 10;
   var DEFAULT_PREMIUM_REASONING_CREDITS = 10;
   var premiumReasoningCredits = 0;
   var currentSignedInUser = null;
@@ -4234,6 +4588,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var mobileGuideSeen = localStorage.getItem('orbiton_mobile_guide') === 'yes';
   var baanGuideSeen = localStorage.getItem('orbiton_baan_guide') === 'yes';
   var mobileBtn = document.getElementById('mobileBtn');
+  var laneBtn = document.getElementById('laneBtn');
+  var laneMenu = document.getElementById('laneMenu');
+  var libraryBtn = document.getElementById('libraryBtn');
   var runtimePill = document.getElementById('runtimePill');
   var chatStatus = document.getElementById('chatStatus');
   var guideSheet = document.getElementById('guideSheet');
@@ -4265,6 +4622,9 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   var pdfCloseBtn = document.getElementById('pdfCloseBtn');
   var pdfStatus = document.getElementById('pdfStatus');
   var activePdfAsset = null;
+  var librarySheet = document.getElementById('librarySheet');
+  var libraryGrid = document.getElementById('libraryGrid');
+  var libraryCloseBtn = document.getElementById('libraryCloseBtn');
   var experimentalSheetMode = 'mobile-plus';
   var experimentalLockedModel = '';
   var premiumPromptShown = false;
@@ -4331,11 +4691,11 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (options && options.instant) {
       var previousTransition = landingTrack.style.transition;
       landingTrack.style.transition = 'none';
-      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 100) + '%,0,0)';
+      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 50) + '%,0,0)';
       landingTrack.offsetHeight;
       landingTrack.style.transition = previousTransition || '';
     } else {
-      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 100) + '%,0,0)';
+      landingTrack.style.transform = 'translate3d(' + (-nextIndex * 50) + '%,0,0)';
     }
     document.body.setAttribute('data-landing-page', String(nextIndex));
     updateLandingDots(nextIndex);
@@ -4460,6 +4820,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   function closeAllPopups() {
     var modelMenu = document.getElementById('modelMenu');
     if (modelMenu) modelMenu.classList.remove('open');
+    if (laneMenu) laneMenu.classList.remove('open');
   }
 
   function syncModelButtons() {
@@ -4490,6 +4851,31 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (chatWrap) chatWrap.classList.toggle('mobile-live', messagingAllowed);
   }
 
+  function syncLaneMenuState() {
+    if (!laneMenu) return;
+    laneMenu.querySelectorAll('.lane-item[data-lane]').forEach(function(item) {
+      var lane = item.dataset.lane;
+      item.classList.toggle('active', lane === activeKnowledgeLane);
+    });
+  }
+
+  function setKnowledgeLane(laneKey, options) {
+    var nextLane = laneSuggestionBuckets[laneKey] ? laneKey : 'default';
+    activeKnowledgeLane = nextLane;
+    syncLaneMenuState();
+    if (chatIn && document.activeElement !== chatIn) {
+      try { chatIn.focus({ preventScroll: true }); } catch (e) { chatIn.focus(); }
+    }
+    if (!options || options.announce !== false) {
+      if (nextLane === 'default') {
+        streamReply('You are back to the default lane. I will keep responses broad, clean, and fast.');
+      } else {
+        streamReply('Switched to the ' + nextLane + ' lane. Suggestions are now tuned for that domain.');
+      }
+    }
+    updateSuggestions();
+  }
+
   function updatePremiumAccessUI() {
     if (!raghavBaanBtn || !raghavBaanMeta || !raghavBaanIcon) return;
     var unlocked = premiumUnlocked || hasStoredPremiumAccess();
@@ -4502,7 +4888,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     } else {
       raghavBaanBtn.classList.add('locked');
       raghavBaanIcon.textContent = '🔒';
-      raghavBaanMeta.textContent = 'Premium membership unlocks Mobile+, the flagship lane, and 10 premium reasoning passes after your first 3 free deep asks.';
+      raghavBaanMeta.textContent = 'Premium membership unlocks Mobile+, the flagship lane, and 10 premium reasoning passes whenever you choose to enter the premium layer.';
     }
   }
 
@@ -4583,12 +4969,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       : { mode: 'locked', remaining: 0 };
   }
 
-  function hasGuestPreviewAccess() {
-    return !appAccessUnlocked && !guestPreviewUsed;
-  }
-
   function canUseComposer() {
-    return appAccessUnlocked || hasGuestPreviewAccess();
+    return true;
   }
 
   function refreshComposerAccessUI() {
@@ -4597,7 +4979,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     if (chatIn) {
       chatIn.disabled = false;
       chatIn.readOnly = !composerUnlocked;
-      chatIn.placeholder = composerUnlocked ? 'Ask Raghav AI anything...' : 'Continue into Raghav AI to keep going...';
+      chatIn.placeholder = 'Ask Raghav AI anything...';
     }
     if (sendBtn) sendBtn.disabled = false;
   }
@@ -4615,16 +4997,12 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     }
   }
 
-  function handleLockedComposerGate(e) {
-    if (canUseComposer()) return false;
-    if (e && typeof e.preventDefault === 'function') e.preventDefault();
-    if (chatIn) chatIn.blur();
-    if (typeof window.openRaghavAuthGate === 'function') window.openRaghavAuthGate();
-    return true;
+  function handleLockedComposerGate(_e) {
+    return false;
   }
 
   function consumeGuestPreviewIfNeeded() {
-    if (appAccessUnlocked || guestPreviewUsed) {
+    if (currentSignedInUser || guestPreviewUsed) {
       return Promise.resolve(false);
     }
     guestPreviewUsed = true;
@@ -4693,6 +5071,72 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     guideSecondaryHandler = null;
   }
 
+  function closeLibrarySheet() {
+    if (!librarySheet) return;
+    librarySheet.style.display = 'none';
+  }
+
+  function buildLibraryCard(book) {
+    var card = document.createElement('article');
+    card.className = 'library-card';
+    if (book.tone === 'warm-red') {
+      card.classList.add('library-card-warm-red');
+    }
+
+    var cover = document.createElement('div');
+    cover.className = 'library-card-cover';
+
+    var tag = document.createElement('div');
+    tag.className = 'library-card-tag';
+    tag.textContent = book.tag || 'Mini Book';
+    cover.appendChild(tag);
+
+    var coverTitle = document.createElement('strong');
+    coverTitle.textContent = book.title;
+    cover.appendChild(coverTitle);
+    var openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'library-open';
+    openBtn.textContent = 'Read it now';
+    openBtn.addEventListener('click', async function(e) {
+      e.stopPropagation();
+      var asset = await loadLibraryBookAsset(book);
+      closeLibrarySheet();
+      openPdfPreview(asset, { title: book.title });
+    });
+    cover.appendChild(openBtn);
+    card.appendChild(cover);
+
+    var body = document.createElement('div');
+    body.className = 'library-card-body';
+    body.innerHTML = '<h4>' + book.title + '</h4><p>' + book.description + '</p>';
+    card.appendChild(body);
+    card.addEventListener('click', function() {
+      openBtn.click();
+    });
+    return card;
+  }
+
+  function renderLibraryBooks() {
+    if (!libraryGrid) return;
+    libraryGrid.innerHTML = '';
+    if (!MINI_BOOK_LIBRARY.length) {
+      var empty = document.createElement('div');
+      empty.className = 'library-empty';
+      empty.textContent = 'No mini books are available yet.';
+      libraryGrid.appendChild(empty);
+      return;
+    }
+    MINI_BOOK_LIBRARY.forEach(function(book) {
+      libraryGrid.appendChild(buildLibraryCard(book));
+    });
+  }
+
+  function openLibrarySheet() {
+    renderLibraryBooks();
+    if (librarySheet) librarySheet.style.display = 'flex';
+  }
+
   function closePdfPreview() {
     if (!pdfSheet) return;
     pdfSheet.style.display = 'none';
@@ -4719,10 +5163,10 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     var alreadyUnlocked = premiumUnlocked || hasStoredPremiumAccess();
     permKicker.textContent = mode === 'reasoning-limit' ? 'Deep Reasoning' : 'Exclusive Layer';
     permTitle.textContent = mode === 'reasoning-limit'
-      ? 'The free deep lane is finished.'
+      ? 'Deep reasoning session is completed.'
       : 'Unlock the hidden layer.';
     permBody.textContent = mode === 'reasoning-limit'
-      ? 'You already used the 3 free deep asks. Static answers, direct routes, and lighter help still stay open.'
+      ? 'Continue with the standard intelligence or upgrade for the extended path.'
       : 'One unlock opens the mini agent, the flagship lane, and the deeper reasoning passes.';
     permBody.style.display = 'block';
     renderExperimentalPoints([
@@ -4732,7 +5176,8 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
     ]);
     permMini.textContent = 'Rs 39 · 10 deep passes';
     permMini.style.display = 'block';
-    permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39');
+    permYes.textContent = alreadyUnlocked ? 'Already unlocked' : (mode === 'reasoning-limit' ? 'Upgrade Now' : (lockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39'));
+    permYes.classList.toggle('perm-upgrade', mode === 'reasoning-limit' && !alreadyUnlocked);
     permYes.disabled = !!alreadyUnlocked;
     permNo.textContent = 'Not Now';
 
@@ -4797,6 +5242,25 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   if (pdfSheet) {
     pdfSheet.addEventListener('click', function(e) {
       if (e.target === this) closePdfPreview();
+    });
+  }
+
+  if (libraryBtn) {
+    libraryBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      openLibrarySheet();
+    });
+  }
+
+  if (libraryCloseBtn) {
+    libraryCloseBtn.addEventListener('click', function() {
+      closeLibrarySheet();
+    });
+  }
+
+  if (librarySheet) {
+    librarySheet.addEventListener('click', function(e) {
+      if (e.target === this) closeLibrarySheet();
     });
   }
 
@@ -5021,6 +5485,24 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
       haptic(10);
     });
   });
+
+  if (laneBtn && laneMenu) {
+    laneBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = laneMenu.classList.contains('open');
+      closeAllPopups();
+      if (!isOpen) laneMenu.classList.add('open');
+    });
+    laneMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var laneItem = e.target.closest('.lane-item');
+      if (!laneItem) return;
+      var laneKey = laneItem.dataset.lane || '';
+      closeAllPopups();
+      setKnowledgeLane(laneKey);
+    });
+    syncLaneMenuState();
+  }
 
   // Mobile + button -> show permission sheet
   mobileBtn.addEventListener('click', function(e) {
@@ -5400,7 +5882,7 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
   function syncInstallAction(){
     if(!installTopBtn) return;
     if (window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
-      installTopBtn.hidden = true;
+      installTopBtn.hidden = false;
       return;
     }
     installTopBtn.hidden = !!isStandalone || (!deferredPrompt && !isIOS);
@@ -5417,11 +5899,25 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         deferredPrompt.userChoice.then(function(){ deferredPrompt=null; syncInstallAction(); });
         return;
       }
+      if(!isIOS && !isStandalone && typeof showGuideCard === 'function'){
+        showGuideCard({
+          kicker: 'Access Raghav AI',
+          title: 'Use it like an app.',
+          body: 'Raghav AI works like a clean app on Android once you add it to your home screen.',
+          points: [
+            { title: 'Open browser menu', text: 'Tap the browser menu or install option in Chrome.' },
+            { title: 'Add to Home screen', text: 'Choose Install app or Add to Home screen to place Raghav AI on your phone.' }
+          ],
+          primaryLabel: 'Got it',
+          secondaryLabel: 'Later'
+        });
+        return;
+      }
       if(isIOS && !isStandalone && typeof showGuideCard === 'function'){
         showGuideCard({
-          kicker: 'Install Raghav AI',
-          title: 'Add it to your phone.',
-          body: 'Install Raghav AI on your iPhone for a cleaner, app-like experience.',
+          kicker: 'Access Raghav AI',
+          title: 'Use it on your phone.',
+          body: 'Raghav AI works like a polished iPhone app once you add it to your Home Screen.',
           points: [
             { title: 'Open Share', text: 'Tap the Share button in Safari.' },
             { title: 'Add to Home Screen', text: 'Choose Add to Home Screen to place Raghav AI on your phone.' }
@@ -5836,3 +6332,4 @@ authSheet.addEventListener('click', function(e) {
 </script>
 </body>
 </html>
+
