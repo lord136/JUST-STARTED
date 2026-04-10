@@ -635,6 +635,18 @@ body[data-theme="light"] .lane-item.upload{border-color:rgba(245,158,11,.18);bac
   .chat-compose{padding-bottom:max(0px,var(--composer-safe-bottom,0px))}
   .px-bar{border-radius:24px}
   .suggest-row{bottom:calc(100% + 12px);max-height:min(132px,24vh);padding:10px}
+  body.chat-input-active.keyboard-open .chat-compose{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:calc(var(--composer-safe-bottom,0px) + 10px);
+    width:min(860px,calc(100vw - 24px));
+    padding-bottom:0;
+    z-index:60;
+  }
+  body.chat-input-active.keyboard-open .chat-shell{
+    padding-bottom:calc(var(--composer-safe-bottom,0px) + 170px);
+  }
   .lane-menu{width:min(292px,calc(100vw - 36px));left:-10px}
   .chat-log{padding:0 2px 8px 2px}
   .library-box{padding:18px;border-radius:24px;height:min(100%,90vh)}
