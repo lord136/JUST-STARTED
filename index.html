@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Raghav AI">
+<meta name="application-name" content="Raghav AI">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="description" content="Raghav AI is an intelligent knowledge system with smart search, direct routes, Mobile+, revision PDF flows, and a premium reasoning lane.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -44,8 +45,16 @@ if (!window.__RAGHAV_LOCAL_FILE_PREVIEW__) {
     {
       "@type": "WebSite",
       "name": "Raghav AI",
-      "alternateName": "Raghav AI",
-      "url": "https://www.raghavam.in/"
+      "alternateName": [
+        "Raghav.ai",
+        "raghavam.in"
+      ],
+      "url": "https://www.raghavam.in/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.raghavam.in/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     },
     {
       "@type": "Organization",
