@@ -5499,7 +5499,13 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
         order_id: payment.order.id,
         theme: { color: '#2563eb' },
         handler: async function (response) {
+          var localCredits = DEFAULT_PREMIUM_REASONING_CREDITS;
           try {
+            await markPremiumUnlocked({
+              premiumUnlocked: true,
+              mobilePlusUnlocked: true,
+              premiumReasoningCredits: localCredits
+            });
             var verified = await verifyPremiumPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -5517,30 +5523,34 @@ body[data-theme="light"] .scroll-hint svg{stroke:rgba(8,17,31,.42)}
             }
             if (!accountAttached) {
               var localEntitlements = syncedEntitlements || (verified && verified.entitlements) || {};
-              await markPremiumUnlocked({
-                premiumUnlocked: true,
-                mobilePlusUnlocked: true,
-                premiumReasoningCredits: Math.max(0, Number(localEntitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
-              });
+              localCredits = Math.max(0, Number(localEntitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS));
               applyPremiumState({
                 premiumUnlocked: true,
                 messagingAllowed: true,
                 preserveStoredAccess: true,
-                premiumReasoningCredits: Math.max(0, Number(localEntitlements.premiumReasoningCredits || DEFAULT_PREMIUM_REASONING_CREDITS))
+                premiumReasoningCredits: localCredits
               });
               return;
             }
-            await markPremiumUnlocked(syncedEntitlements || verified || response);
+            localCredits = Math.max(0, Number((syncedEntitlements && syncedEntitlements.premiumReasoningCredits) || DEFAULT_PREMIUM_REASONING_CREDITS));
             applyPremiumState({
               premiumUnlocked: true,
               messagingAllowed: true,
               preserveStoredAccess: true,
-              premiumReasoningCredits: Math.max(0, Number((syncedEntitlements && syncedEntitlements.premiumReasoningCredits) || DEFAULT_PREMIUM_REASONING_CREDITS))
+              premiumReasoningCredits: localCredits
             });
           } catch (verifyError) {
-            streamReply('Payment came through, but verification did not complete yet. Please try once more in a moment.');
+            console.warn('Premium verification is still syncing after local unlock.', verifyError);
+            applyPremiumState({
+              premiumUnlocked: true,
+              messagingAllowed: true,
+              preserveStoredAccess: true,
+              premiumReasoningCredits: localCredits
+            });
           } finally {
             premiumUnlockInFlight = false;
+            permYes.disabled = false;
+            permYes.textContent = experimentalLockedModel ? 'Unlock the full experience for Rs 39' : 'Unlock for Rs 39';
           }
         },
         modal: {
